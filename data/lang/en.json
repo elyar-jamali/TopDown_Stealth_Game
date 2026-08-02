@@ -1,0 +1,11 @@
+{
+	"ok_button": "Close",
+	"Door_Caption": "Door",
+	"NPC0": "Civilian",
+	"NPC1": "Guard",
+	"npc_guard_hello": "Halt! Who goes there?",
+	"npc_guard_yes": "You may pass.",
+	"npc_guard_no": "You shall not pass!",
+	"door_locked": "The door is locked.",
+	"npc_hostile_warning": "Leave Immediately"
+}

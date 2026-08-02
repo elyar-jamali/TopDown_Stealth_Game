@@ -1,0 +1,196 @@
+[gd_scene load_steps=20 format=3 uid="uid://cfu3fnnrderse"]
+
+[ext_resource type="Script" uid="uid://badj7kg2ntygc" path="res://scripts/CameraRig.gd" id="1_0wfyh"]
+[ext_resource type="Script" uid="uid://crtq4vlevbo8" path="res://scripts/door.gd" id="1_jyhfs"]
+[ext_resource type="Script" uid="uid://vdfyr6e8e6t7" path="res://scripts/player.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://meydslwq2rsr" path="res://scripts/NPC/NPC.gd" id="1_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://evm8db4t2g3e" path="res://data/Pic/civil1.jpg" id="2_o6xl0"]
+[ext_resource type="Script" uid="uid://b13t814i6efqi" path="res://scripts/cursor_ui.gd" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://bd4mitmm352n1" path="res://scripts/DialogueUI.gd" id="6_tefeu"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7dm0k"]
+size = Vector3(40, 0.05, 40)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+size = Vector3(40, 0.05, 40)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_o5qli"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0wfyh"]
+size = Vector3(0.1, 4, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sugp2"]
+size = Vector3(0.1, 4, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sugp2"]
+size = Vector3(10, 0.05, 10)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jyhfs"]
+size = Vector3(10, 0.05, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o6xl0"]
+size = Vector3(5, 20, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tipki"]
+size = Vector3(5, 20, 5)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_o5qli"]
+vertices = PackedVector3Array(-19.5, 0.416407, 5, -13.75, 0.666407, 5, -13.75, 0.416407, 4.5, -9.75, 0.416407, 4.5, 4, 0.416407, 1.75, 4, 0.416407, -1.75, 5, 0.416407, -2, 5, 0.416407, -19.5, -19.5, 0.416407, -19.5, 6.25, 0.416407, -1.75, 6.25, 0.416407, 0, 19.5, 0.416407, 0, 19.5, 0.416407, -19.5, 6.25, 0.416407, 1.75, 5, 0.416407, 2.25, 5, 0.416407, 19.5, 19.5, 0.416407, 19.5, -9.25, 0.416407, 15.5, -11, 0.416407, 15.75, -10.75, 0.416407, 19.5, -9.25, 0.416407, 4.75, 4.25, 0.416407, 2.25, -19.5, 0.416407, 15, -14, 0.666407, 15, -13.75, 0.666407, 14.5, -13.75, 0.666407, 5.5, -11.75, 1.416407, 14.5, -11.75, 1.416407, 5.5, -5.75, 3.666407, 14.5, -5.75, 3.666407, 5.5, -13.75, 0.416407, 15.75, -19.5, 0.416407, 19.5)
+polygons = [PackedInt32Array(2, 1, 0), PackedInt32Array(4, 3, 5), PackedInt32Array(5, 3, 2), PackedInt32Array(7, 6, 5), PackedInt32Array(2, 0, 5), PackedInt32Array(5, 0, 7), PackedInt32Array(7, 0, 8), PackedInt32Array(11, 10, 9), PackedInt32Array(9, 6, 11), PackedInt32Array(11, 6, 7), PackedInt32Array(11, 7, 12), PackedInt32Array(13, 10, 11), PackedInt32Array(13, 11, 14), PackedInt32Array(14, 11, 15), PackedInt32Array(15, 11, 16), PackedInt32Array(18, 17, 19), PackedInt32Array(19, 17, 15), PackedInt32Array(21, 20, 4), PackedInt32Array(4, 20, 3), PackedInt32Array(21, 14, 20), PackedInt32Array(20, 14, 17), PackedInt32Array(17, 14, 15), PackedInt32Array(23, 22, 24), PackedInt32Array(24, 22, 25), PackedInt32Array(25, 22, 0), PackedInt32Array(0, 1, 25), PackedInt32Array(25, 27, 24), PackedInt32Array(24, 27, 26), PackedInt32Array(27, 29, 26), PackedInt32Array(26, 29, 28), PackedInt32Array(30, 18, 19), PackedInt32Array(22, 23, 30), PackedInt32Array(22, 30, 31), PackedInt32Array(31, 30, 19)]
+
+[node name="Main" type="Node3D"]
+
+[node name="Level01" type="Node3D" parent="."]
+
+[node name="NPC" type="CharacterBody3D" parent="Level01" groups=["NPC", "interactable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -10)
+script = ExtResource("1_tbgi4")
+npc_name = 1
+Icon_default = ExtResource("2_o6xl0")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Level01/NPC"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/NPC"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/NPC"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.017281532)
+mesh = SubResource("CapsuleMesh_h2yge")
+
+[node name="Ground" type="StaticBody3D" parent="Level01"]
+collision_layer = 65
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+shape = SubResource("BoxShape3D_7dm0k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("BoxMesh_ig7tw")
+
+[node name="door2" type="StaticBody3D" parent="Level01" groups=["door", "interactable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
+physics_material_override = SubResource("PhysicsMaterial_o5qli")
+script = ExtResource("1_jyhfs")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/door2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/door2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+mesh = SubResource("BoxMesh_sugp2")
+skeleton = NodePath("")
+
+[node name="slope" type="StaticBody3D" parent="Level01"]
+collision_layer = 65
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/slope"]
+transform = Transform3D(0.9396926, -0.34202012, 0, 0.34202012, 0.9396926, 0, 0, 0, 1, -10, 1.65, 10)
+shape = SubResource("BoxShape3D_sugp2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/slope"]
+transform = Transform3D(0.9396926, -0.34202012, 0, 0.34202012, 0.9396926, 0, 0, 0, 1, -10, 1.65, 10)
+mesh = SubResource("BoxMesh_jyhfs")
+
+[node name="door3" type="StaticBody3D" parent="Level01" groups=["door", "interactable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -5)
+physics_material_override = SubResource("PhysicsMaterial_o5qli")
+script = ExtResource("1_jyhfs")
+door_type = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/door3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+shape = SubResource("BoxShape3D_0wfyh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/door3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+mesh = SubResource("BoxMesh_sugp2")
+skeleton = NodePath("")
+
+[node name="building" type="StaticBody3D" parent="Level01"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.249205, 0, 12.895294)
+collision_layer = 65
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Level01/building"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+shape = SubResource("BoxShape3D_o6xl0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Level01/building"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+mesh = SubResource("BoxMesh_tipki")
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("1_0wfyh")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 15, 15)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 0, 0, 0)
+
+[node name="Player" type="CharacterBody3D" parent="."]
+script = ExtResource("1_o5qli")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="Player"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.017281532)
+mesh = SubResource("CapsuleMesh_h2yge")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+transform = Transform3D(0.9999899, 0.0044854814, 0, -0.0044854814, 0.9999899, 0, 0, 0, 1, 0, 0, 0)
+navigation_mesh = SubResource("NavigationMesh_o5qli")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="DialogueUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_tefeu")
+
+[node name="Panel" type="Panel" parent="UI/DialogueUI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="OkButton" type="Button" parent="UI/DialogueUI/Panel"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="Picture" type="TextureRect" parent="UI/DialogueUI/Panel/OkButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+expand_mode = 1
+
+[node name="Label" type="Label" parent="UI/DialogueUI/Panel"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="CursorUI" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("3_sugp2")
+
+[node name="CursorIcon" type="TextureRect" parent="UI/CursorUI"]
+layout_mode = 0
+
+[node name="HoverLabel" type="Label" parent="UI/CursorUI"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

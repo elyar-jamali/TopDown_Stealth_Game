@@ -1,0 +1,35 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Hitman"
+run/main_scene="uid://cfu3fnnrderse"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+CursorManager="*res://scripts/UI/CursorManager.gd"
+HoverSystem="*res://scripts/interaction/HoverSystem.gd"
+LocalizationManager="*res://scripts/UI/LocalizationManager.gd"
+DialogueSystem="*res://scripts/UI/DialogueSystem.gd"
+DebugDraw="*res://scripts/debug/DebugDraw.gd"
+InteractionSystem="*res://scripts/interaction/InteractionSystem.gd"
+
+[global_group]
+
+interactable=""
+door=""
+NPC=""
+
+[layer_names]
+
+3d_physics/layer_7="CameraObstacle"

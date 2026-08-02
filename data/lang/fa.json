@@ -1,0 +1,11 @@
+{
+	"ok_button": "تایید",
+	"Door_Caption": "درب",
+	"NPC0": "شهروند عادی",
+	"NPC1": "نگهبان",
+	"npc_guard_hello": "ایست! چه کسی هستی؟",
+	"npc_guard_yes": "می‌توانی عبور کنی.",
+	"npc_guard_no": "اجازه عبور نداری!",
+	"door_locked": "در قفل است.",
+	"npc_hostile_warning": "فورا از اینجا برو"
+}
