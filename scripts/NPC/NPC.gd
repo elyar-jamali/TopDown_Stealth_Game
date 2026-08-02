@@ -1,10 +1,11 @@
-extends CharacterBody3D
+extends Node3D
+#extends CharacterBody3D
 
 enum NPCType {
 	Civilian,
 	Guard
 }
-@onready var mesh := $MeshInstance3D
+@onready var mesh := $NPC/MeshInstance3D
 
 @export var npc_name := NPCType.Civilian
 @export var can_talk := true
@@ -12,7 +13,9 @@ enum NPCType {
 @export var Icon_default = load("res://data/Pic/civil1.jpg")
 
 @export var interaction_range := 0.0
-@onready var collision := $CollisionShape3D
+@onready var collision := $NPC/CollisionShape3D
+#@onready var agent: NavigationAgent3D = $NPC/NavigationAgent3D
+
 var original_material: Material
 var highlight_material:= StandardMaterial3D.new()
 		
@@ -30,6 +33,8 @@ func _ready():
 		else:
 			interaction_range = 2.5
 
+#func _physics_process(delta):
+#	agent.velocity = Vector3.ZERO
 func get_hover_text():
 	return "NPC"+var_to_str(npc_name)
 

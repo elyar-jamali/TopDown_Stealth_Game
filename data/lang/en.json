@@ -1,4 +1,40 @@
 {
+	"language": {
+		"code": "en",
+		"name": "English"
+	},
+	"settings": {
+		"title": "Settings",
+		"language": "Language",
+		"back": "Back"
+	},
+	"main_menu": {
+		"start_game": "Start Game",
+		"quit_game": "Exit",
+		"settings": "Settings",
+		"level_01": "Level01",
+	},
+
+	"pause_menu": {
+		"title_text": "Pause",
+		"resume": "Resume",
+		"save": "Save",
+		"load": "Load",
+		"settings": "Settings",
+		"main_menu": "Main Menu",
+		"exit_to_desktop": "Exit To Desktop",
+		
+	},
+
+	"confirm_dialoge": {
+		"exit_game": "Exit",
+		"exit_to_desktop": "Quit To Desktop, Are You Sure?",
+		"exit_to_main_menu": "Return To Main Menu, Unsaved Progress Will Be Lost?",
+		
+		"yes": "Yes",
+		"no": "No"
+	},
+
 	"ok_button": "Close",
 	"Door_Caption": "Door",
 	"NPC0": "Civilian",

@@ -1,0 +1,95 @@
+[gd_scene load_steps=15 format=3 uid="uid://c3nqaomdmn4xb"]
+
+[ext_resource type="Script" uid="uid://crtq4vlevbo8" path="res://scripts/Entities/door.gd" id="1_4q3v6"]
+[ext_resource type="Texture2D" uid="uid://ggq4mx6hseuc" path="res://data/texture/Wood_Walnut.png" id="2_n5vaa"]
+[ext_resource type="Texture2D" uid="uid://r71ciif37gpv" path="res://data/texture/Wood_Ash.png" id="2_pcwxw"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_n5vaa"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pcwxw"]
+size = Vector3(0.1, 4, 2)
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_pcwxw"]
+albedo_texture = ExtResource("2_pcwxw")
+orm_texture = ExtResource("2_n5vaa")
+
+[sub_resource type="BoxMesh" id="BoxMesh_k83qf"]
+material = SubResource("ORMMaterial3D_pcwxw")
+size = Vector3(0.1, 4, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4q3v6"]
+albedo_color = Color(0.3770668, 0.3770668, 0.3770668, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_n5vaa"]
+material = SubResource("StandardMaterial3D_4q3v6")
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_pcwxw"]
+material = SubResource("StandardMaterial3D_4q3v6")
+size = Vector3(0.03, 0.02, 0.2)
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_n5vaa"]
+albedo_texture = ExtResource("2_n5vaa")
+
+[sub_resource type="BoxMesh" id="BoxMesh_4q3v6"]
+material = SubResource("ORMMaterial3D_n5vaa")
+size = Vector3(0.2, 4, 0.2)
+
+[sub_resource type="ORMMaterial3D" id="ORMMaterial3D_k83qf"]
+albedo_texture = ExtResource("2_n5vaa")
+
+[sub_resource type="BoxMesh" id="BoxMesh_n5vaa"]
+material = SubResource("ORMMaterial3D_k83qf")
+size = Vector3(0.2, 0.2, 2.4)
+
+[node name="Door" type="Node3D" groups=["door", "interactable"]]
+script = ExtResource("1_4q3v6")
+
+[node name="NavigationLink3D" type="NavigationLink3D" parent="."]
+start_position = Vector3(0, 0.05, -1)
+end_position = Vector3(0, 0.05, -1)
+
+[node name="door" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_n5vaa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+shape = SubResource("BoxShape3D_pcwxw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="door"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -1)
+mesh = SubResource("BoxMesh_k83qf")
+skeleton = NodePath("")
+
+[node name="Handle" type="StaticBody3D" parent="door"]
+
+[node name="mid" type="MeshInstance3D" parent="door/Handle"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 2, -1.9)
+mesh = SubResource("CylinderMesh_n5vaa")
+skeleton = NodePath("../..")
+
+[node name="Out" type="MeshInstance3D" parent="door/Handle"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.1, 2, -1.83)
+mesh = SubResource("BoxMesh_pcwxw")
+skeleton = NodePath("../..")
+
+[node name="In" type="MeshInstance3D" parent="door/Handle"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.1, 2, -1.83)
+mesh = SubResource("BoxMesh_pcwxw")
+skeleton = NodePath("../..")
+
+[node name="frame" type="StaticBody3D" parent="."]
+
+[node name="LeftSide" type="MeshInstance3D" parent="frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0.1)
+mesh = SubResource("BoxMesh_4q3v6")
+
+[node name="RightSide" type="MeshInstance3D" parent="frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2.1)
+mesh = SubResource("BoxMesh_4q3v6")
+
+[node name="UpSide" type="MeshInstance3D" parent="frame"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1, -1)
+mesh = SubResource("BoxMesh_n5vaa")

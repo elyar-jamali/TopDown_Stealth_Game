@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://77uphup8j840"]
+
+[ext_resource type="Script" uid="uid://meydslwq2rsr" path="res://scripts/NPC/NPC.gd" id="1_jpwb5"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tvc50"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_d7da3"]
+
+[node name="NPC" type="Node3D" groups=["NPC", "interactable"]]
+script = ExtResource("1_jpwb5")
+
+[node name="NPC" type="CharacterBody3D" parent="."]
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="NPC"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_tvc50")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="NPC"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.017281532)
+mesh = SubResource("CapsuleMesh_d7da3")

@@ -1,4 +1,40 @@
 {
+	"language": {
+		"code": "fa",
+		"name": "فارسی"
+	},
+	"settings": {
+		"title": "تنظیمات",
+		"language": "زبان",
+		"back": "بازگشت"
+	},
+	"main_menu": {
+		"start_game": "شروع بازی",
+		"quit_game": "خروج",
+		"settings": "تنظیمات",
+		"level_01": "مرحله اول",
+	},
+	
+	"pause_menu": {
+		"title_text": "توقف موقت بازی",
+		"resume": "ادامه بازی",
+		"save": "ذخیره",
+		"load": "بازیابی",
+		"settings": "تنظیمات",
+		"main_menu": "خروج به منوی اصلی",
+		"exit_to_desktop": "خروج از بازی",
+	
+	},
+
+	"confirm_dialoge": {
+		"exit_game": "خروج از بازی",
+		"exit_to_desktop": "آیا مطمئن هستید که میخواهید از بازی بطور کامل خارج شوید؟",
+		"exit_to_main_menu": "آیا میخواهید به منوی اصلی برگردید؟ پیشرفت بازی از آخرین ذخیره به بعد از دست خواهد رفت.",
+		
+		"yes": "بله",
+		"no": "خیر"
+	},
+
 	"ok_button": "تایید",
 	"Door_Caption": "درب",
 	"NPC0": "شهروند عادی",
@@ -8,4 +44,5 @@
 	"npc_guard_no": "اجازه عبور نداری!",
 	"door_locked": "در قفل است.",
 	"npc_hostile_warning": "فورا از اینجا برو"
+	
 }
