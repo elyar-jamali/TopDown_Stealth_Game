@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://r71ciif37gpv"
-path.s3tc="res://.godot/imported/Wood_Ash.png-690f22b49c9c00b26c905d235f36ffa0.s3tc.ctex"
+uid="uid://bk3nlm81xce64"
+path.s3tc="res://.godot/imported/Wooden Door2.png-b772ba54340ba1e48e779b9767c9698e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/texture/Wood_Ash.png"
-dest_files=["res://.godot/imported/Wood_Ash.png-690f22b49c9c00b26c905d235f36ffa0.s3tc.ctex"]
+source_file="res://data/texture/Wooden Door2.png"
+dest_files=["res://.godot/imported/Wooden Door2.png-b772ba54340ba1e48e779b9767c9698e.s3tc.ctex"]
 
 [params]
 

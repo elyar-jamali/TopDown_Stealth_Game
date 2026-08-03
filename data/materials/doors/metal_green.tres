@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c7cx1x0evfi8x"]
+
+[ext_resource type="Texture2D" uid="uid://bebu0ehwgjd1x" path="res://data/texture/Metal_door2.png" id="1_3gk3w"]
+
+[resource]
+albedo_texture = ExtResource("1_3gk3w")
+metallic = 0.8
+uv1_scale = Vector3(3, 2, 1)

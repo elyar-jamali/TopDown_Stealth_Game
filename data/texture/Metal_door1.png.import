@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ggq4mx6hseuc"
-path.s3tc="res://.godot/imported/Wood_Walnut.png-3c010d09409ea7762f7c4483befe4c31.s3tc.ctex"
+uid="uid://cw7imaeier5rk"
+path.s3tc="res://.godot/imported/Metal_door1.png-65ce7eca34569061002abd30c635dc31.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/texture/Wood_Walnut.png"
-dest_files=["res://.godot/imported/Wood_Walnut.png-3c010d09409ea7762f7c4483befe4c31.s3tc.ctex"]
+source_file="res://data/texture/Metal_door1.png"
+dest_files=["res://.godot/imported/Metal_door1.png-65ce7eca34569061002abd30c635dc31.s3tc.ctex"]
 
 [params]
 

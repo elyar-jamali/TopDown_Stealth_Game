@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cfu3fnnrderse"]
+[gd_scene load_steps=10 format=3 uid="uid://cfu3fnnrderse"]
 
 [ext_resource type="Script" uid="uid://badj7kg2ntygc" path="res://scripts/UI/CameraRig.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://vdfyr6e8e6t7" path="res://scripts/Characters/player.gd" id="1_o5qli"]
@@ -7,12 +7,19 @@
 [ext_resource type="PackedScene" uid="uid://e1pu11ycyf7s" path="res://scenes/PauseMenu.tscn" id="6_o6xl0"]
 [ext_resource type="Script" uid="uid://bd4mitmm352n1" path="res://scripts/UI/DialogueUI.gd" id="6_tefeu"]
 
+[sub_resource type="Environment" id="Environment_tefeu"]
+ambient_light_source = 2
+ambient_light_color = Color(0.7121294, 0.7121294, 0.71212935, 1)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_tbgi4")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_tefeu")
 
 [node name="LevelHolder" type="Node3D" parent="."]
 
@@ -36,7 +43,7 @@ script = ExtResource("1_0wfyh")
 transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 15, 15)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.70710677, -0.49999997, 0.49999997, 0, 0.70710677, 0.70710677, -0.70710677, -0.49999997, 0.49999997, 0, 0, 0)
+transform = Transform3D(0.8660253, 0.409576, -0.2867882, 0, 0.5735764, 0.819152, 0.49999997, -0.70940644, 0.49673173, 0, 0, 0)
 
 [node name="UI" type="CanvasLayer" parent="."]
 

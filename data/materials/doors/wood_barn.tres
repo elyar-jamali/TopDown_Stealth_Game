@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://xj88k7nw2lyy"]
+
+[ext_resource type="Texture2D" uid="uid://bk3nlm81xce64" path="res://data/texture/Wooden Door2.png" id="1_sekw4"]
+
+[resource]
+albedo_texture = ExtResource("1_sekw4")
+roughness = 0.75
+uv1_scale = Vector3(3, 2, 1)
