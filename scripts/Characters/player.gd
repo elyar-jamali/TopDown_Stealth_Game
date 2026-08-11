@@ -7,8 +7,11 @@ extends CharacterBody3D
 @export var max_detour_distance := 4.0
 @export var detour_forward_distance := 0.8
 @export var detour_reach_distance := 0.5
+
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var path_drawer := PathDrawer.new()
+@onready var animation_player: AnimationPlayer = $Visual/player_rigged/AnimationPlayer
+
 var pending_interaction = null
 var last_click_time := 0.0
 var double_click_threshold := 0.25
@@ -17,11 +20,12 @@ var detour_target := Vector3.ZERO
 var is_using_detour := false
 var stuck_time := 0.0
 var previous_position := Vector3.ZERO
+#پارامترهای مربوط به گیر کردن و تغییر مسیر برای عبور از گیر
 var detour_side := 1.0
 var current_detour_distance := 1.0
 var detour_direction := Vector3.ZERO
+
 func _ready():
-	LocalizationManager.load_lang("fa")
 	floor_max_angle = deg_to_rad(60.0)
 	floor_snap_length = 0.5
 	max_slides = 6
@@ -36,8 +40,10 @@ func _ready():
 		agent.velocity_computed.connect(_on_safe_velocity_computed)
 	add_child(path_drawer)
 	path_drawer.setup(self)
-	agent.path_desired_distance = 0.8
-	agent.target_desired_distance = 0.8
+	#پارامترهای انحراف از مسیر و رسیدن به مقصد
+	agent.path_desired_distance = 0.5
+	agent.target_desired_distance = 0.2
+	
 	previous_position = global_position
 	final_target = global_position
 	current_detour_distance = detour_distance
@@ -79,6 +85,7 @@ func _on_safe_velocity_computed(new_safe_velocity: Vector3):
 	velocity.x = new_safe_velocity.x
 	velocity.z = new_safe_velocity.z
 	move_and_slide()
+	update_animation()
 func _update_stuck_state(delta: float):
 	var moved_distance := _horizontal_distance(global_position, previous_position)
 	var active_target := detour_target if is_using_detour else final_target
@@ -221,5 +228,20 @@ func _find_interactable(node: Node) -> Node:
 			return current
 		current = current.get_parent()
 	return null
+
 func _horizontal_distance(point_a: Vector3, point_b: Vector3) -> float:
 	return Vector2(point_a.x, point_a.z).distance_to(Vector2(point_b.x, point_b.z))
+
+func update_animation():
+	var speed = Vector2(velocity.x, velocity.z).length()
+
+	if speed < 0.1:
+		play_animation("idle")
+	elif speed < 5.0:
+		play_animation("walk")
+	else:
+		play_animation("run")
+
+func play_animation(anim_name: String):
+	if animation_player.current_animation != anim_name:
+		animation_player.play(anim_name)

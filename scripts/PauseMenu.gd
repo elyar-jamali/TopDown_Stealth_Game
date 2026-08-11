@@ -1,24 +1,27 @@
 extends Control
 
-@onready var dim_background: ColorRect = $DimBackground
-@onready var panel: PanelContainer = $Panel
-@onready var box: VBoxContainer = $Panel/VBoxContainer
-@onready var title: Label = $Panel/VBoxContainer/Title
-@onready var resume_button: Button = $Panel/VBoxContainer/Resume
-@onready var save_button: Button = $Panel/VBoxContainer/Save
-@onready var load_button: Button = $Panel/VBoxContainer/Load
-@onready var settings_button: Button = $Panel/VBoxContainer/Settings
-@onready var main_menu_button: Button = $Panel/VBoxContainer/MainMenu
-@onready var quit_button: Button = $Panel/VBoxContainer/Quit
+@onready var title: Label = $CenterContainer/Panel/VBoxContainer/Title
+@onready var resume_button: Button = $CenterContainer/Panel/VBoxContainer/Resume
+@onready var save_button: Button = $CenterContainer/Panel/VBoxContainer/Save
+@onready var load_button: Button = $CenterContainer/Panel/VBoxContainer/Load
+@onready var settings_button: Button = $CenterContainer/Panel/VBoxContainer/Settings
+@onready var main_menu_button: Button = $CenterContainer/Panel/VBoxContainer/MainMenu
+@onready var quit_button: Button = $CenterContainer/Panel/VBoxContainer/Quit
 @onready var confirm_dialog: ConfirmationDialog = $ConfirmationDialog
 var confirm_action := ""
 
 func _ready():
-	confirm_dialog.confirmed.connect(_on_confirmed)
+	if not confirm_dialog.confirmed.is_connected(_on_confirmed):
+		confirm_dialog.confirmed.connect(_on_confirmed)
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 
-	_setup_layout()
+	if not LocalizationManager.language_changed.is_connected(_setup_texts):
+		LocalizationManager.language_changed.connect(_setup_texts)
+	if not ThemeManager.theme_changed.is_connected(_on_theme_changed):
+		ThemeManager.theme_changed.connect(_on_theme_changed)
+
+	_apply_theme(ThemeManager.get_current_theme())
 	_setup_texts()
 	_connect_buttons()
 
@@ -42,32 +45,6 @@ func resume_game():
 	visible = false
 	get_tree().paused = false
 
-func _setup_layout():
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	mouse_filter = Control.MOUSE_FILTER_STOP
-
-	dim_background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	dim_background.color = Color(0, 0, 0, 0.55)
-	dim_background.mouse_filter = Control.MOUSE_FILTER_STOP
-
-	panel.custom_minimum_size = Vector2(460, 420)
-	panel.position = (get_viewport_rect().size - panel.custom_minimum_size) / 2.0
-
-	box.alignment = BoxContainer.ALIGNMENT_CENTER
-	box.add_theme_constant_override("separation", 12)
-
-	for button in [
-		resume_button,
-		save_button,
-		load_button,
-		settings_button,
-		main_menu_button,
-		quit_button
-	]:
-		button.custom_minimum_size = Vector2(280, 44)
-		button.mouse_filter = Control.MOUSE_FILTER_STOP
-		button.disabled = false
-
 func _setup_texts():
 	title.text = LocalizationManager.translate("pause_menu.title_text")
 	resume_button.text = LocalizationManager.translate("pause_menu.resume")
@@ -78,12 +55,18 @@ func _setup_texts():
 	quit_button.text = LocalizationManager.translate("pause_menu.exit_to_desktop")
 
 func _connect_buttons():
-	resume_button.pressed.connect(resume_game)
-	save_button.pressed.connect(_on_save_pressed)
-	load_button.pressed.connect(_on_load_pressed)
-	settings_button.pressed.connect(_on_settings_pressed)
-	main_menu_button.pressed.connect(_on_main_menu_pressed)
-	quit_button.pressed.connect(_on_quit_pressed)
+	if not resume_button.pressed.is_connected(resume_game):
+		resume_button.pressed.connect(resume_game)
+	if not save_button.pressed.is_connected(_on_save_pressed):
+		save_button.pressed.connect(_on_save_pressed)
+	if not load_button.pressed.is_connected(_on_load_pressed):
+		load_button.pressed.connect(_on_load_pressed)
+	if not settings_button.pressed.is_connected(_on_settings_pressed):
+		settings_button.pressed.connect(_on_settings_pressed)
+	if not main_menu_button.pressed.is_connected(_on_main_menu_pressed):
+		main_menu_button.pressed.connect(_on_main_menu_pressed)
+	if not quit_button.pressed.is_connected(_on_quit_pressed):
+		quit_button.pressed.connect(_on_quit_pressed)
 
 func _on_save_pressed():
 	print("SAVE")
@@ -101,8 +84,10 @@ func _on_main_menu_pressed():
 	confirm_dialog.ok_button_text = LocalizationManager.translate("confirm_dialoge.yes")
 	confirm_dialog.cancel_button_text = LocalizationManager.translate("confirm_dialoge.no")
 
+	await get_tree().process_frame
+	confirm_dialog.reset_size()
 	confirm_dialog.popup_centered()
-	
+
 func _on_quit_pressed():
 	confirm_action = "quit"
 	confirm_dialog.title = LocalizationManager.translate("confirm_dialoge.exit_game")
@@ -110,8 +95,17 @@ func _on_quit_pressed():
 	confirm_dialog.ok_button_text = LocalizationManager.translate("confirm_dialoge.yes")
 	confirm_dialog.cancel_button_text = LocalizationManager.translate("confirm_dialoge.no")
 
+	await get_tree().process_frame
+	confirm_dialog.reset_size()
 	confirm_dialog.popup_centered()
-	
+
+func _on_theme_changed(_theme_id: String, theme_resource: Theme):
+	_apply_theme(theme_resource)
+
+func _apply_theme(theme_resource: Theme):
+	theme = theme_resource
+	confirm_dialog.theme = theme_resource
+
 func _on_confirmed():
 	match confirm_action:
 		"quit":

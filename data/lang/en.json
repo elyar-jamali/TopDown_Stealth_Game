@@ -6,9 +6,12 @@
 	"settings": {
 		"title": "Settings",
 		"language": "Language",
+		"theme": "UI Theme",
 		"back": "Back"
 	},
 	"main_menu": {
+		"gametitle": "Top-Down Stealth Game",
+		"subtitle": "By: Elyar Jamali",
 		"start_game": "Start Game",
 		"quit_game": "Exit",
 		"settings": "Settings",

@@ -4,6 +4,8 @@ const USER_LANGUAGE_PATH := "user://languages"
 var current_language := "en"
 var translations: Dictionary = {}
 var available_languages: Array[Dictionary] = []
+signal language_changed
+
 func _ready():
 	_create_user_language_directory()
 	scan_languages()
@@ -52,7 +54,9 @@ func load_lang(language_code: String) -> bool:
 		return false
 	translations = data
 	current_language = language_code
+	language_changed.emit()
 	return true
+
 func translate(key: String) -> String:
 	var value: Variant = translations
 	for part in key.split("."):
@@ -60,6 +64,7 @@ func translate(key: String) -> String:
 			return key
 		value = value[part]
 	return str(value)
+
 func _read_json(file_path: String) -> Dictionary:
 	var file := FileAccess.open(file_path, FileAccess.READ)
 	if file == null:
@@ -78,16 +83,19 @@ func _read_json(file_path: String) -> Dictionary:
 		push_warning("Language root must be a Dictionary: " + file_path)
 		return {}
 	return json.data
+
 func _language_exists(code: String) -> bool:
 	for language in available_languages:
 		if language["code"] == code:
 			return true
 	return false
+
 func _get_language(code: String) -> Dictionary:
 	for language in available_languages:
 		if language["code"] == code:
 			return language
 	return {}
+
 func _replace_language(code: String, display_name: String, file_path: String):
 	for index in range(available_languages.size()):
 		if available_languages[index]["code"] == code:

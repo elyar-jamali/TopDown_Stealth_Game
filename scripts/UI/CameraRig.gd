@@ -108,7 +108,10 @@ func _handle_alt_rotation(event):
 			rotation.y = yaw
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
-		CursorManager.set_state(CursorManager.CursorState.DEFAULT)
+		if HoverSystem.current_hover and HoverSystem.current_hover.has_method("get_cursor"):
+			CursorManager.set_state(HoverSystem.current_hover.get_cursor())
+		else:
+			CursorManager.set_state(CursorManager.CursorState.DEFAULT)		#CursorManager.set_state(CursorManager.CursorState.DEFAULT)
 
 
 func _handle_zoom(event):

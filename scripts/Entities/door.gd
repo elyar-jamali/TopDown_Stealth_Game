@@ -13,13 +13,15 @@ enum DoorMaterial {
 	METAL_BLACK
 }
 @export var door_material := DoorMaterial.WOOD_MODERN
+@export var door_state := DoorState.CLOSED
+@export var object_id: String = ""
+# سرعت باز و بسته شدن
+@export var open_speed := 0.5
+
+var last_state = -1
 var last_material = -1
 var original_material: Material
 var highlight_material: Material
-@export var door_state := DoorState.CLOSED
-var last_state = -1
-@export var object_id: String = ""
-
 # Reference the StaticBody3D using its scene path
 @onready var collision := $door/CollisionShape3D
 @onready var mesh := $door/MeshInstance3D
@@ -31,12 +33,15 @@ var last_state = -1
 @onready var frame_top: MeshInstance3D = $frame/UpSide
 
 # حداقل قاصله برای فعال شدن
-@export var interaction_range := 0.0
+var interaction_range: float:
+	get:
+		if collision.shape is BoxShape3D:
+			return collision.shape.size.z * 0.9
+		return 1
 # زاویه بسته و باز
-@export var closed_rotation := Vector3(0, 0, 0)
-@export var open_rotation := Vector3(0, PI/2, 0)
-# سرعت باز و بسته شدن
-@export var open_speed := 5.0
+var closed_rotation := Vector3(0, 0, 0)
+var open_rotation := Vector3(0, PI/2, 0)
+
 var Icon_default = preload("res://data/Pic/info.png")
 
 func get_hover_text():
@@ -74,9 +79,11 @@ func _ready():
 	refresh_visual()
 	original_material = mesh.material_override
 	# حالت اولیه در
-	#rotation_degrees = closed_rotation
-	if interaction_range <= 0:
-		interaction_range = collision.shape.size.z * 0.8
+	#print("Door:", name)
+	#print("Interaction range before:", interaction_range)
+	#if interaction_range <= 0:
+	#	interaction_range = collision.shape.size.z * 0.2
+	#	print(interaction_range)
 	if door_state == DoorState.OPEN:
 		door.rotation = open_rotation
 	else:
@@ -112,7 +119,7 @@ func rotate_to(target_rotation: Vector3):
 		return
 	# tween برای چرخش نرم
 	var tween = get_tree().create_tween()
-	tween.tween_property(door, "rotation", target_rotation, 0.5)
+	tween.tween_property(door, "rotation", target_rotation, open_speed)
 
 func _update_navigation_link():
 	navigation_link.enabled = door_state == DoorState.OPEN

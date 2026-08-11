@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Hitman"
+config/name="TSG"
 run/main_scene="uid://cv2eevaimposu"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
@@ -18,11 +18,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameManager="*res://scripts/GameManager.gd"
+ThemeManager="*res://scripts/UI/ThemeManager.gd"
 CursorManager="*res://scripts/UI/CursorManager.gd"
 HoverSystem="*res://scripts/interaction/HoverSystem.gd"
 LocalizationManager="*res://scripts/UI/LocalizationManager.gd"
 DialogueSystem="*res://scripts/UI/DialogueSystem.gd"
-DebugDraw="*res://debug/DebugDraw.gd"
+DebugDraw="*res://scripts/debug/DebugDraw.gd"
 InteractionSystem="*res://scripts/interaction/InteractionSystem.gd"
 
 [global_group]

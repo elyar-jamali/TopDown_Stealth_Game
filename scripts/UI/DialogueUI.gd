@@ -12,6 +12,9 @@ func _ready():
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	DialogueSystem.register_ui(self)
+	if not ThemeManager.theme_changed.is_connected(_on_theme_changed):
+		ThemeManager.theme_changed.connect(_on_theme_changed)
+	_apply_theme(ThemeManager.get_current_theme())
 	hide()
 	button.pressed.connect(_on_button_pressed)
 	
@@ -40,6 +43,13 @@ func _update_layout():
 	picture.size = Vector2(panel.size.y * 0.8,panel.size.y * 0.8)
 	picture.position.x = (panel.size.y - picture.size.y) * 0.5
 	picture.position.y = (panel.size.y - picture.size.y) * 0.5
+
+func _on_theme_changed(_theme_id: String, theme_resource: Theme):
+	_apply_theme(theme_resource)
+
+func _apply_theme(theme_resource: Theme):
+	theme = theme_resource
+	panel.theme_type_variation = &"DialoguePanel"
 	
 func _notification(what):
 	if what == NOTIFICATION_RESIZED:

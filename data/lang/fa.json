@@ -6,9 +6,12 @@
 	"settings": {
 		"title": "تنظیمات",
 		"language": "زبان",
+		"theme": "تم رابط کاربری",
 		"back": "بازگشت"
 	},
 	"main_menu": {
+		"gametitle": "نمونه بازی استراتژیک",
+		"subtitle": "توسط: الیار جمالی",
 		"start_game": "شروع بازی",
 		"quit_game": "خروج",
 		"settings": "تنظیمات",

@@ -15,7 +15,7 @@ func raycast(camera: Camera3D, mouse_pos: Vector2, ray_length: float) -> Diction
 	#var mouse_pos = get_viewport().get_mouse_position()
 	var ray_origin = camera.project_ray_origin(mouse_pos)
 	var ray_direction = camera.project_ray_normal(mouse_pos)
-	var ray_end = ray_origin + ray_direction * 1000.0
+	var ray_end = ray_origin + ray_direction * ray_length
 	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 	var result = camera.get_world_3d().direct_space_state.intersect_ray(query)
 	return result
