@@ -1,7 +1,7 @@
-[gd_scene load_steps=41 format=3 uid="uid://ccv1a2fou73ot"]
+[gd_scene load_steps=20 format=3 uid="uid://yl3tofyjfbon"]
 
-[ext_resource type="PackedScene" uid="uid://77uphup8j840" path="res://scenes/characters/NPC.tscn" id="1_msin7"]
-[ext_resource type="PackedScene" uid="uid://c3nqaomdmn4xb" path="res://scenes/entities/Door.tscn" id="3_g0jr5"]
+[ext_resource type="PackedScene" uid="uid://c3nqaomdmn4xb" path="res://scenes/entities/Door.tscn" id="1_xwhx6"]
+[ext_resource type="PackedScene" uid="uid://77uphup8j840" path="res://scenes/characters/NPC.tscn" id="2_nvgbq"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_chssp"]
 vertices = PackedVector3Array(-19.499685, 0.33529112, 5, -13.999685, 0.58529115, 5, -13.999685, 0.33529112, 4.5, 6.5003147, 0.33529112, -3.75, 8.750315, 0.33529112, -4, 8.750315, 0.33529112, -19.5, -9.749685, 0.33529112, 4.5, 6.5003147, 0.33529112, 2.25, -19.499685, 0.33529112, -19.5, 13.000315, 0.33529112, -4, 13.250315, 0.33529112, -2.25, 19.500315, 0.33529112, -2.5, 19.500315, 0.33529112, -19.5, 7.7503147, 0.33529112, -2.5, 7.7503147, 0.33529112, 1.5, 12.000315, 0.33529112, 1.5, 12.000315, 0.33529112, -2.5, 12.000315, 0.33529112, 9.75, 12.250315, 0.33529112, 11.5, 19.500315, 0.33529112, 11.25, 13.250315, 0.33529112, 2.5, 8.750315, 0.33529112, 2.75, 8.750315, 0.33529112, 9.75, 6.7503147, 0.33529112, 2.75, 6.2503147, 0.33529112, 9.75, -9.249685, 0.33529112, 4.75, -9.249685, 0.33529112, 11.25, 6.0003147, 0.33529112, 11.5, -13.999685, 0.58529115, 5.5, -19.499685, 0.33529112, 14.25, -13.749685, 0.83529115, 14.5, -11.999685, 1.3352911, 14.5, -15.187185, 0.33529112, 14.4375, -15.514492, 0.33529112, 13.000793, -11.999685, 1.3352911, 5.5, -5.7496853, 3.5852911, 14.5, -5.7496853, 3.5852911, 5.5, 7.0003147, 10.335291, 10.75, 7.0003147, 10.335291, 15, 11.250315, 10.335291, 15, 11.250315, 10.335291, 10.75, 7.5003147, 0.33529112, 14.75, 11.000315, 0.33529112, 14.75, 11.000315, 0.33529112, 11, 7.2503147, 0.33529112, 11, -9.249685, 0.33529112, 15.5, -10.999685, 0.33529112, 15.75, -10.749685, 0.33529112, 19.5, 8.250315, 0.33529112, 19.5, 8.250315, 0.33529112, 16, 6.0003147, 0.33529112, 15.75, 12.250315, 0.33529112, 15.75, 19.500315, 0.33529112, 19.5, -13.999685, 0.33529112, 15.75, -14.249685, 0.58529115, 14.75, -19.499685, 0.33529112, 19.5)
@@ -11,29 +11,17 @@ agent_radius = 0.3
 [sub_resource type="BoxShape3D" id="BoxShape3D_3yqkj"]
 size = Vector3(40, 0.05, 40)
 
-[sub_resource type="StandardMaterial3D" id="Mat_Asphalt"]
-albedo_color = Color(0.12, 0.13, 0.14, 1)
-roughness = 0.92
-
 [sub_resource type="BoxMesh" id="BoxMesh_if0f4"]
 size = Vector3(40, 0.05, 40)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ylsda"]
 size = Vector3(10, 0.05, 10)
 
-[sub_resource type="StandardMaterial3D" id="Mat_Concrete"]
-albedo_color = Color(0.46, 0.45, 0.42, 1)
-roughness = 0.88
-
 [sub_resource type="BoxMesh" id="BoxMesh_qjm5h"]
 size = Vector3(10, 0.05, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y32f7"]
 size = Vector3(5, 10, 5)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Wall"]
-albedo_color = Color(0.47, 0.38, 0.31, 1)
-roughness = 0.82
 
 [sub_resource type="BoxMesh" id="BoxMesh_cd15k"]
 size = Vector3(5, 10, 5)
@@ -68,76 +56,6 @@ size = Vector3(0.15, 3, 2)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_chssp"]
 data = PackedVector3Array(-0.074999996, 1.5, 1, 0.074999996, 1.5, 1, -0.074999996, -1.5, 1, 0.074999996, 1.5, 1, 0.074999996, -1.5, 1, -0.074999996, -1.5, 1, 0.074999996, 1.5, -1, -0.074999996, 1.5, -1, 0.074999996, -1.5, -1, -0.074999996, 1.5, -1, -0.074999996, -1.5, -1, 0.074999996, -1.5, -1, 0.074999996, 1.5, 1, 0.074999996, 1.5, -1, 0.074999996, -1.5, 1, 0.074999996, 1.5, -1, 0.074999996, -1.5, -1, 0.074999996, -1.5, 1, -0.074999996, 1.5, -1, -0.074999996, 1.5, 1, -0.074999996, -1.5, -1, -0.074999996, 1.5, 1, -0.074999996, -1.5, 1, -0.074999996, -1.5, -1, 0.074999996, 1.5, 1, -0.074999996, 1.5, 1, 0.074999996, 1.5, -1, -0.074999996, 1.5, 1, -0.074999996, 1.5, -1, 0.074999996, 1.5, -1, -0.074999996, -1.5, 1, 0.074999996, -1.5, 1, -0.074999996, -1.5, -1, 0.074999996, -1.5, 1, 0.074999996, -1.5, -1, -0.074999996, -1.5, -1)
 
-[sub_resource type="BoxMesh" id="Mesh_Sidewalk_Short"]
-size = Vector3(2.4, 0.1, 40)
-
-[sub_resource type="BoxMesh" id="BoxMesh_3yqkj"]
-size = Vector3(2.4, 0.1, 15)
-
-[sub_resource type="BoxMesh" id="BoxMesh_ylsda"]
-size = Vector3(2.4, 0.1, 15)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Yellow"]
-albedo_color = Color(0.92, 0.68, 0.08, 1)
-roughness = 0.68
-
-[sub_resource type="BoxMesh" id="Mesh_RoadMark"]
-size = Vector3(0.16, 0.025, 2)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Wood"]
-albedo_color = Color(0.3, 0.16, 0.07, 1)
-roughness = 0.8
-
-[sub_resource type="BoxMesh" id="Mesh_Crate"]
-size = Vector3(0.8, 0.8, 0.8)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Metal"]
-albedo_color = Color(0.17, 0.19, 0.2, 1)
-metallic = 0.65
-roughness = 0.4
-
-[sub_resource type="CylinderMesh" id="Mesh_Barrel"]
-top_radius = 0.28
-bottom_radius = 0.28
-height = 0.9
-radial_segments = 16
-
-[sub_resource type="BoxMesh" id="Mesh_Sidewalk_Long"]
-size = Vector3(18, 0.1, 2.4)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Green"]
-albedo_color = Color(0.12, 0.28, 0.13, 1)
-roughness = 0.95
-
-[sub_resource type="BoxMesh" id="Mesh_Planter"]
-size = Vector3(1.8, 0.55, 0.6)
-
-[sub_resource type="CylinderMesh" id="Mesh_LampPole"]
-top_radius = 0.06
-bottom_radius = 0.08
-height = 2.8
-radial_segments = 12
-
-[sub_resource type="StandardMaterial3D" id="Mat_Lamp"]
-albedo_color = Color(1, 0.7, 0.32, 1)
-emission_enabled = true
-emission = Color(1, 0.52, 0.16, 1)
-emission_energy_multiplier = 2.2
-
-[sub_resource type="BoxMesh" id="Mesh_LampHead"]
-size = Vector3(0.32, 0.16, 0.32)
-
-[sub_resource type="StandardMaterial3D" id="Mat_Glass"]
-albedo_color = Color(0.08, 0.16, 0.2, 1)
-metallic = 0.15
-roughness = 0.22
-
-[sub_resource type="BoxMesh" id="Mesh_Window"]
-size = Vector3(1.1, 1.1, 0.05)
-
-[sub_resource type="BoxMesh" id="Mesh_Sign"]
-size = Vector3(2.2, 0.65, 0.08)
-
 [node name="Level01" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7842264, 0, 2.3824444)
 
@@ -155,7 +73,6 @@ shape = SubResource("BoxShape3D_3yqkj")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-material_override = SubResource("Mat_Asphalt")
 mesh = SubResource("BoxMesh_if0f4")
 
 [node name="slope" type="StaticBody3D" parent="NavigationRegion3D"]
@@ -168,7 +85,6 @@ shape = SubResource("BoxShape3D_ylsda")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/slope"]
 transform = Transform3D(0.9396926, -0.34202012, 0, 0.34202012, 0.9396926, 0, 0, 0, 1, -10, 1.65, 10)
-material_override = SubResource("Mat_Concrete")
 mesh = SubResource("BoxMesh_qjm5h")
 
 [node name="building" type="StaticBody3D" parent="NavigationRegion3D"]
@@ -181,15 +97,14 @@ shape = SubResource("BoxShape3D_y32f7")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/building"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_cd15k")
 
-[node name="Door" parent="NavigationRegion3D" instance=ExtResource("3_g0jr5")]
+[node name="Door" parent="NavigationRegion3D" instance=ExtResource("1_xwhx6")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 7.1547174, 0.03209267, 0)
 door_material = 3
 object_id = "metal_door1"
 
-[node name="Door2" parent="NavigationRegion3D" instance=ExtResource("3_g0jr5")]
+[node name="Door2" parent="NavigationRegion3D" instance=ExtResource("1_xwhx6")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 6.690947, 0.030012416, 14.737785)
 door_material = 1
 door_state = 2
@@ -200,7 +115,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.1513376, 0.032077506, -0.54
 
 [node name="wall1" type="MeshInstance3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -1.75)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_msin7")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/Room"]
@@ -209,7 +123,6 @@ shape = SubResource("ConcavePolygonShape3D_msin7")
 
 [node name="wall2" type="MeshInstance3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.7500005, 1.4999999, -2.675)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_chssp")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="NavigationRegion3D/Room"]
@@ -218,7 +131,6 @@ shape = SubResource("ConcavePolygonShape3D_g0jr5")
 
 [node name="wall3" type="MeshInstance3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 1.5, 0)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_i4uh8")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="NavigationRegion3D/Room"]
@@ -227,7 +139,6 @@ shape = SubResource("ConcavePolygonShape3D_i4uh8")
 
 [node name="wall4" type="MeshInstance3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, 1.5, 2.675)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_qwlqn")
 
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="NavigationRegion3D/Room"]
@@ -236,241 +147,12 @@ shape = SubResource("ConcavePolygonShape3D_qwlqn")
 
 [node name="wall5" type="MeshInstance3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4999999, 1.75)
-material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_g0jr5")
 
 [node name="CollisionShape3D5" type="CollisionShape3D" parent="NavigationRegion3D/Room"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4999999, 1.75)
 shape = SubResource("ConcavePolygonShape3D_chssp")
 
-[node name="NPC" parent="." instance=ExtResource("1_msin7")]
+[node name="NPC" parent="." instance=ExtResource("2_nvgbq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3123994, 0, 6.125618)
-outline_color = Color(0.13333334, 1, 0, 1)
-npc_name = 1
-
-[node name="ShowcaseDecor" type="Node3D" parent="."]
-
-[node name="Sidewalk1" type="MeshInstance3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.865, 0.03, 0)
-material_override = SubResource("Mat_Concrete")
-mesh = SubResource("Mesh_Sidewalk_Short")
-
-[node name="Sidewalk2" type="MeshInstance3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1075425, 0.03, -12.3176365)
-material_override = SubResource("Mat_Concrete")
-mesh = SubResource("BoxMesh_3yqkj")
-
-[node name="Sidewalk3" type="MeshInstance3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1075425, 0.03, 12.159462)
-material_override = SubResource("Mat_Concrete")
-mesh = SubResource("BoxMesh_ylsda")
-
-[node name="RoadMarkers1" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.418088, 0, 7.002035)
-
-[node name="RoadMark02" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, -0.0021076202)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="RoadMark03" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, 5)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="RoadMark04" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, 10.079276)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="RoadMarkers2" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.418088, 0, -18.70961)
-
-[node name="RoadMark02" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, -0.0021076202)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="RoadMark03" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, 5)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="RoadMark04" type="MeshInstance3D" parent="ShowcaseDecor/RoadMarkers2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.045, 10.079276)
-material_override = SubResource("Mat_Yellow")
-mesh = SubResource("Mesh_RoadMark")
-skeleton = NodePath("../..")
-
-[node name="CoverCluster" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.380914, 0, -5)
-
-[node name="Crate01" type="MeshInstance3D" parent="ShowcaseDecor/CoverCluster"]
-transform = Transform3D(0.97589743, 0, 0.21822962, 0, 1, 0, -0.21822962, 0, 0.97589743, 0, 0.4, 0)
-material_override = SubResource("Mat_Wood")
-mesh = SubResource("Mesh_Crate")
-
-[node name="Crate02" type="MeshInstance3D" parent="ShowcaseDecor/CoverCluster"]
-transform = Transform3D(0.9838437, 0, -0.17902958, 0, 1, 0, 0.17902958, 0, 0.9838437, 0.82, 0.4, 0.18)
-material_override = SubResource("Mat_Wood")
-mesh = SubResource("Mesh_Crate")
-
-[node name="Crate03" type="MeshInstance3D" parent="ShowcaseDecor/CoverCluster"]
-transform = Transform3D(0.99680173, 0, 0.07991469, 0, 1, 0, -0.07991469, 0, 0.99680173, 0.35, 1.2, 0.05)
-material_override = SubResource("Mat_Wood")
-mesh = SubResource("Mesh_Crate")
-
-[node name="Barrel01" type="MeshInstance3D" parent="ShowcaseDecor/CoverCluster"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.45, 0.2)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_Barrel")
-
-[node name="Barrel02" type="MeshInstance3D" parent="ShowcaseDecor/CoverCluster"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.45, -0.4)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_Barrel")
-
-[node name="sidewalk1" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91376877, 0, 0)
-
-[node name="Sidewalk_A" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.964187, 0.03, 3.5480433)
-material_override = SubResource("Mat_Concrete")
-mesh = SubResource("Mesh_Sidewalk_Long")
-skeleton = NodePath("../..")
-
-[node name="Planter01" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.354137, 0.28, 4.191025)
-material_override = SubResource("Mat_Green")
-mesh = SubResource("Mesh_Planter")
-skeleton = NodePath("../..")
-
-[node name="Planter02" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.554137, 0.28, 4.191025)
-material_override = SubResource("Mat_Green")
-mesh = SubResource("Mesh_Planter")
-skeleton = NodePath("../..")
-
-[node name="Lamp01" type="Node3D" parent="ShowcaseDecor/sidewalk1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9641867, 0, 3.748043)
-
-[node name="Pole" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk1/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_LampPole")
-
-[node name="Head" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk1/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.82, 0)
-material_override = SubResource("Mat_Lamp")
-mesh = SubResource("Mesh_LampHead")
-
-[node name="Light" type="OmniLight3D" parent="ShowcaseDecor/sidewalk1/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, 0)
-light_color = Color(1, 0.65, 0.35, 1)
-light_energy = 1.8
-shadow_enabled = true
-omni_range = 7.0
-
-[node name="sidewalk2" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91376877, 0, -9.2076845)
-
-[node name="Sidewalk_A" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.964187, 0.03, 3.5480433)
-material_override = SubResource("Mat_Concrete")
-mesh = SubResource("Mesh_Sidewalk_Long")
-skeleton = NodePath("../..")
-
-[node name="Planter01" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.354137, 0.28, 3.0866072)
-material_override = SubResource("Mat_Green")
-mesh = SubResource("Mesh_Planter")
-skeleton = NodePath("../..")
-
-[node name="Planter02" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.554137, 0.28, 3.0866072)
-material_override = SubResource("Mat_Green")
-mesh = SubResource("Mesh_Planter")
-skeleton = NodePath("../..")
-
-[node name="Lamp01" type="Node3D" parent="ShowcaseDecor/sidewalk2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9641867, 0, 3.748043)
-
-[node name="Pole" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_LampPole")
-
-[node name="Head" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.82, 0)
-material_override = SubResource("Mat_Lamp")
-mesh = SubResource("Mesh_LampHead")
-
-[node name="Light" type="OmniLight3D" parent="ShowcaseDecor/sidewalk2/Lamp01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, 0)
-light_color = Color(1, 0.65, 0.35, 1)
-light_energy = 1.8
-shadow_enabled = true
-omni_range = 7.0
-
-[node name="FacadeDetails" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.25, 0, 12.960594)
-
-[node name="Window01" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 3.2, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="Window02" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="Window03" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 3.2, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="Window04" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 5.1, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="Window05" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.1, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="Window06" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 5.1, -2.55)
-material_override = SubResource("Mat_Glass")
-mesh = SubResource("Mesh_Window")
-
-[node name="BuildingSign" type="MeshInstance3D" parent="ShowcaseDecor/FacadeDetails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, -2.59)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_Sign")
-
-[node name="Lamp02" type="Node3D" parent="ShowcaseDecor"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.7, 0, 1.5)
-
-[node name="Pole" type="MeshInstance3D" parent="ShowcaseDecor/Lamp02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
-material_override = SubResource("Mat_Metal")
-mesh = SubResource("Mesh_LampPole")
-
-[node name="Head" type="MeshInstance3D" parent="ShowcaseDecor/Lamp02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.82, 0)
-material_override = SubResource("Mat_Lamp")
-mesh = SubResource("Mesh_LampHead")
-
-[node name="Light" type="OmniLight3D" parent="ShowcaseDecor/Lamp02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, 0)
-light_color = Color(1, 0.65, 0.35, 1)
-light_energy = 1.8
-shadow_enabled = true
-omni_range = 7.0
+npc_name = 2

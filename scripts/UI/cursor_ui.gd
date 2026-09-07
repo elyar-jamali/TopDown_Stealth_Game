@@ -35,7 +35,7 @@ func _setup_icon(mainspot):
 			hotspot = Vector2(16, 16)
 			#icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 
-func _process(delta):
+func _process(_delta):
 	# Cursor همیشه روی موس
 	global_position = get_viewport().get_mouse_position()-hotspot
 	var text_size = hover_label.get_minimum_size()

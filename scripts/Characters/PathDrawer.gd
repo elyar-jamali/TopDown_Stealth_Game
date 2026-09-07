@@ -19,7 +19,7 @@ func setup(parent: Node):
 func clear():
 	immediate_mesh.clear_surfaces()
 
-func update_path_display(owner: Node3D, agent: NavigationAgent3D):
+func update_path_display(node_owner: Node3D, agent: NavigationAgent3D):
 	clear()
 	
 	var path = agent.get_current_navigation_path()
@@ -31,7 +31,7 @@ func update_path_display(owner: Node3D, agent: NavigationAgent3D):
 	var closest_t = 0.0
 
 	for i in range(path.size() - 1):
-		var flat_player = Vector2(owner.global_position.x, owner.global_position.z)
+		var flat_player = Vector2(node_owner.global_position.x, node_owner.global_position.z)
 		var flat_a = Vector2(path[i].x, path[i].z)
 		var flat_b = Vector2(path[i + 1].x, path[i + 1].z)
 		var seg_dir = flat_b - flat_a
@@ -50,14 +50,14 @@ func update_path_display(owner: Node3D, agent: NavigationAgent3D):
 
 	var trimmed = PackedVector3Array()
 	var y_start = lerp(path[closest_index].y, path[closest_index + 1].y, closest_t)
-	trimmed.append(Vector3(owner.global_position.x, y_start, owner.global_position.z))
+	trimmed.append(Vector3(node_owner.global_position.x, y_start, node_owner.global_position.z))
 
 	for i in range(closest_index + 1, path.size()):
 		trimmed.append(path[i])
 
-	draw_path(owner, trimmed, 0.05)
+	draw_path(node_owner, trimmed, 0.05)
 
-func draw_path(owner: Node3D, points: PackedVector3Array, width: float = 0.2):
+func draw_path(node_owner: Node3D, points: PackedVector3Array, width: float = 0.2):
 	immediate_mesh.clear_surfaces()
 
 	if points.size() < 2:
@@ -66,8 +66,8 @@ func draw_path(owner: Node3D, points: PackedVector3Array, width: float = 0.2):
 	immediate_mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, path_material)
 
 	for i in range(points.size() - 1):
-		var p1 = Vector3(points[i].x, get_surface_y(owner, points[i]), points[i].z)
-		var p2 = Vector3(points[i + 1].x, get_surface_y(owner, points[i + 1]), points[i + 1].z)
+		var p1 = Vector3(points[i].x, get_surface_y(node_owner, points[i]), points[i].z)
+		var p2 = Vector3(points[i + 1].x, get_surface_y(node_owner, points[i + 1]), points[i + 1].z)
 		var dir = (p2 - p1).normalized()
 		var perp = dir.cross(Vector3.UP).normalized() * (width * 0.5)
 
@@ -80,7 +80,7 @@ func draw_path(owner: Node3D, points: PackedVector3Array, width: float = 0.2):
 
 	immediate_mesh.surface_end()
 
-	var end_point = Vector3(points[-1].x, get_surface_y(owner, points[-1]), points[-1].z)
+	var end_point = Vector3(points[-1].x, get_surface_y(node_owner, points[-1]), points[-1].z)
 	var radius = 0.3
 
 	immediate_mesh.surface_begin(Mesh.PRIMITIVE_LINE_STRIP, path_material)
@@ -93,8 +93,8 @@ func draw_path(owner: Node3D, points: PackedVector3Array, width: float = 0.2):
 
 	immediate_mesh.surface_end()
 
-func get_surface_y(owner: Node3D, point: Vector3) -> float:
-	var space_state = owner.get_world_3d().direct_space_state
+func get_surface_y(node_owner: Node3D, point: Vector3) -> float:
+	var space_state = node_owner.get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(
 		point + Vector3(0, 1.0, 0),
 		point + Vector3(0, -5.0, 0)

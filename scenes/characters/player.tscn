@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnw3bpycxx036"]
+
+[ext_resource type="Script" uid="uid://vdfyr6e8e6t7" path="res://scripts/Characters/player.gd" id="1_g2els"]
+[ext_resource type="PackedScene" uid="uid://p4b8xeycgsy7" path="res://scenes/characters/player_visual.tscn" id="2_qhqgy"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+radius = 0.3
+height = 1.75
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_g2els")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_0xm2m")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="player_rigged" parent="Visual" instance=ExtResource("2_qhqgy")]

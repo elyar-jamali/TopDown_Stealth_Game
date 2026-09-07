@@ -29,7 +29,7 @@ func line(from: Vector3, to: Vector3, color: Color):
 	immediate_mesh.surface_end()
 
 
-func cross(position: Vector3, size := 0.3, color := Color.RED):
-	line(position + Vector3.LEFT * size, position + Vector3.RIGHT * size, color)
-	line(position + Vector3.FORWARD * size, position + Vector3.BACK * size, color)
-	line(position + Vector3.DOWN * size, position + Vector3.UP * size, color)
+func cross(pos: Vector3, size := 0.3, color := Color.RED):
+	line(pos + Vector3.LEFT * size, pos + Vector3.RIGHT * size, color)
+	line(pos + Vector3.FORWARD * size, pos + Vector3.BACK * size, color)
+	line(pos + Vector3.DOWN * size, pos + Vector3.UP * size, color)
