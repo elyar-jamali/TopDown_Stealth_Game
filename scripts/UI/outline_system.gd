@@ -189,7 +189,9 @@ func clear_passive_reason(
 
 		var color := Color.YELLOW
 
-		if "outline_color" in target:
+		if target.has_method("get_outline_color"):
+			color = target.get_outline_color()
+		elif "outline_color" in target:
 			color = target.outline_color
 
 		set_passive(
@@ -243,9 +245,12 @@ func _create_proxies_recursive(
 	proxies: Array[MeshInstance3D],
 	material: ShaderMaterial
 ) -> void:
+	if node.has_meta("_exclude_from_outline"):
+		return
 	if node is MeshInstance3D:
 		var source := node as MeshInstance3D
-
+		if source.get_layer_mask_value(17):
+			return
 		if source.has_meta("_outline_proxy"):
 			return
 

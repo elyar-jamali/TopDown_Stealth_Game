@@ -7,17 +7,34 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
-func raycast(camera: Camera3D, mouse_pos: Vector2, ray_length: float) -> Dictionary:
-	#var camera = get_viewport().get_camera_3d()
-	#var mouse_pos = get_viewport().get_mouse_position()
+func raycast(
+	camera: Camera3D,
+	mouse_pos: Vector2,
+	ray_length: float,
+	exclude: Array[RID] = []
+) -> Dictionary:
+
 	var ray_origin = camera.project_ray_origin(mouse_pos)
 	var ray_direction = camera.project_ray_normal(mouse_pos)
 	var ray_end = ray_origin + ray_direction * ray_length
-	var query = PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
-	var result = camera.get_world_3d().direct_space_state.intersect_ray(query)
+
+	var query = PhysicsRayQueryParameters3D.create(
+		ray_origin,
+		ray_end
+	)
+
+	query.exclude = exclude
+
+	var result = (
+		camera
+		.get_world_3d()
+		.direct_space_state
+		.intersect_ray(query)
+	)
+
 	return result
 
 func interact(target):

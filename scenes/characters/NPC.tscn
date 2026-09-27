@@ -1,25 +1,29 @@
-[gd_scene load_steps=4 format=3 uid="uid://77uphup8j840"]
+[gd_scene format=3 uid="uid://77uphup8j840"]
 
 [ext_resource type="Script" uid="uid://meydslwq2rsr" path="res://scripts/NPC/NPC.gd" id="1_jpwb5"]
 [ext_resource type="PackedScene" uid="uid://byy0tiatdcsc3" path="res://scenes/characters/npc_female_visual.tscn" id="2_hnoa0"]
+[ext_resource type="Script" uid="uid://dt5uv11p2tdji" path="res://scripts/AI/vision_component.gd" id="3_g2a5c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tvc50"]
 radius = 0.3
-height = 1.8
+height = 1.6
 
-[node name="NPC" type="Node3D"]
+[node name="NPC" type="CharacterBody3D" unique_id=380304844]
 script = ExtResource("1_jpwb5")
 
-[node name="NPC" type="CharacterBody3D" parent="."]
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="NPC"]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=574910077]
 avoidance_enabled = true
 neighbor_distance = 4.0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="NPC"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=711091028]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("CapsuleShape3D_tvc50")
 
-[node name="Visual" type="Node3D" parent="NPC"]
+[node name="Visual" type="Node3D" parent="." unique_id=1144626871]
 
-[node name="NPC Female" parent="NPC/Visual" instance=ExtResource("2_hnoa0")]
+[node name="NPC Female" parent="Visual" unique_id=161004922 instance=ExtResource("2_hnoa0")]
+
+[node name="VisionComponent" type="Node3D" parent="." unique_id=1356284297]
+script = ExtResource("3_g2a5c")
+scan_angle = 0.0
+scan_speed = 15.0

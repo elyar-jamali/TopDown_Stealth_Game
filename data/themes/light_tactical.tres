@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=11 format=3 uid="uid://dghlw4vy431ne"]
+[gd_resource type="Theme" format=3 uid="uid://dghlw4vy431ne"]
 
 [sub_resource type="StyleBoxFlat" id="DialogPanel"]
 content_margin_left = 22.0

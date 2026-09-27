@@ -1,27 +1,30 @@
 extends CharacterBody3D
 
 @export var move_speed := 3.0
-@export var stuck_time_limit := 0.25
+@export var stuck_time_limit := 0.10
 @export var stuck_move_threshold := 0.03
 
 #پارامترهای مربوط به گیر کردن و تغییر مسیر برای عبور از گیر
 @export var detour_distance := 2.0
-@export var detour_reach_distance := 0.5
+@export var detour_reach_distance := 0.12
 
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var path_drawer := PathDrawer.new()
 @onready var animation_player: AnimationPlayer = $Visual/player_rigged/AnimationPlayer
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 var pending_interaction = null
 var last_click_time := 0.0
 var double_click_threshold := 0.25
 var final_target := Vector3.ZERO
 var detour_target := Vector3.ZERO
+var detour_points: Array[Vector3] = []
+var detour_index := 0
 var is_using_detour := false
 var stuck_time := 0.0
 var previous_position := Vector3.ZERO
 
-
+	
 func _ready():
 	floor_max_angle = deg_to_rad(45.0)
 	floor_snap_length = 0.5
@@ -41,9 +44,10 @@ func _ready():
 	add_child(path_drawer)
 	path_drawer.setup(self)
 
-	#پارامترهای انحراف از مسیر و رسیدن به مقصد
+	#پارامتر مقدار مجاز انحراف از مسیر
 	agent.path_desired_distance = 0.75
-	agent.target_desired_distance = 0.2
+	#پارامتر فاصله تا رسیدن به مقصد
+	agent.target_desired_distance = 0.1
 
 	previous_position = global_position
 	final_target = global_position
@@ -57,10 +61,44 @@ func _physics_process(delta):
 		return
 
 	if is_using_detour:
-		if _horizontal_distance(global_position, detour_target) <= detour_reach_distance:
+		if detour_points.size() > 0:
+
+			if _horizontal_distance(
+				global_position,
+				detour_points[detour_index]
+			) <= detour_reach_distance:
+
+				detour_index += 1
+
+				if detour_index >= detour_points.size():
+
+					detour_points.clear()
+					detour_index = 0
+					is_using_detour = false
+					stuck_time = 0.0
+					agent.target_position = final_target
+
+				else:
+
+					agent.target_position = detour_points[detour_index]
+
+
+		elif _horizontal_distance(
+			global_position,
+			detour_target
+		) <= detour_reach_distance:
+
 			is_using_detour = false
 			stuck_time = 0.0
 			agent.target_position = final_target
+	elif (
+		not is_using_detour
+		and _horizontal_distance(global_position, final_target)
+			<= agent.target_desired_distance
+	):
+		_stop_movement()
+		previous_position = global_position
+		return
 
 	elif agent.is_navigation_finished():
 		_stop_movement()
@@ -68,6 +106,7 @@ func _physics_process(delta):
 		return
 
 	var next_position := agent.get_next_path_position()
+
 	var direction := next_position - global_position
 	direction.y = 0.0
 
@@ -86,6 +125,13 @@ func _physics_process(delta):
 
 	previous_position = global_position
 
+func _get_collision_radius() -> float:
+	if collision_shape.shape is CapsuleShape3D:
+		var capsule := collision_shape.shape as CapsuleShape3D
+		return capsule.radius
+
+	return 0.3
+
 
 func _apply_gravity(delta: float):
 	if not is_on_floor():
@@ -95,6 +141,7 @@ func _apply_gravity(delta: float):
 
 
 func _on_safe_velocity_computed(new_safe_velocity: Vector3):
+	
 	velocity.x = new_safe_velocity.x
 	velocity.z = new_safe_velocity.z
 
@@ -104,7 +151,13 @@ func _on_safe_velocity_computed(new_safe_velocity: Vector3):
 
 func _update_stuck_state(delta: float):
 	var moved_distance := _horizontal_distance(global_position, previous_position)
-	var active_target := detour_target if is_using_detour else final_target
+	var active_target := final_target
+
+	if is_using_detour:
+		if detour_points.size() > 0:
+			active_target = detour_points[detour_index]
+		else:
+			active_target = detour_target
 
 	var wants_to_move := _horizontal_distance(
 		global_position,
@@ -122,39 +175,125 @@ func _update_stuck_state(delta: float):
 		if not is_using_detour:
 			_create_detour()
 
-
 func _create_detour():
-	var next_position := agent.get_next_path_position()
-
-	# نقطه فعلی مسیر را در جهت مخالف مقصد جابه‌جا می‌کنیم
-	# تا مسیر به جای چسبیدن به گوشه، دور بزرگتری بردارد
-	var away_from_target := next_position - final_target
-	away_from_target.y = 0.0
-
-	if away_from_target.length_squared() <= 0.0001:
-		return
-
-	away_from_target = away_from_target.normalized()
-
-	var candidate := next_position + away_from_target * detour_distance
-
 	var navigation_map := agent.get_navigation_map()
 
-	if navigation_map.is_valid():
-		candidate = NavigationServer3D.map_get_closest_point(
-			navigation_map,
-			candidate
+	if not navigation_map.is_valid():
+		return
+
+	var next_position := agent.get_next_path_position()
+
+	var path_direction := next_position - global_position
+	path_direction.y = 0.0
+
+	if path_direction.length_squared() <= 0.0001:
+		return
+
+	path_direction = path_direction.normalized()
+
+	# دو جهت عمود بر مسیر؛
+	# فقط برای fallback عمومی استفاده می‌شوند.
+	var perpendicular_a := Vector3(
+		-path_direction.z,
+		0.0,
+		path_direction.x
+	)
+
+	var perpendicular_b := -perpendicular_a
+
+	var detour_direction := perpendicular_a
+	var door_detour := false
+	var gameplay_object: Node = null
+	var actual_detour_distance := detour_distance
+
+	if get_slide_collision_count() > 0:
+		var collision := get_slide_collision(
+			get_slide_collision_count() - 1
 		)
 
-	# اگر نقطه جدید عملاً با موقعیت فعلی یکی شد، Detour ساخته نشود
-	if _horizontal_distance(candidate, global_position) < 0.2:
+		var collider = collision.get_collider()
+
+		if collider is Node:
+			gameplay_object = _find_gameplay_object(collider)
+			if gameplay_object != null:
+				print(
+					"GAMEPLAY OBJECT = ",
+					gameplay_object,
+					" TYPE=",
+					gameplay_object.get_script()
+				)
+		# -----------------------------
+		# دیتور اختصاصی برای برگ متحرک در
+		# -----------------------------
+		if gameplay_object != null and gameplay_object.has_method("get_detour_points"):
+			print(
+				"HAS DETOUR FUNCTION = ",
+				gameplay_object.has_method("get_detour_points"),
+				"player =" , global_position
+			)
+
+			var points: Array[Vector3] = gameplay_object.get_detour_points(
+				global_position,
+				_get_collision_radius()
+			)
+
+			print("RAW DOOR DETOUR =", points)
+			if points.size() >= 2:
+				for i in range(points.size()):
+					points[i] = NavigationServer3D.map_get_closest_point(
+						navigation_map,
+						points[i]
+					)
+				print("SNAPPED DOOR DETOUR =", points)
+				detour_points = points
+				detour_index = 0
+				is_using_detour = true
+				agent.target_position = detour_points[0]
+				return
+		# -----------------------------
+		# دیتور عمومی سایر موانع
+		# -----------------------------
+		if not door_detour:
+			var collision_normal := collision.get_normal()
+			collision_normal.y = 0.0
+
+			if collision_normal.length_squared() > 0.0001:
+				collision_normal = (
+					collision_normal.normalized()
+				)
+
+				if (
+					perpendicular_b.dot(
+						collision_normal
+					)
+					>
+					perpendicular_a.dot(
+						collision_normal
+					)
+				):
+					detour_direction = perpendicular_b
+
+	var candidate := (
+		global_position
+		+ detour_direction * actual_detour_distance
+	)
+
+	candidate = NavigationServer3D.map_get_closest_point(
+		navigation_map,
+		candidate
+	)
+
+	if _horizontal_distance(
+		candidate,
+		global_position
+	) < 0.2:
 		return
 
 	detour_target = candidate
 	is_using_detour = true
 	agent.target_position = detour_target
 
-
+	
 func _try_pending_interaction() -> bool:
 	if pending_interaction == null:
 		return false
@@ -192,8 +331,19 @@ func _try_pending_interaction() -> bool:
 
 
 func _set_movement_target(target: Vector3):
+	var navigation_map := agent.get_navigation_map()
+
+	if navigation_map.is_valid():
+		target = NavigationServer3D.map_get_closest_point(
+			navigation_map,
+			target
+		)
+
+
 	final_target = target
 	is_using_detour = false
+	detour_points.clear()
+	detour_index = 0
 	stuck_time = 0.0
 	agent.target_position = final_target
 
@@ -230,7 +380,8 @@ func _handle_left_click():
 	var result := InteractionSystem.raycast(
 		get_viewport().get_camera_3d(),
 		get_viewport().get_mouse_position(),
-		1000
+		1000,
+		[get_rid()]
 	)
 
 	if result.is_empty():
@@ -301,7 +452,7 @@ func update_animation():
 	).length()
 
 	if speed < 0.1:
-		play_animation("human_animations/F_idle")
+		play_animation("human_animations/M_idle")
 	elif speed < 5.0:
 		play_animation("human_animations/M_walk")
 	else:

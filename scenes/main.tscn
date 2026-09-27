@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cfu3fnnrderse"]
+[gd_scene format=3 uid="uid://cfu3fnnrderse"]
 
 [ext_resource type="Script" uid="uid://badj7kg2ntygc" path="res://scripts/UI/CameraRig.gd" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://deddmdogwexti" path="res://scripts/main.gd" id="1_tbgi4"]
@@ -14,7 +14,7 @@
 ambient_light_source = 2
 ambient_light_color = Color(0.7121294, 0.7121294, 0.71212935, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_85g3d"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ya4ey"]
 shader = ExtResource("8_85g3d")
 shader_parameter/outline_width = 2.0
 
@@ -28,30 +28,30 @@ shader_parameter/outline_width = 1.0
 [sub_resource type="ViewportTexture" id="ViewportTexture_choun"]
 viewport_path = NodePath("PassiveOutlineViewport")
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1185191541]
 script = ExtResource("1_tbgi4")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1351800957]
 environment = SubResource("Environment_tefeu")
 
-[node name="LevelHolder" type="Node3D" parent="."]
+[node name="LevelHolder" type="Node3D" parent="." unique_id=1098931422]
 
-[node name="Player" parent="." instance=ExtResource("2_o6xl0")]
+[node name="Player" parent="." unique_id=1568914956 instance=ExtResource("2_o6xl0")]
 
-[node name="CameraRig" type="Node3D" parent="."]
+[node name="CameraRig" type="Node3D" parent="." unique_id=1809229524]
 script = ExtResource("1_0wfyh")
 
-[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+[node name="Camera3D" type="Camera3D" parent="CameraRig" unique_id=186249573]
 transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, 15, 15)
 cull_mask = 262143
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=472922664]
 transform = Transform3D(0.8660253, 0.409576, -0.2867882, 0, 0.5735764, 0.819152, 0.49999997, -0.70940644, 0.49673173, 0, 0, 0)
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="UI" type="CanvasLayer" parent="." unique_id=983001211]
 
-[node name="ActiveOutlineRect" type="TextureRect" parent="UI"]
-material = SubResource("ShaderMaterial_85g3d")
+[node name="ActiveOutlineRect" type="TextureRect" parent="UI" unique_id=732852133]
+material = SubResource("ShaderMaterial_ya4ey")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -60,7 +60,7 @@ grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("ViewportTexture_85g3d")
 
-[node name="PassiveOutlineRect" type="TextureRect" parent="UI"]
+[node name="PassiveOutlineRect" type="TextureRect" parent="UI" unique_id=46658213]
 material = SubResource("ShaderMaterial_choun")
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,7 +70,7 @@ grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("ViewportTexture_choun")
 
-[node name="DialogueUI" type="Control" parent="UI"]
+[node name="DialogueUI" type="Control" parent="UI" unique_id=1724514221]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -78,56 +78,56 @@ offset_bottom = 40.0
 theme = ExtResource("7_theme")
 script = ExtResource("6_tefeu")
 
-[node name="Panel" type="Panel" parent="UI/DialogueUI"]
+[node name="Panel" type="Panel" parent="UI/DialogueUI" unique_id=2133667089]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 theme_type_variation = &"DialoguePanel"
 
-[node name="OkButton" type="Button" parent="UI/DialogueUI/Panel"]
+[node name="OkButton" type="Button" parent="UI/DialogueUI/Panel" unique_id=151848723]
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 
-[node name="Picture" type="TextureRect" parent="UI/DialogueUI/Panel/OkButton"]
+[node name="Picture" type="TextureRect" parent="UI/DialogueUI/Panel/OkButton" unique_id=139271062]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 expand_mode = 1
 
-[node name="Label" type="Label" parent="UI/DialogueUI/Panel"]
+[node name="Label" type="Label" parent="UI/DialogueUI/Panel" unique_id=1349768837]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="CursorUI" type="Control" parent="UI"]
+[node name="CursorUI" type="Control" parent="UI" unique_id=1311926752]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("3_sugp2")
 
-[node name="CursorIcon" type="TextureRect" parent="UI/CursorUI"]
+[node name="CursorIcon" type="TextureRect" parent="UI/CursorUI" unique_id=952957593]
 layout_mode = 0
 
-[node name="HoverLabel" type="Label" parent="UI/CursorUI"]
+[node name="HoverLabel" type="Label" parent="UI/CursorUI" unique_id=1338932278]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="PauseMenu" parent="UI" instance=ExtResource("6_o6xl0")]
+[node name="PauseMenu" parent="UI" unique_id=133763158 instance=ExtResource("6_o6xl0")]
 
-[node name="ActiveOutlineViewport" type="SubViewport" parent="."]
+[node name="ActiveOutlineViewport" type="SubViewport" parent="." unique_id=467250647]
 transparent_bg = true
 render_target_update_mode = 4
 script = ExtResource("8_tipki")
 
-[node name="ActiveOutlineCamera" type="Camera3D" parent="ActiveOutlineViewport"]
+[node name="ActiveOutlineCamera" type="Camera3D" parent="ActiveOutlineViewport" unique_id=1979135788]
 cull_mask = 524288
 
-[node name="PassiveOutlineViewport" type="SubViewport" parent="."]
+[node name="PassiveOutlineViewport" type="SubViewport" parent="." unique_id=1539487511]
 transparent_bg = true
 render_target_update_mode = 4
 script = ExtResource("8_tipki")
 
-[node name="PassiveOutlineCamera" type="Camera3D" parent="PassiveOutlineViewport"]
+[node name="PassiveOutlineCamera" type="Camera3D" parent="PassiveOutlineViewport" unique_id=2021883281]
 cull_mask = 262144

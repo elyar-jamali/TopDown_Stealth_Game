@@ -29,6 +29,25 @@ func load_level(path: String):
 	level_holder.add_child(level)
 
 func _unhandled_input(event: InputEvent) -> void:
+
+	#Enable FOV by right click while mouse is over NPC
+	if (
+		event is InputEventMouseButton
+		and event.pressed
+		and event.button_index == MOUSE_BUTTON_MIDDLE
+	):
+		var hovered: Node = HoverSystem.current_hover
+
+		if (
+			hovered != null
+			and hovered.has_method("toggle_vision")
+		):
+			hovered.toggle_vision()
+
+			get_viewport().set_input_as_handled()
+			return
+
+
 	if event.is_action_pressed("show_interactables"):
 		show_interactables = not show_interactables
 		_update_interactable_outlines()
@@ -51,7 +70,9 @@ func _update_interactable_recursive(node: Node) -> void:
 	):
 		var color := Color.YELLOW
 
-		if "outline_color" in node:
+		if node.has_method("get_outline_color"):
+			color = node.get_outline_color()
+		elif "outline_color" in node:
 			color = node.outline_color
 
 		OutlineSystem.set_passive(

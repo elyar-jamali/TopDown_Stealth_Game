@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://dirdhwdop7pix"
+path="res://.godot/imported/vision_depth.glsl-bee9d1dbfe1d9382c4fe08b31cd1261e.res"
+
+[deps]
+
+source_file="res://data/shaders/vision_depth.glsl"
+dest_files=["res://.godot/imported/vision_depth.glsl-bee9d1dbfe1d9382c4fe08b31cd1261e.res"]
+
+[params]
+

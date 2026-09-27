@@ -19,11 +19,15 @@ This is a personal project developed in my spare time to explore game architectu
 
 - Top-down player movement
 - Click-to-move navigation using `NavigationAgent3D`
+- Improved movement recovery and detour handling
 - Walk / run movement with automatic animation switching
 - Reusable interaction system
 - Reusable door scenes with open, closed, and locked states
-- Navigation-aware doors
-- Basic NPC structure and interaction
+- Navigation-aware doors with detour handling
+- Guard vision system with obstacle occlusion
+- Visual guard field-of-view overlay
+- Standing / crouching visibility classification
+- Basic NPC structure, interaction, and ground physics
 - Hover highlighting and contextual cursor states
 - Custom cursor system
 - Main menu and in-game pause menu
@@ -36,6 +40,21 @@ This is a personal project developed in my spare time to explore game architectu
 - Runtime language switching and persistence
 - Confirmation dialogs
 - Dialogue system with timed and manual closing
+
+## Controls
+
+| Input | Action |
+| --- | --- |
+| Left Mouse Button | Move the player or interact with objects |
+| Right Mouse Button | Cancel the current action |
+| Middle Mouse Button | Toggle a guard's vision field |
+| Alt + Mouse Movement | Rotate and tilt the camera |
+| Mouse Wheel | Zoom in / out |
+| Tab | Highlight interactive objects |
+| W / A / S / D | Move the camera |
+| Q / E | Rotate the camera |
+
+> **Development note:** Debug vision rays from guards to the player are currently left enabled for vision-system testing.
 
 ## Character Workflow
 

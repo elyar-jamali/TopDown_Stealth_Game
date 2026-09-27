@@ -18,13 +18,38 @@ const CAMERA_SURFACE_MASK := 1 << 6
 
 @onready var camera: Camera3D = $Camera3D
 
+@export_range(0.0, 89.0, 1.0)
+var pitch_min_angle := 15.0
+
+@export_range(0.0, 89.0, 1.0)
+var pitch_max_angle := 75.0
 var yaw := 0.0
+var xaw := 0.0
 var zoom_y := 0.0
 var zoom_z := 0.0
-
+var min_xaw := 0.0
+var max_xaw := 0.0
 
 func _ready():
 	yaw = rotation.y
+	xaw = rotation.x
+
+	var camera_pitch := camera.rotation.x
+
+	min_xaw = (
+		deg_to_rad(-pitch_max_angle)
+		- camera_pitch
+	)
+
+	max_xaw = (
+		deg_to_rad(-pitch_min_angle)
+		- camera_pitch
+	)
+
+	xaw = clampf(xaw, min_xaw, max_xaw)
+
+	rotation.x = xaw
+
 	zoom_y = camera.position.y
 	zoom_z = camera.position.z
 
@@ -106,6 +131,9 @@ func _handle_alt_rotation(event):
 
 			yaw -= event.relative.x * rotate_speed
 			rotation.y = yaw
+			xaw -= event.relative.y * rotate_speed
+			xaw = clampf(xaw, min_xaw, max_xaw)
+			rotation.x = xaw
 	else:
 		Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 		if HoverSystem.current_hover and HoverSystem.current_hover.has_method("get_cursor"):

@@ -24,7 +24,7 @@ enum DoorMaterial {
 @export var object_id: String = ""
 # سرعت باز و بسته شدن
 @export var open_speed := 0.5
-
+@export var door_detour_offset := 0.6
 
 var last_material = -1
 var last_state = -1
@@ -59,6 +59,107 @@ func wait_for_navigation_finish() -> bool:
 func get_hover_text():
 	return "Door_Caption"
 
+func get_detour_distance() -> float:
+	if collision.shape is BoxShape3D:
+		return collision.shape.size.z
+
+	return 1.1
+
+func get_detour_points(
+	from_position: Vector3,
+	player_radius: float
+) -> Array[Vector3]:
+
+	var hinge: Vector3 = get_hinge_position()
+
+	# جهت واقعی برگ از لولا به نوک
+	var leaf_direction: Vector3 = -door.global_basis.z
+	leaf_direction.y = 0.0
+
+	if leaf_direction.length_squared() < 0.0001:
+		return []
+
+	leaf_direction = leaf_direction.normalized()
+
+	# جهت عمود بر برگ روی صفحه XZ
+	var side_direction: Vector3 = (
+		Vector3.UP.cross(leaf_direction)
+	).normalized()
+
+	var player_offset: Vector3 = from_position - hinge
+	player_offset.y = 0.0
+
+	# مشخص می‌کنیم بازیکن الان کدام طرف برگ قرار دارد
+	var side_amount: float = player_offset.dot(side_direction)
+
+	var side_sign := 1.0
+
+	if side_amount < 0.0:
+		side_sign = -1.0
+
+	# فاصله امن از لولا در امتداد برگ:
+	# طول برگ + شعاع بازیکن + 10 سانت
+	var along_distance: float = (
+		get_detour_distance()
+		+ player_radius
+		+ 0.1
+	)
+
+	# فاصله امن از خود خط برگ
+	var side_clearance: float = (
+		player_radius
+		+ 0.1
+	)
+
+	# نقطه اول در همان سمت فعلی بازیکن
+	var point_a: Vector3 = (
+		hinge
+		+ leaf_direction * along_distance
+		+ side_direction * side_sign * side_clearance
+	)
+
+	# نقطه دوم دقیقاً آن طرف برگ
+	var point_b: Vector3 = (
+		hinge
+		+ leaf_direction * along_distance
+		- side_direction * side_sign * side_clearance
+	)
+
+	point_a.y = from_position.y
+	point_b.y = from_position.y
+
+	print(
+		"DOOR DETOUR:",
+		" player=", from_position,
+		" hinge=", hinge,
+		" leaf_dir=", leaf_direction,
+		" side=", side_direction,
+		" along=", along_distance,
+		" clearance=", side_clearance,
+		" A=", point_a,
+		" B=", point_b
+	)
+
+	return [
+		point_a,
+		point_b
+	]
+
+func get_door_plane_point(
+	p: Vector3
+) -> Vector3:
+
+	var door_origin := global_position
+
+	var normal := global_transform.basis.z
+	normal.y = 0
+	normal = normal.normalized()
+
+	var distance := (
+		(p - door_origin).dot(normal)
+	)
+
+	return p - normal * distance
 
 func get_cursor():
 	if door_state == DoorState.LOCKED:
@@ -77,10 +178,17 @@ func get_interaction_position():
 	var shape = collision.shape
 	if shape is BoxShape3D:
 		var p = global_position
-		p.x -= collision.shape.size.z * 0.4
+		p.x -= collision.shape.size.z * 0.80
 		p.z -= collision.shape.size.z * 0.5
 		return p
 	return global_position
+
+func get_hinge_position() -> Vector3:
+	return door.global_position
+
+
+func is_moving_leaf_collider(collider: Object) -> bool:
+	return collider == door
 
 func _ready():
 
@@ -111,16 +219,14 @@ func interact():
 
 func open_door():
 	# چرخش نرم به حالت باز
-	rotate_to(open_rotation)
 	door_state = DoorState.OPEN
-	_update_navigation_link()
+	rotate_to(open_rotation)
 
 
 func close_door():
 	# چرخش نرم به حالت بسته
-	rotate_to(closed_rotation)
 	door_state = DoorState.CLOSED
-	_update_navigation_link()
+	rotate_to(closed_rotation)
 
 
 func rotate_to(target_rotation: Vector3):
@@ -137,7 +243,10 @@ func rotate_to(target_rotation: Vector3):
 		target_rotation,
 		open_speed
 	)
-
+	tween.finished.connect(
+		func():
+			_update_navigation_link()
+	)
 
 func _update_navigation_link():
 	navigation_link.enabled = door_state == DoorState.OPEN
