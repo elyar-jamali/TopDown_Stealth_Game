@@ -853,23 +853,6 @@ func _update_top_vision_camera() -> void:
 			desired_size
 		)
 
-		print(
-			"TOP VISION | viewport=",
-			desired_size,
-			" | length=",
-			snapped(
-				coverage_length,
-				0.01
-			),
-			"m | width=",
-			snapped(
-				coverage_width,
-				0.01
-			),
-			"m"
-		)
-
-
 	if top_vision_depth_effect != null:
 		top_vision_depth_effect.set_camera_planes(
 			top_vision_camera.near,

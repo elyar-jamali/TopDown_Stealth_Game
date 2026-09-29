@@ -128,18 +128,6 @@ func get_detour_points(
 	point_a.y = from_position.y
 	point_b.y = from_position.y
 
-	print(
-		"DOOR DETOUR:",
-		" player=", from_position,
-		" hinge=", hinge,
-		" leaf_dir=", leaf_direction,
-		" side=", side_direction,
-		" along=", along_distance,
-		" clearance=", side_clearance,
-		" A=", point_a,
-		" B=", point_b
-	)
-
 	return [
 		point_a,
 		point_b

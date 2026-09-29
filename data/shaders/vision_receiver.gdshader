@@ -299,6 +299,7 @@ bool is_point_visible_from_guard(vec3 test_world_position)
 	bool same_surface = false;
 	//abs(point_depth - effective_obstacle_depth) < 0.003;
 
+
 	return (
 	effective_obstacle_depth <= 0.000001
 	||
