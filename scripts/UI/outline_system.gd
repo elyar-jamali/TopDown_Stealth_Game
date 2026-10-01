@@ -59,7 +59,22 @@ func _process(_delta: float) -> void:
 func _sync_camera(camera: Camera3D) -> void:
 	if camera == null:
 		return
+	
+	if not is_instance_valid(camera):
+		return
 
+	if not camera.is_inside_tree():
+		return
+
+	if main_camera == null:
+		return
+
+	if not is_instance_valid(main_camera):
+		return
+
+	if not main_camera.is_inside_tree():
+		return
+		
 	camera.global_transform = main_camera.global_transform
 	camera.projection = main_camera.projection
 	camera.fov = main_camera.fov

@@ -7,12 +7,14 @@ extends Control
 @onready var settings_button: Button = $CenterContainer/Panel/VBoxContainer/Settings
 @onready var main_menu_button: Button = $CenterContainer/Panel/VBoxContainer/MainMenu
 @onready var quit_button: Button = $CenterContainer/Panel/VBoxContainer/Quit
-@onready var confirm_dialog: ConfirmationDialog = $ConfirmationDialog
+@onready var custom_dialog = $CustomDialog
+
 var confirm_action := ""
 
 func _ready():
-	if not confirm_dialog.confirmed.is_connected(_on_confirmed):
-		confirm_dialog.confirmed.connect(_on_confirmed)
+	if not custom_dialog.button_pressed.is_connected(_on_dialog_button_pressed):
+		custom_dialog.button_pressed.connect(_on_dialog_button_pressed)
+
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 
@@ -27,6 +29,12 @@ func _ready():
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
+
+		if custom_dialog.visible:
+			custom_dialog.hide()
+			confirm_action = ""
+			return
+
 		toggle_pause()
 
 func toggle_pause():
@@ -38,7 +46,7 @@ func toggle_pause():
 func pause_game():
 	get_tree().paused = true
 	visible = true
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	#Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	resume_button.grab_focus()
 
 func resume_game():
@@ -78,38 +86,52 @@ func _on_settings_pressed():
 	print("SETTINGS")
 
 func _on_main_menu_pressed():
-	confirm_action = "main_menu"
-	confirm_dialog.title = LocalizationManager.translate("confirm_dialoge.exit_game")
-	confirm_dialog.dialog_text = LocalizationManager.translate("confirm_dialoge.exit_to_main_menu")
-	confirm_dialog.ok_button_text = LocalizationManager.translate("confirm_dialoge.yes")
-	confirm_dialog.cancel_button_text = LocalizationManager.translate("confirm_dialoge.no")
 
-	await get_tree().process_frame
-	confirm_dialog.reset_size()
-	confirm_dialog.popup_centered()
+	confirm_action = "main_menu"
+
+	custom_dialog.show_dialog(
+		LocalizationManager.translate("confirm_dialoge.exit_game"),
+		LocalizationManager.translate("confirm_dialoge.exit_to_main_menu"),
+		[
+			LocalizationManager.translate("confirm_dialoge.yes"),
+			LocalizationManager.translate("confirm_dialoge.no")
+		]
+	)
 
 func _on_quit_pressed():
-	confirm_action = "quit"
-	confirm_dialog.title = LocalizationManager.translate("confirm_dialoge.exit_game")
-	confirm_dialog.dialog_text = LocalizationManager.translate("confirm_dialoge.exit_to_desktop")
-	confirm_dialog.ok_button_text = LocalizationManager.translate("confirm_dialoge.yes")
-	confirm_dialog.cancel_button_text = LocalizationManager.translate("confirm_dialoge.no")
 
-	await get_tree().process_frame
-	confirm_dialog.reset_size()
-	confirm_dialog.popup_centered()
+	confirm_action = "quit"
+
+	custom_dialog.show_dialog(
+		LocalizationManager.translate("confirm_dialoge.exit_game"),
+		LocalizationManager.translate("confirm_dialoge.exit_to_desktop"),
+		[
+			LocalizationManager.translate("confirm_dialoge.yes"),
+			LocalizationManager.translate("confirm_dialoge.no")
+		]
+	)
 
 func _on_theme_changed(_theme_id: String, theme_resource: Theme):
 	_apply_theme(theme_resource)
 
 func _apply_theme(theme_resource: Theme):
 	theme = theme_resource
-	confirm_dialog.theme = theme_resource
+	custom_dialog.theme = theme_resource
 
-func _on_confirmed():
+func _on_dialog_button_pressed(index):
+
+	print("BUTTON INDEX = ", index)
+	print("CONFIRM ACTION = ", confirm_action)
+
+	if index != 0:
+		return
+
 	match confirm_action:
+
 		"quit":
+			print("خروج از بازی")
 			GameManager.quit_game()
 
 		"main_menu":
+			print("رفتن به منوی اصلی")
 			GameManager.go_to_main_menu()

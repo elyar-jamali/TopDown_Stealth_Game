@@ -10,7 +10,13 @@ extends CharacterBody3D
  
 @export var standing_height := 1.75 
 @export var crouching_height := 1.10 
- 
+
+@export var max_health := 100
+var current_health := 100
+
+signal movement_state_changed(new_state)
+signal health_changed(current_health, max_health)
+
 @onready var agent: NavigationAgent3D = $NavigationAgent3D 
 @onready var path_drawer := PathDrawer.new() 
 @onready var animation_player: AnimationPlayer = $Visual/player_rigged/AnimationPlayer 
@@ -66,7 +72,31 @@ const MOVEMENT_DATA = {
 	} 
 } 
  
- 
+func is_crouched() -> bool:
+	return (
+		movement_state == MovementState.CROUCH_IDLE
+		or movement_state == MovementState.CROUCH_WALK
+	)
+
+func toggle_crouch():
+	var moving := Vector2(
+		velocity.x,
+		velocity.z
+	).length() > 0.1
+
+	if is_crouched():
+		return_state_after_run = MovementState.IDLE
+
+		if moving:
+			change_movement_state(MovementState.WALK)
+		else:
+			change_movement_state(MovementState.IDLE)
+	else:
+		if moving:
+			change_movement_state(MovementState.CROUCH_WALK)
+		else:
+			change_movement_state(MovementState.CROUCH_IDLE)
+
 func _ready(): 
 	floor_max_angle = deg_to_rad(45.0) 
 	floor_snap_length = 0.5 
@@ -93,6 +123,10 @@ func _ready():
  
 	previous_position = global_position 
 	final_target = global_position 
+	
+	current_health = max_health
+	health_changed.emit(current_health, max_health)
+	movement_state_changed.emit(movement_state)
  
  
 func _physics_process(delta): 
@@ -398,43 +432,15 @@ func _stop_movement():
  
 func _unhandled_input(event): 
 	if event.is_action_pressed("crouch"): 
-		var moving := Vector2( 
-			velocity.x, 
-			velocity.z 
-		).length() > 0.1 
-		if (movement_state == MovementState.CROUCH_IDLE  
-		or movement_state == MovementState.CROUCH_WALK): 
-			return_state_after_run = MovementState.IDLE
-			if moving: 
-				change_movement_state(desired_movement_state) 
-			else: 
-				change_movement_state(MovementState.IDLE) 
-		else: 
-			#رفتن به حالت کراچ 
-			if moving: 
-				change_movement_state(MovementState.CROUCH_WALK) 
-			else: 
-				change_movement_state(MovementState.CROUCH_IDLE)			 
+		toggle_crouch()			 
 		return 
  
-	if ( 
-		event is InputEventMouseButton 
-		and event.button_index == MOUSE_BUTTON_LEFT 
-		and event.pressed 
-	): 
+	if event.is_action_pressed("move_interact"):
 		_handle_left_click() 
  
-	elif ( 
-		event is InputEventMouseButton 
-		and event.button_index == MOUSE_BUTTON_RIGHT 
-		and event.pressed 
-	): 
+	elif event.is_action_pressed("cancel_action"):
 		pending_interaction = null 
 		_stop_movement() 
-		if desired_movement_state == MovementState.RUN: 
-			change_movement_state(return_state_after_run) 
-		else: 
-			change_movement_state(MovementState.IDLE) 
  
 func _handle_left_click(): 
 	var now := Time.get_ticks_msec() / 1000.0 
@@ -460,10 +466,7 @@ func _handle_left_click():
 	) 
 	 
 	if is_double_click: 
-		if ( 
-			movement_state == MovementState.CROUCH_IDLE 
-			or movement_state == MovementState.CROUCH_WALK 
-		): 
+		if was_crouched: 
 			return_state_after_run = MovementState.CROUCH_IDLE 
 		else: 
 			return_state_after_run = MovementState.IDLE 
@@ -584,3 +587,12 @@ func change_movement_state(new_state: MovementState):
 	play_animation(data.animation) 
 	_set_player_height(data.height) 
 	agent.height = data.height
+	movement_state_changed.emit(movement_state)
+
+func take_damage(amount: int):
+	current_health = max(current_health - amount, 0)
+	health_changed.emit(current_health, max_health)
+
+func heal(amount: int):
+	current_health = min(current_health + amount, max_health)
+	health_changed.emit(current_health, max_health)

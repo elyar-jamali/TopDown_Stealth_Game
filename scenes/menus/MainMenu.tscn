@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://cv2eevaimposu"]
+[gd_scene format=3 uid="uid://cv2eevaimposu"]
 
 [ext_resource type="Script" uid="uid://d26g10nsiiyy4" path="res://scripts/MainMenu.gd" id="1_yqorp"]
 [ext_resource type="Theme" uid="uid://c0h5hxqvmb4di" path="res://data/themes/dark_stealth.tres" id="2_theme"]
+[ext_resource type="PackedScene" uid="uid://ccly8kjiatngc" path="res://scenes/menus/CustomDialog.tscn" id="3_ldf1p"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1613664827]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +14,7 @@ grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_yqorp")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1518442366]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +24,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.012, 0.018, 0.024, 1)
 
-[node name="TopGlow" type="ColorRect" parent="."]
+[node name="TopGlow" type="ColorRect" parent="." unique_id=1300722244]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -32,7 +33,7 @@ grow_horizontal = 2
 mouse_filter = 2
 color = Color(0.15, 0.66, 0.47, 0.75)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1705718278]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,56 +45,56 @@ theme_override_constants/margin_top = 48
 theme_override_constants/margin_right = 48
 theme_override_constants/margin_bottom = 48
 
-[node name="CenterContainer" type="CenterContainer" parent="MarginContainer"]
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer" unique_id=817452112]
 layout_mode = 2
 
-[node name="MenuPanel" type="PanelContainer" parent="MarginContainer/CenterContainer"]
+[node name="MenuPanel" type="PanelContainer" parent="MarginContainer/CenterContainer" unique_id=667526539]
 custom_minimum_size = Vector2(430, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer/MenuPanel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/CenterContainer/MenuPanel" unique_id=1779001931]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="GameTitle" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="GameTitle" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=805242007]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "TOP DOWN STEALTH"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Subtitle" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=1308733798]
 layout_mode = 2
 theme_type_variation = &"SubtitleLabel"
 text = "TACTICAL STEALTH PROTOTYPE BY:ELYAR JAMALI"
 horizontal_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=1495648599]
 layout_mode = 2
 
-[node name="Start" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Start" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=1495240440]
 custom_minimum_size = Vector2(330, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 
-[node name="Settings" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Settings" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=148662471]
 custom_minimum_size = Vector2(330, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 
-[node name="Exit" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Exit" type="Button" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=137922927]
 custom_minimum_size = Vector2(330, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_type_variation = &"DangerButton"
 
-[node name="Footer" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer"]
+[node name="Footer" type="Label" parent="MarginContainer/CenterContainer/MenuPanel/VBoxContainer" unique_id=617322042]
 layout_mode = 2
 theme_type_variation = &"SubtitleLabel"
 text = "Godot 4"
 horizontal_alignment = 1
 
-[node name="SettingsPanel" type="Control" parent="."]
+[node name="SettingsPanel" type="Control" parent="." unique_id=557867439]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -103,7 +104,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
-[node name="CenterContainer" type="CenterContainer" parent="SettingsPanel"]
+[node name="CenterContainer" type="CenterContainer" parent="SettingsPanel" unique_id=516262082]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -111,45 +112,50 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="SettingsPanel/CenterContainer"]
+[node name="Panel" type="PanelContainer" parent="SettingsPanel/CenterContainer" unique_id=635673321]
 custom_minimum_size = Vector2(430, 0)
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/CenterContainer/Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPanel/CenterContainer/Panel" unique_id=1247380426]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="SettingsTitle" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
+[node name="SettingsTitle" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=84407546]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 horizontal_alignment = 1
 
-[node name="Separator" type="HSeparator" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
+[node name="Separator" type="HSeparator" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=1713569483]
 layout_mode = 2
 
-[node name="LanguageLabel" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
-layout_mode = 2
-horizontal_alignment = 1
-
-[node name="Language" type="OptionButton" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
-custom_minimum_size = Vector2(330, 48)
-layout_mode = 2
-mouse_default_cursor_shape = 2
-
-[node name="ThemeLabel" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
+[node name="LanguageLabel" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=1311716494]
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Theme" type="OptionButton" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
+[node name="Language" type="OptionButton" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=1935343120]
 custom_minimum_size = Vector2(330, 48)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 
-[node name="Back" type="Button" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer"]
+[node name="ThemeLabel" type="Label" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=854256418]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Theme" type="OptionButton" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=300110794]
 custom_minimum_size = Vector2(330, 48)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 
-[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+[node name="Back" type="Button" parent="SettingsPanel/CenterContainer/Panel/VBoxContainer" unique_id=1286734144]
+custom_minimum_size = Vector2(330, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="." unique_id=2036255381]
 oversampling_override = 1.0
+size = Vector2i(244, 115)
+
+[node name="CustomDialog" parent="." unique_id=108615930 instance=ExtResource("3_ldf1p")]
+visible = false
+layout_mode = 1

@@ -85,14 +85,14 @@ func _handle_movement(delta):
 	if mouse_pos.y > viewport_size.y - edge_size:
 		input_z += 1.0
 
-	if Input.is_key_pressed(KEY_W):
+	if Input.is_action_pressed("camera_move_forward"):
 		input_z -= 1.0
-	if Input.is_key_pressed(KEY_S):
+	if Input.is_action_pressed("camera_move_backward"):
 		input_z += 1.0
-	if Input.is_key_pressed(KEY_A):
-		input_x -= 1.0
-	if Input.is_key_pressed(KEY_D):
+	if Input.is_action_pressed("camera_move_right"):
 		input_x += 1.0
+	if Input.is_action_pressed("camera_move_left"):
+		input_x -= 1.0
 
 	var forward = Vector3(0, 0, 1).rotated(Vector3.UP, yaw)
 	var right = Vector3(1, 0, 0).rotated(Vector3.UP, yaw)
@@ -114,17 +114,17 @@ func _handle_movement(delta):
 
 
 func _handle_keyboard_rotation():
-	if Input.is_key_pressed(KEY_Q):
+	if Input.is_action_pressed("camera_rotate_left"):
 		yaw -= rotate_speed * 10.0
 
-	if Input.is_key_pressed(KEY_E):
+	if Input.is_action_pressed("camera_rotate_right"):
 		yaw += rotate_speed * 10.0
 
 	rotation.y = yaw
 
 
 func _handle_alt_rotation(event):
-	if Input.is_key_pressed(KEY_ALT):
+	if Input.is_action_pressed("camera_rotate"):
 		if event is InputEventMouseMotion:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			CursorManager.set_state(CursorManager.CursorState.ROTATE)
@@ -143,14 +143,11 @@ func _handle_alt_rotation(event):
 
 
 func _handle_zoom(event):
-	if not (event is InputEventMouseButton and event.pressed):
-		return
-
-	if event.button_index == MOUSE_BUTTON_WHEEL_UP and zoom_y > zoom_min_y:
+	if event.is_action_pressed("camera_zoom_in") and zoom_y > zoom_min_y:
 		zoom_y = max(zoom_min_y, zoom_y - zoom_step)
 		zoom_z -= zoom_step
 
-	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and zoom_y < zoom_max_y:
+	elif event.is_action_pressed("camera_zoom_out") and zoom_y < zoom_max_y:
 		zoom_y = min(zoom_max_y, zoom_y + zoom_step)
 		zoom_z += zoom_step
 

@@ -15,7 +15,7 @@
 		"start_game": "Start Game",
 		"quit_game": "Exit",
 		"settings": "Settings",
-		"level_01": "Level01",
+		"level_01": "Level01"
 	},
 
 	"pause_menu": {
@@ -25,14 +25,14 @@
 		"load": "Load",
 		"settings": "Settings",
 		"main_menu": "Main Menu",
-		"exit_to_desktop": "Exit To Desktop",
+		"exit_to_desktop": "Exit To Desktop"
 		
 	},
 
 	"confirm_dialoge": {
 		"exit_game": "Exit",
-		"exit_to_desktop": "Quit To Desktop, Are You Sure?",
-		"exit_to_main_menu": "Return To Main Menu, Unsaved Progress Will Be Lost?",
+		"exit_to_desktop": "Quit To Desktop, Are You Sure?\n",
+		"exit_to_main_menu": "Return To Main Menu, Unsaved Progress Will Be Lost?\n",
 		
 		"yes": "Yes",
 		"no": "No"

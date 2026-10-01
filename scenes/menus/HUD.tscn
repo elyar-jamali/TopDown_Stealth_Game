@@ -1,0 +1,231 @@
+[gd_scene format=3 uid="uid://b60vdirkcx5q6"]
+
+[ext_resource type="Script" uid="uid://l5qyu2o4vhn8" path="res://scripts/UI/HUD.gd" id="1_jyvo4"]
+[ext_resource type="Shader" uid="uid://d4c4ke3lx5llb" path="res://data/shaders/hud.gdshader" id="2_4maxk"]
+[ext_resource type="PackedScene" uid="uid://bse6sj288r613" path="res://scenes/menus/HudActionSlot.tscn" id="2_sf33l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3b6h"]
+bg_color = Color(0.14509805, 0.16470589, 0.17254902, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4maxk"]
+bg_color = Color(0.54509807, 0.0627451, 0.0627451, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mtbsk"]
+shader = ExtResource("2_4maxk")
+shader_parameter/control_size = Vector2(120, 120)
+shader_parameter/corner_radius_px = 45.0
+shader_parameter/border_width_px = 5.0
+shader_parameter/corner_on_left = false
+shader_parameter/border_color = Color(1, 1, 1, 0.29)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v3b6h"]
+shader = ExtResource("2_4maxk")
+shader_parameter/control_size = Vector2(120, 120)
+shader_parameter/corner_radius_px = 45.0
+shader_parameter/border_width_px = 5.0
+shader_parameter/corner_on_left = true
+shader_parameter/border_color = Color(1, 1, 1, 0.29)
+
+[node name="HUD" type="CanvasLayer" unique_id=1103402116]
+layer = 10
+script = ExtResource("1_jyvo4")
+
+[node name="LeftHUD" type="MarginContainer" parent="." unique_id=1773221352]
+offset_left = -1.0
+offset_right = 89.0
+offset_bottom = 123.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+
+[node name="LeftRoot" type="VBoxContainer" parent="LeftHUD" unique_id=1862312383]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AgentMargin" type="MarginContainer" parent="LeftHUD/LeftRoot" unique_id=1495296334]
+layout_mode = 2
+
+[node name="AgentContent" type="VBoxContainer" parent="LeftHUD/LeftRoot/AgentMargin" unique_id=1568072320]
+layout_mode = 2
+
+[node name="AgentHeader" type="HBoxContainer" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent" unique_id=1046844753]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 5)
+
+[node name="AgentName" type="Label" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent/AgentHeader" unique_id=68691697]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(5, 0)
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="Control" type="Control" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent/AgentHeader" unique_id=420664355]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HealthValue" type="Label" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent/AgentHeader" unique_id=859168987]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-5, 0)
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="HealthBar" type="ProgressBar" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent" unique_id=888674101]
+custom_minimum_size = Vector2(120, 5)
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 5)
+theme_override_styles/background = SubResource("StyleBoxFlat_v3b6h")
+theme_override_styles/fill = SubResource("StyleBoxFlat_4maxk")
+value = 80.0
+show_percentage = false
+
+[node name="PortraitArea" type="Control" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent" unique_id=1994086355]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+
+[node name="AgentPanel" type="ColorRect" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent/PortraitArea" unique_id=511886299]
+layout_mode = 0
+offset_top = -27.0
+offset_right = 120.0
+color = Color(1, 1, 1, 0.2901961)
+
+[node name="Portrait" type="TextureRect" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent/PortraitArea" unique_id=645893412]
+material = SubResource("ShaderMaterial_mtbsk")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActionsArea" type="Control" parent="LeftHUD/LeftRoot" unique_id=922960892]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ActionsPanel" type="ColorRect" parent="LeftHUD/LeftRoot/ActionsArea" unique_id=1061986173]
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 330.0
+color = Color(1, 1, 1, 0.2901961)
+
+[node name="ActionsColumn" type="VBoxContainer" parent="LeftHUD/LeftRoot/ActionsArea" unique_id=348857030]
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 320.0
+
+[node name="CrouchSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=863438076 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="KnockoutSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=1247572568 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="KillSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=950338135 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="PistolSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=157775136 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="RifleSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=1326941482 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="HealSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=655995982 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+
+[node name="RightHUD" type="MarginContainer" parent="." unique_id=748629916]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 80.0
+grow_horizontal = 0
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+
+[node name="RightRoot" type="VBoxContainer" parent="RightHUD" unique_id=788320904]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="MapMargin" type="MarginContainer" parent="RightHUD/RightRoot" unique_id=301735987]
+layout_mode = 2
+
+[node name="MapContainer" type="VBoxContainer" parent="RightHUD/RightRoot/MapMargin" unique_id=986429600]
+layout_mode = 2
+
+[node name="MapHead" type="HBoxContainer" parent="RightHUD/RightRoot/MapMargin/MapContainer" unique_id=250236557]
+layout_mode = 2
+
+[node name="MapLabel" type="Label" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=127708805]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(5, 0)
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 10
+text = "Mini Map"
+
+[node name="Spacer" type="Control" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=1279095475]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MapShortcut" type="Label" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=993297195]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(-5, 0)
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 10
+text = "M"
+
+[node name="MapArea" type="Control" parent="RightHUD/RightRoot/MapMargin/MapContainer" unique_id=966728586]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+
+[node name="AgentPanel" type="ColorRect" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapArea" unique_id=1908562738]
+layout_mode = 0
+offset_top = -27.0
+offset_right = 120.0
+color = Color(1, 1, 1, 0.2901961)
+
+[node name="MapImage" type="TextureRect" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapArea" unique_id=343131722]
+material = SubResource("ShaderMaterial_v3b6h")
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActionsArea" type="Control" parent="RightHUD/RightRoot" unique_id=473563655]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -4)
+
+[node name="ActionsPanel" type="ColorRect" parent="RightHUD/RightRoot/ActionsArea" unique_id=1303003933]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -60.0
+offset_bottom = 330.0
+grow_horizontal = 0
+color = Color(1, 1, 1, 0.2901961)
+
+[node name="ActionsColumn" type="VBoxContainer" parent="RightHUD/RightRoot/ActionsArea" unique_id=2007648725]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -65.0
+offset_bottom = 50.0
+grow_horizontal = 0
+
+[node name="LogSlot" parent="RightHUD/RightRoot/ActionsArea/ActionsColumn" unique_id=771601620 instance=ExtResource("2_sf33l")]
+layout_mode = 2
+alignment = 2
+icon_on_right = true

@@ -31,11 +31,7 @@ func load_level(path: String):
 func _unhandled_input(event: InputEvent) -> void:
 
 	#Enable FOV by right click while mouse is over NPC
-	if (
-		event is InputEventMouseButton
-		and event.pressed
-		and event.button_index == MOUSE_BUTTON_MIDDLE
-	):
+	if event.is_action_pressed("fov"):
 		var hovered: Node = HoverSystem.current_hover
 
 		if (

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://bse6sj288r613"]
+
+[ext_resource type="Script" uid="uid://dt2f4aj0rlkg6" path="res://scripts/UI/HudActionSlot.gd" id="1_ceve0"]
+
+[node name="HudActionSlot" type="HBoxContainer" unique_id=863438076]
+offset_right = 65.0
+offset_bottom = 60.0
+offset_transform_enabled = true
+script = ExtResource("1_ceve0")
+
+[node name="Control" type="Control" parent="." unique_id=380977052]
+custom_minimum_size = Vector2(60, 50)
+layout_mode = 2
+
+[node name="ButtonMargin" type="MarginContainer" parent="Control" unique_id=757168575]
+layout_mode = 0
+offset_right = 60.0
+offset_bottom = 55.0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+
+[node name="ActionButton" type="Button" parent="Control/ButtonMargin" unique_id=1187209305]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+offset_transform_enabled = true
+focus_mode = 0
+
+[node name="IconMargin" type="MarginContainer" parent="Control/ButtonMargin/ActionButton" unique_id=1960077974]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Icon" type="TextureRect" parent="Control/ButtonMargin/ActionButton/IconMargin" unique_id=567776556]
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoBox" type="VBoxContainer" parent="." unique_id=1024628035]
+layout_mode = 2
+size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 7)
+theme_override_constants/separation = 5
+
+[node name="ShortcutLabel" type="Label" parent="InfoBox" unique_id=811867657]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="CountLabel" type="Label" parent="InfoBox" unique_id=1315539544]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10

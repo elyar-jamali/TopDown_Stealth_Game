@@ -9,6 +9,7 @@
 [ext_resource type="Theme" uid="uid://c0h5hxqvmb4di" path="res://data/themes/dark_stealth.tres" id="7_theme"]
 [ext_resource type="Shader" uid="uid://cbs04ax17cj1c" path="res://data/shaders/screen_outline.gdshader" id="8_85g3d"]
 [ext_resource type="Script" uid="uid://47ojorgb6mrd" path="res://scripts/UI/outline_system.gd" id="8_tipki"]
+[ext_resource type="PackedScene" uid="uid://b60vdirkcx5q6" path="res://scenes/menus/HUD.tscn" id="10_choun"]
 
 [sub_resource type="Environment" id="Environment_tefeu"]
 ambient_light_source = 2
@@ -100,21 +101,8 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="CursorUI" type="Control" parent="UI" unique_id=1311926752]
-layout_mode = 3
-anchors_preset = 0
-mouse_filter = 2
-script = ExtResource("3_sugp2")
-
-[node name="CursorIcon" type="TextureRect" parent="UI/CursorUI" unique_id=952957593]
-layout_mode = 0
-
-[node name="HoverLabel" type="Label" parent="UI/CursorUI" unique_id=1338932278]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-
 [node name="PauseMenu" parent="UI" unique_id=133763158 instance=ExtResource("6_o6xl0")]
+process_mode = 2
 
 [node name="ActiveOutlineViewport" type="SubViewport" parent="." unique_id=467250647]
 transparent_bg = true
@@ -131,3 +119,24 @@ script = ExtResource("8_tipki")
 
 [node name="PassiveOutlineCamera" type="Camera3D" parent="PassiveOutlineViewport" unique_id=2021883281]
 cull_mask = 262144
+
+[node name="Hud" parent="." unique_id=816727518 instance=ExtResource("10_choun")]
+player_path = NodePath("../Player")
+
+[node name="CursorLayer" type="CanvasLayer" parent="." unique_id=1247431613]
+layer = 100
+
+[node name="CursorUI" type="Control" parent="CursorLayer" unique_id=1311926752]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("3_sugp2")
+
+[node name="CursorIcon" type="TextureRect" parent="CursorLayer/CursorUI" unique_id=952957593]
+layout_mode = 0
+
+[node name="HoverLabel" type="Label" parent="CursorLayer/CursorUI" unique_id=1338932278]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

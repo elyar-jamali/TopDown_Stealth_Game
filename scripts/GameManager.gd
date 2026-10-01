@@ -37,7 +37,7 @@ func start_level(path: String):
 
 func go_to_main_menu():
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+	get_tree().change_scene_to_file("res://scenes/menus/MainMenu.tscn")
 
 func quit_game():
 	get_tree().quit()

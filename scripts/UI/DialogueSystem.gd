@@ -57,6 +57,5 @@ func _unhandled_input(event):
 		close_dialogue()
 		return
 
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			close_dialogue()
+	if event.is_action_pressed("move_interact"):
+		close_dialogue()
