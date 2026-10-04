@@ -76,8 +76,8 @@ func _ready():
 	log_slot.setup_action(log_icon, get_action_key_name("open_log"), "51", "Show all messages")
 	# Placeholder text
 	agent_name.text = "Agent"
-	map_shortcut.text = get_action_key_name("open_map")
-	#message_preview.text = "No messages yet."
+	#map_shortcut.text = get_action_key_name("open_map")
+	refresh_shortcuts()
 
 func get_action_key_name(action_name: String) -> String:
 	var events = InputMap.action_get_events(action_name)
@@ -97,17 +97,12 @@ func _on_player_movement_state_changed(new_state):
 	if player == null:
 		return
 
-	var is_crouched : bool = (
-		new_state == player.MovementState.CROUCH_IDLE
-		or
-		new_state == player.MovementState.CROUCH_WALK
-	)
+	var is_crouched: bool = new_state == player.MovementState.CROUCH_IDLE or new_state == player.MovementState.CROUCH_WALK
 
 	if is_crouched:
-		crouch_slot.setup_action(crouch_icon, "Space", "", "Crouch")
+		crouch_slot.setup_action(crouch_icon, get_action_key_name("crouch"), "", "Crouch")
 	else:
-		crouch_slot.setup_action(stand_icon, "Space", "", "Stand")
-
+		crouch_slot.setup_action(stand_icon, get_action_key_name("crouch"), "", "Stand")
 
 func _on_player_health_changed(current_health, max_health):
 	health_bar.max_value = max_health
@@ -137,24 +132,28 @@ func _on_map_image_gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("open_map"):
 		_open_full_map()
-
 	elif event.is_action_pressed("open_log"):
 		_open_log()
-
 	elif event.is_action_pressed("knockout"):
 		_on_knockout_pressed()
-
 	elif event.is_action_pressed("lethal_takedown"):
 		_on_lethal_takedown_pressed()
-
 	elif event.is_action_pressed("pistol"):
 		_on_pistol_pressed()
-
 	elif event.is_action_pressed("rifle"):
 		_on_rifle_pressed()
-
 	elif event.is_action_pressed("heal"):
 		_on_heal_pressed()
+
+func refresh_shortcuts() -> void:
+	crouch_slot.set_shortcut(get_action_key_name("crouch"))
+	knockout_slot.set_shortcut(get_action_key_name("knockout"))
+	kill_slot.set_shortcut(get_action_key_name("lethal_takedown"))
+	pistol_slot.set_shortcut(get_action_key_name("pistol"))
+	rifle_slot.set_shortcut(get_action_key_name("rifle"))
+	heal_slot.set_shortcut(get_action_key_name("heal"))
+	log_slot.set_shortcut(get_action_key_name("open_log"))
+	map_shortcut.text = get_action_key_name("open_map")
 
 func _open_full_map() -> void:
 	print("_open_full_map")

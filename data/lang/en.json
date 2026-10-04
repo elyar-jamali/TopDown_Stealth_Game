@@ -37,7 +37,60 @@
 		"yes": "Yes",
 		"no": "No"
 	},
+	"controls": {
+		"title": "Game Controls",
 
+		"gameplay": "Gameplay",
+		"camera": "Camera",
+		"mouse": "Mouse",
+
+		"crouch": "Crouch / Stand",
+		"knockout": "Knockout",
+		"lethal_takedown": "Lethal Takedown",
+		"pistol": "Pistol",
+		"rifle": "Scoped Rifle",
+		"heal": "Heal",
+		"map": "Map",
+		"log": "Log",
+
+		"camera_move_forward": "Move Camera Forward",
+		"camera_move_backward": "Move Camera Backward",
+		"camera_move_left": "Move Camera Left",
+		"camera_move_right": "Move Camera Right",
+		"camera_rotate_left": "Rotate Camera Left",
+		"camera_rotate_right": "Rotate Camera Right",
+		"camera_rotate_modifier": "Mouse Camera Rotation",
+		"camera_zoom_in": "Zoom In",
+		"camera_zoom_out": "Zoom Out",
+
+		"move_interact": "Move / Interact",
+		"cancel_action": "Cancel Action",
+
+		"reset_defaults": "Reset to Defaults",
+		"back": "Back",
+		"press_key": "Press a key...",
+
+		"conflict_title": "Key Already Used",
+		"conflict_message": "{key} is already assigned to {action}.\nDo you want to replace it?",
+
+		"replace": "Replace",
+		"cancel": "Cancel",
+
+		"reset_title": "Reset Controls",
+		"reset_message": "Reset all controls to their default bindings?",
+		"reset": "Reset",
+
+		"unassigned": "Unassigned",
+		"mouse_left": "Left Mouse",
+		"mouse_right": "Right Mouse",
+		"mouse_middle": "Middle Mouse",
+		"wheel_up": "Wheel Up",
+		"wheel_down": "Wheel Down",
+		"wheel_left": "Wheel Left",
+		"wheel_right": "Wheel Right",
+		"mouse_button": "Mouse Button {button}"
+	},
+	
 	"ok_button": "Close",
 	"Door_Caption": "Door",
 	"NPC0": "Civilian",

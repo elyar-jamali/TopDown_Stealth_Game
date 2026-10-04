@@ -38,6 +38,60 @@
 		"no": "خیر"
 	},
 
+	"controls": {
+		"title": "کنترل‌های بازی",
+
+		"gameplay": "کلیدهای بازی",
+		"camera": "کلیدهای دوربین",
+		"mouse": "کلیدهای ماوس",
+
+		"crouch": "نشستن / ایستادن",
+		"knockout": "بیهوش کردن",
+		"lethal_takedown": "از پا درآوردن",
+		"pistol": "کلت",
+		"rifle": "تفنگ دوربین‌دار",
+		"heal": "درمان",
+		"map": "نقشه",
+		"log": "گزارش گفتگوها",
+
+		"camera_move_forward": "حرکت دوربین به جلو",
+		"camera_move_backward": "حرکت دوربین به عقب",
+		"camera_move_left": "حرکت دوربین به چپ",
+		"camera_move_right": "حرکت دوربین به راست",
+		"camera_rotate_left": "چرخش دوربین به چپ",
+		"camera_rotate_right": "چرخش دوربین به راست",
+		"camera_rotate_modifier": "چرخش دوربین با ماوس",
+		"camera_zoom_in": "بزرگ‌نمایی",
+		"camera_zoom_out": "کوچک‌نمایی",
+
+		"move_interact": "حرکت / تعامل",
+		"cancel_action": "لغو عمل",
+
+		"reset_defaults": "بازنشانی پیش‌فرض‌ها",
+		"back": "بازگشت",
+		"press_key": "یک کلید را فشار دهید...",
+
+		"conflict_title": "کلید تکراری",
+		"conflict_message": "{key} قبلاً به «{action}» اختصاص داده شده است.\nآیا می‌خواهید جایگزین شود؟",
+
+		"replace": "جایگزینی",
+		"cancel": "لغو",
+
+		"reset_title": "بازنشانی کنترل‌ها",
+		"reset_message": "آیا همه کنترل‌ها به حالت پیش‌فرض برگردند؟",
+		"reset": "بازنشانی",
+
+		"unassigned": "بدون کلید",
+		"mouse_left": "کلیک چپ",
+		"mouse_right": "کلیک راست",
+		"mouse_middle": "کلیک وسط",
+		"wheel_up": "چرخ ماوس به بالا",
+		"wheel_down": "چرخ ماوس به پایین",
+		"wheel_left": "چرخ ماوس به چپ",
+		"wheel_right": "چرخ ماوس به راست",
+		"mouse_button": "دکمه ماوس {button}"
+	},
+
 	"ok_button": "تایید",
 	"Door_Caption": "درب",
 	"NPC0": "شهروند عادی",

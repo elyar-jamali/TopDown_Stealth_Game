@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://dc1belslvctjc"]
+
+[ext_resource type="Script" uid="uid://cg850wie5roys" path="res://scripts/UI/SettingsPanel.gd" id="1_00dr8"]
+[ext_resource type="PackedScene" uid="uid://bpka6dur52c6v" path="res://scenes/menus/KeyMappingPanel.tscn" id="1_lto8q"]
+
+[node name="SettingsPanel" type="Control" unique_id=812327369]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_00dr8")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1796182412]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer" unique_id=1748152498]
+custom_minimum_size = Vector2(430, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel" unique_id=1702926283]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="SettingsTitle" type="Label" parent="CenterContainer/Panel/VBoxContainer" unique_id=675120845]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+horizontal_alignment = 1
+
+[node name="Separator" type="HSeparator" parent="CenterContainer/Panel/VBoxContainer" unique_id=612613417]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer" unique_id=1597195442]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Language" type="OptionButton" parent="CenterContainer/Panel/VBoxContainer" unique_id=835790024]
+custom_minimum_size = Vector2(330, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="ThemeLabel" type="Label" parent="CenterContainer/Panel/VBoxContainer" unique_id=770451907]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Theme" type="OptionButton" parent="CenterContainer/Panel/VBoxContainer" unique_id=1400056415]
+custom_minimum_size = Vector2(330, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="Controls" type="Button" parent="CenterContainer/Panel/VBoxContainer" unique_id=648273981]
+layout_mode = 2
+
+[node name="Separator2" type="HSeparator" parent="CenterContainer/Panel/VBoxContainer" unique_id=1109761146]
+layout_mode = 2
+
+[node name="Back" type="Button" parent="CenterContainer/Panel/VBoxContainer" unique_id=481396919]
+custom_minimum_size = Vector2(330, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+
+[node name="KeyMappingPanel" parent="." unique_id=1960690871 instance=ExtResource("1_lto8q")]
+visible = false
+layout_mode = 1

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bas6p7masvyco" path="res://scripts/PauseMenu.gd" id="1_jvnd5"]
 [ext_resource type="Theme" uid="uid://c0h5hxqvmb4di" path="res://data/themes/dark_stealth.tres" id="2_theme"]
 [ext_resource type="PackedScene" uid="uid://ccly8kjiatngc" path="res://scenes/menus/CustomDialog.tscn" id="3_5c87e"]
+[ext_resource type="PackedScene" uid="uid://dc1belslvctjc" path="res://scenes/menus/SettingsPanel.tscn" id="4_mayd4"]
 
 [node name="PauseMenu" type="Control" unique_id=1534032226]
 layout_mode = 3
@@ -81,3 +82,12 @@ theme_type_variation = &"DangerButton"
 
 [node name="CustomDialog" parent="." unique_id=108615930 instance=ExtResource("3_5c87e")]
 layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="SettingsPanel" parent="." unique_id=812327369 instance=ExtResource("4_mayd4")]
+visible = false
+layout_mode = 1

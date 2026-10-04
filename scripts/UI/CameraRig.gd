@@ -124,7 +124,7 @@ func _handle_keyboard_rotation():
 
 
 func _handle_alt_rotation(event):
-	if Input.is_action_pressed("camera_rotate"):
+	if Input.is_action_pressed("camera_rotate_modifier"):
 		if event is InputEventMouseMotion:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 			CursorManager.set_state(CursorManager.CursorState.ROTATE)

@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://bpka6dur52c6v"]
+
+[ext_resource type="PackedScene" uid="uid://ccly8kjiatngc" path="res://scenes/menus/CustomDialog.tscn" id="1_lj40m"]
+[ext_resource type="Script" uid="uid://bt4tbho6okg35" path="res://scripts/UI/key_mapping_panel.gd" id="1_tqcxi"]
+
+[node name="KeyMappingPanel" type="MarginContainer" unique_id=1960690871]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tqcxi")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1956871688]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CenterContainer" unique_id=445860007]
+custom_minimum_size = Vector2(720, 600)
+layout_mode = 2
+
+[node name="ContentMargin" type="MarginContainer" parent="CenterContainer/PanelContainer" unique_id=1068397622]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="MainColumn" type="VBoxContainer" parent="CenterContainer/PanelContainer/ContentMargin" unique_id=1980064127]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn" unique_id=968926620]
+layout_mode = 2
+text = "Controls"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn" unique_id=1627059057]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn" unique_id=1480636470]
+layout_mode = 2
+
+[node name="BindingsList" type="VBoxContainer" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn/ScrollContainer" unique_id=1488298899]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn" unique_id=879193348]
+layout_mode = 2
+
+[node name="BottomBar" type="HBoxContainer" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn" unique_id=1172025152]
+layout_mode = 2
+
+[node name="ResetDefaultsButton" type="Button" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn/BottomBar" unique_id=1285317016]
+layout_mode = 2
+text = "Reset to Defaults"
+
+[node name="Spacer" type="Control" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn/BottomBar" unique_id=591038728]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BackButton" type="Button" parent="CenterContainer/PanelContainer/ContentMargin/MainColumn/BottomBar" unique_id=370261508]
+layout_mode = 2
+
+[node name="CustomDialog" parent="." unique_id=108615930 instance=ExtResource("1_lj40m")]
+layout_mode = 2
