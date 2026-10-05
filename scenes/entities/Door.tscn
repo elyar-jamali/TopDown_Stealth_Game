@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c3nqaomdmn4xb"]
+[gd_scene format=3 uid="uid://c3nqaomdmn4xb"]
 
 [ext_resource type="Script" uid="uid://crtq4vlevbo8" path="res://scripts/Entities/door.gd" id="1_4q3v6"]
 [ext_resource type="Material" uid="uid://g0pq8ueeynw5" path="res://data/materials/doors/wood_modern.tres" id="2_pcwxw"]
@@ -67,74 +67,85 @@ size = Vector3(0.2, 0.2, 1.5)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_iicph"]
 data = PackedVector3Array(-0.099999994, 0.099999994, 0.75, 0.099999994, 0.099999994, 0.75, -0.099999994, -0.099999994, 0.75, 0.099999994, 0.099999994, 0.75, 0.099999994, -0.099999994, 0.75, -0.099999994, -0.099999994, 0.75, 0.099999994, 0.099999994, -0.75, -0.099999994, 0.099999994, -0.75, 0.099999994, -0.099999994, -0.75, -0.099999994, 0.099999994, -0.75, -0.099999994, -0.099999994, -0.75, 0.099999994, -0.099999994, -0.75, 0.099999994, 0.099999994, 0.75, 0.099999994, 0.099999994, -0.75, 0.099999994, -0.099999994, 0.75, 0.099999994, 0.099999994, -0.75, 0.099999994, -0.099999994, -0.75, 0.099999994, -0.099999994, 0.75, -0.099999994, 0.099999994, -0.75, -0.099999994, 0.099999994, 0.75, -0.099999994, -0.099999994, -0.75, -0.099999994, 0.099999994, 0.75, -0.099999994, -0.099999994, 0.75, -0.099999994, -0.099999994, -0.75, 0.099999994, 0.099999994, 0.75, -0.099999994, 0.099999994, 0.75, 0.099999994, 0.099999994, -0.75, -0.099999994, 0.099999994, 0.75, -0.099999994, 0.099999994, -0.75, 0.099999994, 0.099999994, -0.75, -0.099999994, -0.099999994, 0.75, 0.099999994, -0.099999994, 0.75, -0.099999994, -0.099999994, -0.75, 0.099999994, -0.099999994, 0.75, 0.099999994, -0.099999994, -0.75, -0.099999994, -0.099999994, -0.75)
 
-[node name="Door" type="Node3D"]
+[node name="Door" type="Node3D" unique_id=2012501122]
 script = ExtResource("1_4q3v6")
 
-[node name="NavigationLink3D" type="NavigationLink3D" parent="."]
+[node name="NavigationLink3D" type="NavigationLink3D" parent="." unique_id=533003874]
 enabled = false
 start_position = Vector3(-1, 0, -0.5)
 end_position = Vector3(1, 0, -0.5)
 
-[node name="door" type="StaticBody3D" parent="."]
+[node name="door" type="StaticBody3D" parent="." unique_id=780618484]
 physics_material_override = SubResource("PhysicsMaterial_n5vaa")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="door"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="door" unique_id=1234931142]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.55)
 shape = SubResource("BoxShape3D_pcwxw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="door"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="door" unique_id=130479235]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -0.55)
 material_override = ExtResource("2_pcwxw")
 mesh = SubResource("BoxMesh_k83qf")
 skeleton = NodePath("")
 
-[node name="Handle" type="StaticBody3D" parent="door"]
+[node name="Handle" type="StaticBody3D" parent="door" unique_id=1598038931]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1)
 
-[node name="mid" type="MeshInstance3D" parent="door/Handle"]
+[node name="mid" type="MeshInstance3D" parent="door/Handle" unique_id=943607287]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_n5vaa")
 skeleton = NodePath("../..")
 
-[node name="In" type="MeshInstance3D" parent="door/Handle"]
+[node name="In" type="MeshInstance3D" parent="door/Handle" unique_id=715260878]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.15, 0, 0)
 mesh = SubResource("SphereMesh_pcwxw")
 skeleton = NodePath("../..")
 
-[node name="Out" type="MeshInstance3D" parent="door/Handle"]
+[node name="Out" type="MeshInstance3D" parent="door/Handle" unique_id=58643532]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.15, 0, 0)
 mesh = SubResource("SphereMesh_pcwxw")
 skeleton = NodePath("../..")
 
-[node name="midbig" type="MeshInstance3D" parent="door/Handle"]
+[node name="midbig" type="MeshInstance3D" parent="door/Handle" unique_id=1016481955]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_awxqq")
 
-[node name="frame" type="StaticBody3D" parent="."]
+[node name="frame" type="StaticBody3D" parent="." unique_id=1533025144]
 
-[node name="LeftSide" type="MeshInstance3D" parent="frame"]
+[node name="LeftSide" type="MeshInstance3D" parent="frame" unique_id=1958984081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.1)
 material_override = ExtResource("4_k83qf")
 mesh = SubResource("BoxMesh_8ejja")
 
-[node name="CollisionLeft" type="CollisionShape3D" parent="frame"]
+[node name="CollisionLeft" type="CollisionShape3D" parent="frame" unique_id=1870312189]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.1)
 shape = SubResource("ConcavePolygonShape3D_k83qf")
 
-[node name="RightSide" type="MeshInstance3D" parent="frame"]
+[node name="RightSide" type="MeshInstance3D" parent="frame" unique_id=578352874]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.2)
 material_override = ExtResource("4_k83qf")
 mesh = SubResource("BoxMesh_4q3v6")
 
-[node name="CollisionRight" type="CollisionShape3D" parent="frame"]
+[node name="CollisionRight" type="CollisionShape3D" parent="frame" unique_id=1991228122]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.2)
 shape = SubResource("ConcavePolygonShape3D_8ejja")
 
-[node name="TopSide" type="MeshInstance3D" parent="frame"]
+[node name="TopSide" type="MeshInstance3D" parent="frame" unique_id=1481504729]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -0.55)
 material_override = ExtResource("4_k83qf")
 mesh = SubResource("BoxMesh_n5vaa")
 
-[node name="CollisionTop" type="CollisionShape3D" parent="frame"]
+[node name="CollisionTop" type="CollisionShape3D" parent="frame" unique_id=2103884160]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -0.55)
 shape = SubResource("ConcavePolygonShape3D_iicph")
+
+[node name="MapMarker" type="Node2D" parent="." unique_id=1986920766]
+
+[node name="Outline" type="Polygon2D" parent="MapMarker" unique_id=73103524]
+color = Color(0.9490196, 0.9490196, 0.9098039, 1)
+polygon = PackedVector2Array(-3, 0, -3, 11, -3, 22, 3, 22, 9, 17, 3, 12, 3, 0)
+
+[node name="Fill" type="Polygon2D" parent="MapMarker" unique_id=1766174691]
+position = Vector2(0, -1)
+color = Color(0.45882353, 0.15294118, 0.023529412, 1)
+polygon = PackedVector2Array(3, 22, 3, 14, 8, 18)

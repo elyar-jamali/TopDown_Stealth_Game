@@ -90,7 +90,21 @@
 		"wheel_right": "Wheel Right",
 		"mouse_button": "Mouse Button {button}"
 	},
-	
+
+	"hud": {
+		"agent": "Agent",
+		"tooltips": {
+			"stand": "Stand",
+			"crouch": "Crouch",
+			"knockout": "Knock out an enemy without killing",
+			"lethal_takedown": "Silent close-range takedown",
+			"pistol": "Short-range pistol",
+			"rifle": "Long-range sniper rifle",
+			"heal": "Bandage",
+			"log": "Show all messages"
+		}
+	},
+
 	"ok_button": "Close",
 	"Door_Caption": "Door",
 	"NPC0": "Civilian",

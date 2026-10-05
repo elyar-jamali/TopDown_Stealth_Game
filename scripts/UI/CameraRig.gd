@@ -18,10 +18,10 @@ const CAMERA_SURFACE_MASK := 1 << 6
 
 @onready var camera: Camera3D = $Camera3D
 
-@export_range(0.0, 89.0, 1.0)
-var pitch_min_angle := 15.0
+@export_range(15.0, 45.0, 15.0)
+var pitch_min_angle := 20.0
 
-@export_range(0.0, 89.0, 1.0)
+@export_range(45.0, 90.0, 75.0)
 var pitch_max_angle := 75.0
 var yaw := 0.0
 var xaw := 0.0
@@ -33,26 +33,13 @@ var max_xaw := 0.0
 func _ready():
 	yaw = rotation.y
 	xaw = rotation.x
-
 	var camera_pitch := camera.rotation.x
-
-	min_xaw = (
-		deg_to_rad(-pitch_max_angle)
-		- camera_pitch
-	)
-
-	max_xaw = (
-		deg_to_rad(-pitch_min_angle)
-		- camera_pitch
-	)
-
+	min_xaw = (deg_to_rad(-pitch_max_angle)	- camera_pitch)
+	max_xaw = (deg_to_rad(-pitch_min_angle)	- camera_pitch)
 	xaw = clampf(xaw, min_xaw, max_xaw)
-
 	rotation.x = xaw
-
 	zoom_y = camera.position.y
 	zoom_z = camera.position.z
-
 
 func _process(delta):
 	_handle_movement(delta)
@@ -63,19 +50,15 @@ func _process(delta):
 	if debug_draw_enabled:
 		_debug_draw_camera_ray()
 
-
-func _input(event):
+func _unhandled_input(event):
 	_handle_zoom(event)
 	_handle_alt_rotation(event)
-
 
 func _handle_movement(delta):
 	var viewport_size = get_viewport().get_visible_rect().size
 	var mouse_pos = get_viewport().get_mouse_position()
-
 	var input_x = 0.0
 	var input_z = 0.0
-
 	if mouse_pos.x < edge_size:
 		input_x -= 1.0
 	if mouse_pos.x > viewport_size.x - edge_size:

@@ -9,10 +9,10 @@ func _ready():
 		$CameraRig/Camera3D,
 		$ActiveOutlineViewport,
 		$ActiveOutlineViewport/ActiveOutlineCamera,
-		$UI/ActiveOutlineRect,
+		$OutlineLayer/ActiveOutlineRect,
 		$PassiveOutlineViewport,
 		$PassiveOutlineViewport/PassiveOutlineCamera,
-		$UI/PassiveOutlineRect
+		$OutlineLayer/PassiveOutlineRect
 	)
 
 	LocalizationManager.load_lang(GameManager.selected_language)

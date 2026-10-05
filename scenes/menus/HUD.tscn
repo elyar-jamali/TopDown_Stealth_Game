@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://l5qyu2o4vhn8" path="res://scripts/UI/HUD.gd" id="1_jyvo4"]
 [ext_resource type="Shader" uid="uid://d4c4ke3lx5llb" path="res://data/shaders/hud.gdshader" id="2_4maxk"]
 [ext_resource type="PackedScene" uid="uid://bse6sj288r613" path="res://scenes/menus/HudActionSlot.tscn" id="2_sf33l"]
+[ext_resource type="Shader" uid="uid://cvcsc7vnhqon3" path="res://data/shaders/map_paper.gdshader" id="4_dhgmt"]
+[ext_resource type="Texture2D" uid="uid://bo043q82g0sw4" path="res://data/icons/resize.png" id="4_v3b6h"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3b6h"]
 bg_color = Color(0.14509805, 0.16470589, 0.17254902, 1)
@@ -17,6 +19,27 @@ shader_parameter/corner_radius_px = 45.0
 shader_parameter/border_width_px = 5.0
 shader_parameter/corner_on_left = false
 shader_parameter/border_color = Color(1, 1, 1, 0.29)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dhgmt"]
+shader = ExtResource("4_dhgmt")
+shader_parameter/paper_color = Color(0.89, 0.86, 0.75, 1)
+shader_parameter/saturation = 0.030000001425
+shader_parameter/contrast = 1.1000000285
+shader_parameter/edge_strength = 0.32
+shader_parameter/ink_strength = 0.38
+shader_parameter/light_floor = 0.28
+shader_parameter/posterize_levels = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mtbsk"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_top_left = 7
+corner_radius_top_right = 7
+corner_radius_bottom_right = 7
+corner_radius_bottom_left = 7
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v3b6h"]
 shader = ExtResource("2_4maxk")
@@ -134,12 +157,118 @@ layout_mode = 2
 [node name="HealSlot" parent="LeftHUD/LeftRoot/ActionsArea/ActionsColumn" unique_id=655995982 instance=ExtResource("2_sf33l")]
 layout_mode = 2
 
+[node name="MapMargin" type="MarginContainer" parent="." unique_id=872579107]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -270.0
+offset_bottom = 210.0
+grow_horizontal = 0
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 75
+
+[node name="MapPanel" type="PanelContainer" parent="MapMargin" unique_id=1645120275]
+layout_mode = 2
+
+[node name="MapContent" type="Control" parent="MapMargin/MapPanel" unique_id=2143601576]
+clip_contents = true
+layout_mode = 2
+
+[node name="Background" type="ColorRect" parent="MapMargin/MapPanel/MapContent" unique_id=1936745613]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -100.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MapViewportContainer" type="SubViewportContainer" parent="MapMargin/MapPanel/MapContent" unique_id=111971780]
+material = SubResource("ShaderMaterial_dhgmt")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+stretch = true
+
+[node name="MapViewport" type="SubViewport" parent="MapMargin/MapPanel/MapContent/MapViewportContainer" unique_id=2099631495]
+handle_input_locally = false
+size = Vector2i(195, 200)
+render_target_update_mode = 4
+
+[node name="MapRig" type="Node3D" parent="MapMargin/MapPanel/MapContent/MapViewportContainer/MapViewport" unique_id=51885630]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+
+[node name="MapCamera" type="Camera3D" parent="MapMargin/MapPanel/MapContent/MapViewportContainer/MapViewport/MapRig" unique_id=785461706]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+cull_mask = 851967
+projection = 1
+current = true
+size = 35.0
+
+[node name="MapMarkers" type="Control" parent="MapMargin/MapPanel/MapContent" unique_id=1029272668]
+z_index = 6
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CameraViewFrame" type="Line2D" parent="MapMargin/MapPanel/MapContent/MapMarkers" unique_id=2006736993]
+z_index = -1
+closed = true
+width = 2.0
+default_color = Color(1, 1, 0.6, 1)
+antialiased = true
+
+[node name="MapFrame" type="Panel" parent="MapMargin/MapPanel/MapContent" unique_id=886919994]
+z_index = 8
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_mtbsk")
+
+[node name="ResizeHandle" type="Control" parent="MapMargin/MapPanel/MapContent" unique_id=1588440059]
+z_index = 10
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+offset_right = 22.0
+grow_vertical = 0
+offset_transform_enabled = true
+
+[node name="Grip" type="TextureRect" parent="MapMargin/MapPanel/MapContent/ResizeHandle" unique_id=2097085094]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -22.0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("4_v3b6h")
+stretch_mode = 5
+
 [node name="RightHUD" type="MarginContainer" parent="." unique_id=748629916]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -80.0
-offset_bottom = 80.0
+offset_left = -130.0
+offset_bottom = 162.0
 grow_horizontal = 0
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 10
@@ -158,13 +287,12 @@ layout_mode = 2
 [node name="MapHead" type="HBoxContainer" parent="RightHUD/RightRoot/MapMargin/MapContainer" unique_id=250236557]
 layout_mode = 2
 
-[node name="MapLabel" type="Label" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=127708805]
+[node name="MapTitle" type="Label" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=127708805]
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(5, 0)
 theme_override_colors/font_color = Color(1, 1, 0, 1)
 theme_override_font_sizes/font_size = 10
-text = "Mini Map"
 
 [node name="Spacer" type="Control" parent="RightHUD/RightRoot/MapMargin/MapContainer/MapHead" unique_id=1279095475]
 layout_mode = 2

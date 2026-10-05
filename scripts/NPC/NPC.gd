@@ -22,12 +22,8 @@ var vision_horizontal_angle: float = 60.0
 var vision_vertical_angle: float = 120.0
 @export_range(0.1, 3.0, 0.05)
 var vision_eye_height: float = 1.6
-@export var vision_color: Color = Color(
-	0.15,
-	0.85,
-	0.25,
-	0.80
-)
+@export var vision_color: GameColors.Preset = GameColors.Preset.GREEN
+@export var vision_opacity: GameColors.Opacity = GameColors.Opacity.NORMAL
 
 @export_group("Vision Scan")
 @export var vision_scan_enabled: bool = true
@@ -52,6 +48,9 @@ var vision_scan_pause_time: float = 0.5
 
 #نوع npc
 @export var npc_name := NPCType.Civilian_Male
+@export var highlight_color: GameColors.Preset = GameColors.Preset.GREEN
+@export var map_marker_color: GameColors.Preset = GameColors.Preset.RED
+@onready var map_marker_fill: Polygon2D = $MapMarker/Fill
 @export var can_talk := true
 @export var hostile := false
 @export var Icon_default = load("res://data/Pic/civil1.jpg")
@@ -65,7 +64,7 @@ var vision_scan_pause_time: float = 0.5
 
 func _ready():
 	_apply_vision_settings()
-	
+	map_marker_fill.color = GameColors.get_color(map_marker_color)
 	if interaction_range <= 0:
 		var shape = collision.shape
 
@@ -101,7 +100,7 @@ func _physics_process(delta: float) -> void:
 	agent.velocity = Vector3.ZERO
 
 func get_outline_color() -> Color:
-	return vision_color
+	return GameColors.get_color(highlight_color)
 
 func get_hover_text():
 	return "NPC" + var_to_str(npc_name)
@@ -157,16 +156,14 @@ func toggle_vision() -> void:
 
 func _apply_vision_settings() -> void:
 	if vision_component == null:
-		push_warning(
-			"VisionComponent not found on NPC: %s"
-			% name
-		)
+		push_warning("VisionComponent not found on NPC: %s"	% name)
 		return
-	vision_component.vision_color = vision_color
+	vision_component.vision_color = GameColors.get_color(vision_color, vision_opacity)
 	vision_component.view_distance = (vision_distance)
 	vision_component.horizontal_view_angle = (vision_horizontal_angle)
 	vision_component.vertical_view_angle = (vision_vertical_angle)
 	vision_component.eye_height = (vision_eye_height)
+	
 	if vision_scan_enabled:
 		vision_component.scan_angle = (vision_scan_half_angle)
 		vision_component.scan_speed = (vision_scan_speed)

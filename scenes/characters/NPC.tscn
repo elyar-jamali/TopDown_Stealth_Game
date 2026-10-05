@@ -27,3 +27,14 @@ shape = SubResource("CapsuleShape3D_tvc50")
 script = ExtResource("3_g2a5c")
 scan_angle = 0.0
 scan_speed = 15.0
+
+[node name="MapMarker" type="Node2D" parent="." unique_id=538476860]
+visible = false
+
+[node name="Outline" type="Polygon2D" parent="MapMarker" unique_id=106973017]
+color = Color(0.9490196, 0.9490196, 0.9098039, 1)
+polygon = PackedVector2Array(-9, 8, 0, -11, 9, 8, 0, 4)
+
+[node name="Fill" type="Polygon2D" parent="MapMarker" unique_id=1801173517]
+color = Color(1, 0, 0, 1)
+polygon = PackedVector2Array(-7, 6, 0, -9, 7, 6, 0, 3)

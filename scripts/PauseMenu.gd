@@ -49,6 +49,8 @@ func toggle_pause() -> void:
 		pause_game()
 
 func pause_game() -> void:
+	HoverSystem.clear_hover()
+	CursorManager.set_state(CursorManager.CursorState.DEFAULT)
 	get_tree().paused = true
 	visible = true
 	settings_panel.hide()

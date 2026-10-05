@@ -19,3 +19,14 @@ shape = SubResource("CapsuleShape3D_0xm2m")
 [node name="Visual" type="Node3D" parent="." unique_id=1547873818]
 
 [node name="player_rigged" parent="Visual" unique_id=671514872 instance=ExtResource("2_qhqgy")]
+
+[node name="MapMarker" type="Node2D" parent="." unique_id=2060456816]
+visible = false
+
+[node name="Outline" type="Polygon2D" parent="MapMarker" unique_id=1452917463]
+color = Color(0.9490196, 0.9490196, 0.9098039, 1)
+polygon = PackedVector2Array(-9, 8, 0, -11, 9, 8, 0, 4)
+
+[node name="Fill" type="Polygon2D" parent="MapMarker" unique_id=1238000754]
+color = Color(0, 0.6627277, 1.540184e-06, 1)
+polygon = PackedVector2Array(-7, 6, 0, -9, 7, 6, 0, 3)

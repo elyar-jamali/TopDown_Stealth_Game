@@ -198,13 +198,13 @@ mesh = SubResource("BoxMesh_cd15k")
 [node name="Door" parent="NavigationRegion3D" unique_id=30396763 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 7.1547174, 0.03209267, 0)
 door_material = 3
-object_id = "metal_door1"
+map_marker_color = null
 
 [node name="Door2" parent="NavigationRegion3D" unique_id=2084061617 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 6.690947, 0.030012416, 14.737785)
-door_material = 1
+outline_color = 0
 door_state = 2
-object_id = "wooden_door1"
+map_marker_color = 4
 
 [node name="Room" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1837052751]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.1513376, 0.032077506, -0.5430577)
@@ -298,18 +298,19 @@ transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0,
 
 [node name="NPC" parent="." unique_id=318198715 instance=ExtResource("1_msin7")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -18.631, 0, 1.336)
-vision_color = Color(0.40192068, 0.7439383, 1, 0.8)
+vision_color = 4
 npc_name = 1
+highlight_color = 4
 
 [node name="NPC2" parent="." unique_id=453139073 instance=ExtResource("1_msin7")]
-transform = Transform3D(-0.6717479, 0, 0.7407799, 0, 1, 0, -0.7407799, 0, -0.6717479, 0.9703059, 7.2569456, 3.1594439)
+transform = Transform3D(-0.6717479, 0, 0.7407799, 0, 1, 0, -0.7407799, 0, -0.6717479, 0.97, 0, 3.159)
 npc_name = 1
 
 [node name="NPC4" parent="." unique_id=765280887 instance=ExtResource("1_msin7")]
 transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, -0.7567644, 0.027802706, 11.294444)
 npc_name = 1
 
-[node name="ShowcaseDecor" type="Node3D" parent="." unique_id=288768301]
+[node name="ShowcaseDecor" type="Node3D" parent="." unique_id=288768301 groups=["vision_receiver"]]
 
 [node name="Sidewalk1" type="MeshInstance3D" parent="ShowcaseDecor" unique_id=918619376]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.865, 0.03, 0)
@@ -440,7 +441,7 @@ omni_range = 7.0
 [node name="sidewalk2" type="Node3D" parent="ShowcaseDecor" unique_id=1153276884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91376877, 0, -9.2076845)
 
-[node name="Sidewalk_A" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2" unique_id=1259175352 groups=["vision_receiver"]]
+[node name="Sidewalk_A" type="MeshInstance3D" parent="ShowcaseDecor/sidewalk2" unique_id=1259175352]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.964187, 0.03, 3.5480433)
 material_override = SubResource("Mat_Concrete")
 mesh = SubResource("Mesh_Sidewalk_Long")

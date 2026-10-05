@@ -1,5 +1,6 @@
 extends CharacterBody3D 
  
+@export_group("Game Settings")
 @export var move_speed := 3.0 
 @export var stuck_time_limit := 0.10 
 @export var stuck_move_threshold := 0.01 
@@ -14,6 +15,9 @@ extends CharacterBody3D
 @export var max_health := 100
 var current_health := 100
 
+@export_group("Map Settings")
+@export var map_marker_color: GameColors.Preset = GameColors.Preset.GREEN
+
 signal movement_state_changed(new_state)
 signal health_changed(current_health, max_health)
 
@@ -21,7 +25,8 @@ signal health_changed(current_health, max_health)
 @onready var path_drawer := PathDrawer.new() 
 @onready var animation_player: AnimationPlayer = $Visual/player_rigged/AnimationPlayer 
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D 
- 
+@onready var map_marker_fill: Polygon2D = $MapMarker/Fill
+
 var pending_interaction = null 
 var last_click_time := 0.0 
 var double_click_threshold := 0.25 
@@ -98,6 +103,7 @@ func toggle_crouch():
 			change_movement_state(MovementState.CROUCH_IDLE)
 
 func _ready(): 
+	map_marker_fill.color = GameColors.get_color(map_marker_color)
 	floor_max_angle = deg_to_rad(45.0) 
 	floor_snap_length = 0.5 
 	max_slides = 6 
@@ -493,6 +499,11 @@ func _handle_left_click():
  
  
 func _process(_delta): 
+	var hovered_control := get_viewport().gui_get_hovered_control()
+
+	if hovered_control != null:
+		HoverSystem.clear_hover()
+		return	
 	var result := InteractionSystem.raycast( 
 		get_viewport().get_camera_3d(), 
 		get_viewport().get_mouse_position(), 

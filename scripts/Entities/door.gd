@@ -18,13 +18,15 @@ enum DoorMaterial {
 @export var interactable: bool = true
 @export var highlightable: bool = true
 @export var targetable: bool = false
-@export var outline_color: Color = Color.YELLOW
+@export var outline_color: GameColors.Preset = GameColors.Preset.YELLOW
 @export var door_material := DoorMaterial.WOOD_MODERN
 @export var door_state := DoorState.CLOSED
 @export var object_id: String = ""
 # سرعت باز و بسته شدن
 @export var open_speed := 0.5
 @export var door_detour_offset := 0.6
+@export_group("Map Settings")
+@export var map_marker_color: GameColors.Preset = GameColors.Preset.YELLOW
 
 var last_material = -1
 var last_state = -1
@@ -38,6 +40,8 @@ var last_state = -1
 @onready var frame_left: MeshInstance3D = $frame/LeftSide
 @onready var frame_right: MeshInstance3D = $frame/RightSide
 @onready var frame_top: MeshInstance3D = $frame/TopSide
+
+@onready var map_marker_fill: Polygon2D = $MapMarker/Fill
 
 # حداقل قاصله برای فعال شدن
 var interaction_range: float:
@@ -65,51 +69,30 @@ func get_detour_distance() -> float:
 
 	return 1.1
 
-func get_detour_points(
-	from_position: Vector3,
-	player_radius: float
-) -> Array[Vector3]:
-
+func get_detour_points(from_position: Vector3, player_radius: float) -> Array[Vector3]:
 	var hinge: Vector3 = get_hinge_position()
-
 	# جهت واقعی برگ از لولا به نوک
 	var leaf_direction: Vector3 = -door.global_basis.z
 	leaf_direction.y = 0.0
-
 	if leaf_direction.length_squared() < 0.0001:
 		return []
-
 	leaf_direction = leaf_direction.normalized()
-
 	# جهت عمود بر برگ روی صفحه XZ
 	var side_direction: Vector3 = (
 		Vector3.UP.cross(leaf_direction)
 	).normalized()
-
 	var player_offset: Vector3 = from_position - hinge
 	player_offset.y = 0.0
-
 	# مشخص می‌کنیم بازیکن الان کدام طرف برگ قرار دارد
 	var side_amount: float = player_offset.dot(side_direction)
-
 	var side_sign := 1.0
-
 	if side_amount < 0.0:
 		side_sign = -1.0
-
 	# فاصله امن از لولا در امتداد برگ:
 	# طول برگ + شعاع بازیکن + 10 سانت
-	var along_distance: float = (
-		get_detour_distance()
-		+ player_radius
-		+ 0.1
-	)
-
+	var along_distance: float = (get_detour_distance() + player_radius + 0.1)
 	# فاصله امن از خود خط برگ
-	var side_clearance: float = (
-		player_radius
-		+ 0.1
-	)
+	var side_clearance: float = (player_radius + 0.1)
 
 	# نقطه اول در همان سمت فعلی بازیکن
 	var point_a: Vector3 = (
@@ -128,39 +111,27 @@ func get_detour_points(
 	point_a.y = from_position.y
 	point_b.y = from_position.y
 
-	return [
-		point_a,
-		point_b
-	]
+	return [point_a, point_b]
 
-func get_door_plane_point(
-	p: Vector3
-) -> Vector3:
-
+func get_door_plane_point(p: Vector3) -> Vector3:
 	var door_origin := global_position
-
 	var normal := global_transform.basis.z
 	normal.y = 0
 	normal = normal.normalized()
-
-	var distance := (
-		(p - door_origin).dot(normal)
-	)
-
+	var distance := ((p - door_origin).dot(normal))
 	return p - normal * distance
 
 func get_cursor():
 	if door_state == DoorState.LOCKED:
 		return CursorManager.CursorState.LOCKED
-
 	return CursorManager.CursorState.INTERACT
 
 func set_outline(enable: bool) -> void:
+	var color := GameColors.get_color(outline_color)
 	if not highlightable:
-		OutlineSystem.set_target(self, false, outline_color)
+		OutlineSystem.set_target(self, false, color)
 		return
-
-	OutlineSystem.set_target(self, enable, outline_color)
+	OutlineSystem.set_target(self, enable, color)
 
 func get_interaction_position():
 	var shape = collision.shape
@@ -179,7 +150,7 @@ func is_moving_leaf_collider(collider: Object) -> bool:
 	return collider == door
 
 func _ready():
-
+	map_marker_fill.color = GameColors.get_color(map_marker_color)
 	refresh_visual()
 
 	# حالت اولیه در

@@ -49,3 +49,6 @@ func set_disabled(value: bool) -> void:
 
 func set_selected(value: bool):
 	action_button.modulate = Color(1.2,1.2,1.2) if value else Color(1,1,1)
+
+func set_tooltip(text: String) -> void:
+	action_button.tooltip_text = text

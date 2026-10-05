@@ -10,6 +10,8 @@ func setup(parent: Node):
 	parent.add_child(path_mesh)
 	path_mesh.top_level = true
 	path_mesh.mesh = immediate_mesh
+	path_mesh.set_layer_mask_value(1, false)
+	path_mesh.set_layer_mask_value(18, true)
 
 	path_material.albedo_color = Color(1.0, 1.0, 0.0, 0.765)
 	path_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED

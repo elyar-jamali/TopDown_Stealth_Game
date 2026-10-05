@@ -37,6 +37,7 @@ var current_level_path := ""
 var selected_language := "en"
 var selected_theme := "dark_stealth"
 var pending_confirm_action := ConfirmAction.NONE
+var map_panel_size := Vector2.ZERO
 
 func _ready():
 	load_settings()
@@ -61,6 +62,8 @@ func save_settings():
 		selected_theme
 	)
 	_save_input_bindings(config)
+	config.set_value("map", "width", map_panel_size.x)
+	config.set_value("map", "height", map_panel_size.y)
 	var error := config.save(SETTINGS_PATH)
 	if error != OK:
 		push_warning(
@@ -104,7 +107,9 @@ func load_settings():
 			"dark_stealth"
 		)
 	)
-
+	var map_width := float(config.get_value("map", "width", 0.0))
+	var map_height := float(config.get_value("map", "height", 0.0))
+	map_panel_size = Vector2(map_width, map_height)
 	_load_input_bindings(config)
 
 
