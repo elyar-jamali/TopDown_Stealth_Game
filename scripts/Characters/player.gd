@@ -1,19 +1,23 @@
 extends CharacterBody3D 
  
-@export_group("Game Settings")
-@export var move_speed := 3.0 
-@export var stuck_time_limit := 0.10 
-@export var stuck_move_threshold := 0.01 
- 
-#پارامترهای مربوط به گیر کردن و تغییر مسیر برای عبور از گیر 
-@export var detour_distance := 2.0 
-@export var detour_reach_distance := 0.12 
- 
-@export var standing_height := 1.75 
-@export var crouching_height := 1.10 
+@export_group("Movement Speeds")
+@export var walk_speed: float = 2.5
+@export var run_speed: float = 5.5
+@export var crouch_walk_speed: float = 1.5
+var move_speed := 0.0
 
+var stuck_time_limit := 0.10 
+var stuck_move_threshold := 0.01 
+#پارامترهای مربوط به گیر کردن و تغییر مسیر برای عبور از گیر 
+var detour_distance := 2.0 
+var detour_reach_distance := 0.12 
+ 
+@export_group("Gameplay Settings")
 @export var max_health := 100
-var current_health := 100
+var current_health : int
+
+@export_group("Animation Settings")
+@export var animation_set: CharacterAnimationData.Set = CharacterAnimationData.Set.MALE
 
 @export_group("Map Settings")
 @export var map_marker_color: GameColors.Preset = GameColors.Preset.GREEN
@@ -49,33 +53,28 @@ var movement_state: MovementState = MovementState.IDLE
 var desired_movement_state: MovementState = MovementState.IDLE 
 var return_state_after_run := MovementState.IDLE 
  
-const MOVEMENT_DATA = { 
-	MovementState.IDLE: { 
-		"speed": 0.0, 
-		"animation": "human_animations/M_idle", 
-		"height": 1.75 
-	}, 
-	MovementState.WALK: { 
-		"speed": 3.0, 
-		"animation": "human_animations/M_walk", 
-		"height": 1.75 
-	}, 
-	MovementState.RUN: { 
-		"speed": 7.0, 
-		"animation": "human_animations/M_run", 
-		"height": 1.75 
-	}, 
-	MovementState.CROUCH_IDLE: { 
-		"speed": 0.0, 
-		"animation": "human_animations/M_crouchidle", 
-		"height": 0.95 
-	}, 
-	MovementState.CROUCH_WALK: { 
-		"speed": 1.5, 
-		"animation": "human_animations/M_crouchwalk", 
-		"height": 0.95 
-	} 
-} 
+const MOVEMENT_DATA = {
+	MovementState.IDLE: {
+		"action": CharacterAnimationData.Action.IDLE,
+		"height": 1.75
+	},
+	MovementState.WALK: {
+		"action": CharacterAnimationData.Action.WALK,
+		"height": 1.75
+	},
+	MovementState.RUN: {
+		"action": CharacterAnimationData.Action.RUN,
+		"height": 1.75
+	},
+	MovementState.CROUCH_IDLE: {
+		"action": CharacterAnimationData.Action.CROUCH_IDLE,
+		"height": 0.95
+	},
+	MovementState.CROUCH_WALK: {
+		"action": CharacterAnimationData.Action.CROUCH_WALK,
+		"height": 0.95
+	}
+}
  
 func is_crouched() -> bool:
 	return (
@@ -213,6 +212,17 @@ func _physics_process(delta):
  
 	previous_position = global_position 
  
+func _get_movement_speed(state: MovementState) -> float:
+	match state:
+		MovementState.WALK:
+			return walk_speed
+		MovementState.RUN:
+			return run_speed
+		MovementState.CROUCH_WALK:
+			return crouch_walk_speed
+		_:
+			return 0.0
+
 func _get_collision_radius() -> float: 
 	if collision_shape.shape is CapsuleShape3D: 
 		var capsule := collision_shape.shape as CapsuleShape3D 
@@ -234,7 +244,8 @@ func _on_safe_velocity_computed(new_safe_velocity: Vector3):
 	velocity.z = new_safe_velocity.z 
  
 	move_and_slide() 
-	update_movement_state() 
+	_update_movement_state()
+	_update_animation_speed()
  
  
 func _update_stuck_state(delta: float): 
@@ -547,7 +558,7 @@ func _horizontal_distance(point_a: Vector3, point_b: Vector3) -> float:
 	) 
  
  
-func update_movement_state(): 
+func _update_movement_state(): 
  
 	var speed = Vector2( 
 		velocity.x, 
@@ -571,9 +582,11 @@ func update_movement_state():
 			if agent.is_navigation_finished(): 
 				change_movement_state(return_state_after_run) 
  
-func play_animation(anim_name: String): 
-	if animation_player.current_animation != anim_name: 
-		animation_player.play(anim_name) 
+func play_animation(anim_name: StringName, playback_speed: float = 1.0) -> void:
+	animation_player.speed_scale = playback_speed
+
+	if animation_player.current_animation != anim_name:
+		animation_player.play(anim_name)
  
 func _set_player_height(height: float): 
  
@@ -594,8 +607,14 @@ func change_movement_state(new_state: MovementState):
 	movement_state = new_state 
  
 	var data = MOVEMENT_DATA[movement_state] 
-	move_speed = data.speed 
-	play_animation(data.animation) 
+	move_speed = _get_movement_speed(movement_state)
+	
+	var animation_name := CharacterAnimationData.get_animation(
+		animation_set,
+		data.action
+	)
+	play_animation(animation_name)
+
 	_set_player_height(data.height) 
 	agent.height = data.height
 	movement_state_changed.emit(movement_state)
@@ -607,3 +626,23 @@ func take_damage(amount: int):
 func heal(amount: int):
 	current_health = min(current_health + amount, max_health)
 	health_changed.emit(current_health, max_health)
+
+func _update_animation_speed() -> void:
+	if movement_state == MovementState.IDLE or movement_state == MovementState.CROUCH_IDLE:
+		animation_player.speed_scale = 1.0
+		return
+
+	var data = MOVEMENT_DATA[movement_state]
+
+	var real_velocity := get_real_velocity()
+	var actual_speed := Vector2(real_velocity.x, real_velocity.z).length()
+
+	if actual_speed <= 0.05:
+		return
+
+	animation_player.speed_scale = CharacterAnimationData.get_playback_speed(
+		animation_set,
+		data.action,
+		actual_speed
+	)
+	

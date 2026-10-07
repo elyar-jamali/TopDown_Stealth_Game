@@ -35,11 +35,30 @@ func _setup_icon(mainspot):
 			hotspot = Vector2(16, 16)
 			#icon.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
 
+
 func _process(_delta):
-	# Cursor همیشه روی موس
-	global_position = get_viewport().get_mouse_position()-hotspot
-	var text_size = hover_label.get_minimum_size()
-	hover_label.position = Vector2(-text_size.x * 0.5 +hotspot.x, -30)
+	global_position = get_viewport().get_mouse_position() - hotspot
+
+	var text_size := hover_label.get_minimum_size()
+	var target = HoverSystem.current_hover
+
+	if target != null and target.has_method("get_hover_anchor_position"):
+		var camera := get_viewport().get_camera_3d()
+
+		if camera != null:
+			var world_position: Vector3 = target.get_hover_anchor_position()
+			var screen_position := camera.unproject_position(world_position)
+
+			hover_label.global_position = Vector2(
+				screen_position.x - text_size.x * 0.5,
+				screen_position.y - text_size.y
+			)
+			return
+
+	hover_label.position = Vector2(
+		-text_size.x * 0.5 + hotspot.x,
+		-30
+	)
 
 func update_cursor(state):
 	match state:

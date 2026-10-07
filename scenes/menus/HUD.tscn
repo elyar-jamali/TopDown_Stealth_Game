@@ -100,7 +100,6 @@ offset_transform_enabled = true
 offset_transform_position = Vector2(0, 5)
 theme_override_styles/background = SubResource("StyleBoxFlat_v3b6h")
 theme_override_styles/fill = SubResource("StyleBoxFlat_4maxk")
-value = 80.0
 show_percentage = false
 
 [node name="PortraitArea" type="Control" parent="LeftHUD/LeftRoot/AgentMargin/AgentContent" unique_id=1994086355]

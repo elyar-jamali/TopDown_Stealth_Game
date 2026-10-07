@@ -25,10 +25,13 @@ This is a personal project developed in my spare time to explore game architectu
 - Movement state system with idle, walk, run, crouch idle, and crouch walk states
 - Crouch / stand switching with matching animations and movement behavior
 - Walk / run movement with automatic animation switching
+- Ground-speed synchronized locomotion animations to reduce foot sliding
+- Shared male / female animation data and reference movement speeds
 - Reusable interaction system
 - Reusable door scenes with open, closed, and locked states
 - Navigation-aware doors with detour handling
 - Hover highlighting and contextual cursor states
+- World-anchored hover labels for NPCs and doors
 - Custom cursor system
 
 ### Guard and NPC Systems
@@ -37,6 +40,62 @@ This is a personal project developed in my spare time to explore game architectu
 - Visual guard field-of-view overlay
 - Standing / crouching visibility classification
 - Basic NPC structure, interaction, and ground physics
+- Navigation-based NPC patrol system
+- Loop, Ping-Pong, and Once patrol modes
+- Configurable patrol start point, movement speed, wait time, and turning speed
+- Navigation avoidance while patrolling
+- Automatic idle / walk animation handling during patrol
+- Shared patrol routes that can be assigned independently to NPCs
+- Custom editor Waypoint Painter for creating patrol routes
+
+### Patrol Route Workflow
+
+Patrol routes can be created directly in the Godot 3D editor using the **Waypoint Paint** tool.
+
+- Enable `Waypoint Paint` from the 3D editor toolbar.
+- Left-click a valid navigable surface to add patrol points.
+- Drag an existing point to reposition it.
+- Right-click a point to delete it.
+- Use `Ctrl+Z` / Redo for editor undo and redo.
+- Press `Esc` to leave waypoint painting mode.
+- Waypoint numbers indicate the patrol order.
+
+After creating a route:
+
+1. Rename `WaypointDraft` to a route name such as `Guard01Route`.
+2. Move it under the level's `PatrolRoutes` node.
+3. Attach `PatrolRoute.gd` to `Guard01Route`.
+4. Disable its visibility if the editor markers are no longer needed.
+5. Assign the route to the NPC's `Patrol Route` property.
+6. Select the desired patrol mode and patrol settings from the NPC Inspector.
+
+Example scene structure:
+
+```text
+Level
+├── PatrolRoutes
+│   ├── Guard01Route
+│   │   ├── Point_001
+│   │   ├── Point_002
+│   │   └── Point_003
+│   └── Guard02Route
+├── Guard01
+└── Guard02
+```
+
+Patrol routes only store ordered waypoint positions. Patrol behavior such as Loop, Ping-Pong, Once, movement speed, and wait time is configured independently on each NPC.
+
+### Tactical Map
+
+- Resizable tactical map
+- Independent map camera
+- Click-to-recenter map navigation
+- Map zoom controls
+- Player and NPC map markers
+- Configurable marker colors
+- Visibility filtering for map-only rendering
+- Map panel size persistence during gameplay
+- Localized map title and HUD integration
 
 ### HUD and UI
 
@@ -52,11 +111,15 @@ This is a personal project developed in my spare time to explore game architectu
 - Responsive UI layouts built with Godot containers
 - Multiple UI themes
 - Theme selection and persistence
-- Settings panel
+- Shared settings panel
 
 ### Input and Localization
 
 - Centralized `InputMap`-based controls instead of hard-coded gameplay keys
+- User-configurable keyboard and mouse key mapping
+- Key-binding conflict detection and replacement
+- Reset-to-default controls
+- Persistent custom key bindings
 - Keyboard and mouse shortcuts routed to the same gameplay / HUD actions as mouse clicks
 - Camera movement, rotation, and zoom mapped through `InputMap`
 - Dynamic localization system
@@ -64,7 +127,7 @@ This is a personal project developed in my spare time to explore game architectu
 - Runtime language switching and persistence
 - Dialogue system with timed and manual closing
 
-## Controls
+## Default Controls
 
 | Input | Action |
 | --- | --- |
@@ -72,11 +135,11 @@ This is a personal project developed in my spare time to explore game architectu
 | Right Mouse Button | Cancel the current action |
 | Middle Mouse Button | Toggle a guard's vision field |
 | Space | Crouch / stand |
-| 1 | Knockout action slot |
-| 2 | Lethal takedown action slot |
-| 3 | Pistol action slot |
-| 4 | Scoped rifle action slot |
-| 5 | Heal action slot |
+| F1 | Knockout action slot |
+| F2 | Lethal takedown action slot |
+| F3 | Pistol action slot |
+| F4 | Scoped rifle action slot |
+| F5 | Heal action slot |
 | M | Map |
 | L | Dialogue / log |
 | Alt + Mouse Movement | Rotate and tilt the camera |
@@ -85,26 +148,29 @@ This is a personal project developed in my spare time to explore game architectu
 | W / A / S / D | Move the camera |
 | Q / E | Rotate the camera |
 
-> **Development note:** Controls are defined through Godot `InputMap`. The HUD reads the current shortcut bindings dynamically, providing the foundation for future user-configurable key remapping.
-
-> **Development note:** Debug vision rays from guards to the player are currently left enabled for vision-system testing.
+> **Development note:** Controls are defined through Godot `InputMap` and can be changed through the in-game key-mapping interface. HUD shortcut labels update dynamically from the current bindings.
 
 ## Character Workflow
 
 The current player character was created with **MakeHuman** and rigged/animated using **Adobe Mixamo**.
 
-The animation tracks used by the game are stored inside the Godot player visual scene. The original animation source files are not required at runtime.
+The animation tracks used by the game are stored inside the Godot character visual scenes. The original animation source files are not required at runtime.
+
+Male and female locomotion animations use shared animation metadata so NPCs and the player can automatically select the correct animation set and synchronize animation playback with actual ground movement speed.
 
 See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing notes.
 
 ## Planned Features
 
-- Mini map and full map system
+- Player knockout and lethal takedown mechanics
+- NPC alive / knocked-out / dead states
 - Save / Load system
-- User-configurable key remapping UI
+- Pickups and weapons
 - More advanced NPC AI and guard state machine
+- Additional NPC variants
 - Multiple levels
 - Additional character and NPC animations
+- Audio system
 - Inventory system (possible future feature)
 - Character customization
 

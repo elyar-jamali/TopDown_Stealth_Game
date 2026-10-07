@@ -38,6 +38,17 @@ environment = SubResource("Environment_tefeu")
 [node name="LevelHolder" type="Node3D" parent="." unique_id=1098931422]
 
 [node name="Player" parent="." unique_id=1568914956 instance=ExtResource("2_o6xl0")]
+walk_speed = null
+run_speed = null
+crouch_walk_speed = null
+stuck_time_limit = null
+stuck_move_threshold = null
+detour_distance = null
+detour_reach_distance = null
+standing_height = null
+crouching_height = null
+max_health = null
+map_marker_color = null
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=1809229524]
 script = ExtResource("1_0wfyh")

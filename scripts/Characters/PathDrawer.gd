@@ -102,6 +102,9 @@ func get_surface_y(node_owner: Node3D, point: Vector3) -> float:
 		point + Vector3(0, -5.0, 0)
 	)
 
+	if node_owner is CollisionObject3D:
+		query.exclude = [node_owner.get_rid()]
+
 	var result = space_state.intersect_ray(query)
 
 	if result:

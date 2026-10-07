@@ -14,7 +14,7 @@ enum VisibilityResult {
 
 #برای ساخت خطوط دید
 @export_group("Debug Vision Rays")
-@export var debug_draw_visibility_rays: bool = true
+@export var debug_draw_visibility_rays: bool = false
 @export var debug_draw_only_visible_rays: bool = true
 @export var debug_ray_head_color: Color = Color(1.0, 0.2, 0.2, 1.0)     # قرمز
 @export var debug_ray_crouch_color: Color = Color(1.0, 0.9, 0.1, 1.0)   # زرد
@@ -91,12 +91,14 @@ func _find_debug_target() -> void:
 	)
 
 func _ready() -> void:
-	_setup_debug_ray_mesh()	
-	#برای دیباگ
-	call_deferred("_find_debug_target")
+	if debug_draw_visibility_rays:
+		_setup_debug_ray_mesh()	
+		#برای دیباگ
+		call_deferred("_find_debug_target")
 
 func _physics_process(_delta: float) -> void:
-	_update_debug_visibility_rays()
+	if debug_draw_visibility_rays:
+		_update_debug_visibility_rays()
 
 func _process(delta: float) -> void:
 	if scan_angle <= 0.0:

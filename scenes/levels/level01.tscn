@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://77uphup8j840" path="res://scenes/characters/NPC.tscn" id="1_msin7"]
 [ext_resource type="PackedScene" uid="uid://c3nqaomdmn4xb" path="res://scenes/entities/Door.tscn" id="3_g0jr5"]
+[ext_resource type="Script" uid="uid://edhr4kn3kha3" path="res://scripts/NPC/PatrolRoute.gd" id="3_i4uh8"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_chssp"]
 vertices = PackedVector3Array(-14.499685, 0.33529112, -0.79999924, -14.599686, 0.33529112, -0.19999886, -14.299685, 0.33529112, 0.30000114, -13.299685, 0.33529112, 0.20000076, -7.7996855, 0.33529112, 2.5, 6.600315, 0.33529112, -0.8999996, 6.7003155, 0.33529112, -3.3999996, -14.799685, 0.33529112, -1.6000004, -13.099686, 0.33529112, 0.39999962, -13.099686, 0.33529112, 1.6000004, -13.499685, 0.33529112, 1.8000011, -13.399685, 0.33529112, 4.700001, -9.899685, 0.33529112, 4.700001, -19.699686, 0.33529112, -0.8999996, -16.099686, 0.33529112, -0.8999996, -15.899685, 0.33529112, -1.5, -19.699686, 0.33529112, -19.7, 6.9003143, 0.33529112, -3.6000004, 7.5003147, 0.33529112, -3.6000004, 7.4003143, 0.33529112, -19.7, 13.100317, 0.33529112, -3.3999996, 13.100317, 0.33529112, -2.6000004, 19.700315, 0.33529112, -2.6000004, 12.900316, 0.33529112, -3.6000004, 19.700315, 0.33529112, -19.7, 7.7003155, 0.33529112, -0.79999924, 7.5003147, 0.33529112, -0.69999886, 7.600315, 0.33529112, 1.7000008, 12.200315, 0.33529112, 1.7000008, 12.200315, 0.33529112, -2.7999992, 7.600315, 0.33529112, -2.7999992, 13.100317, 0.33529112, 1.6000004, 19.700315, 0.33529112, 1.6000004, -14.799685, 0.33529112, 0, -14.599686, 0.33529112, 0.5, -13.799685, 0.58529115, 5, -13.699685, 0.33529112, 4.700001, -14.599686, 0.33529112, 1.6000004, -15.799685, 0.33529112, 0, -19.699686, 0.33529112, 5, -16.099686, 0.33529112, -0.39999962, -14.399685, 0.33529112, 1.8000011, -15.499685, 1.0852911, -0.8999996, -15.499685, 1.0852911, -0.6000004, -15.199685, 1.0852911, -0.6000004, -15.199685, 1.0852911, -0.8999996, 6.7003155, 0.33529112, 2.3000011, 6.800316, 0.33529112, -0.69999886, -13.999685, 1.0852911, 0.8999996, -13.999685, 1.0852911, 1.2000008, -13.699685, 1.0852911, 1.2000008, -13.699685, 1.0852911, 0.8999996, 13.100317, 0.33529112, 2.3999996, 12.900316, 0.33529112, 2.6000004, 11.900314, 0.33529112, 10, 12.100317, 0.33529112, 10.300001, 19.700315, 0.33529112, 10.300001, 11.100315, 0.33529112, 2.6000004, 11.100315, 0.33529112, 10, -9.599685, 0.33529112, 5, 7.0003147, 0.33529112, 2.6000004, 7.7003155, 0.33529112, 10, 7.7003155, 0.33529112, 2.6000004, 6.600315, 0.33529112, 10, -9.599685, 0.33529112, 11, 6.4003143, 0.33529112, 11, 6.4003143, 0.33529112, 10.200001, -10.199685, 2.0852911, 14.700001, -10.199685, 2.0852911, 10.9, -10.499685, 1.8352911, 10.700001, -10.2996855, 1.8352911, 9.300001, -9.7996855, 2.0852911, 9.300001, -9.7996855, 2.0852911, 5.300001, -10.599685, 1.8352911, 9.6, -13.699685, 0.58529115, 5.300001, -13.699685, 0.58529115, 14.700001, -19.699686, 0.33529112, 15, -13.899685, 0.58529115, 15, -14.605125, 0.33529112, 11.799803, -9.199685, 2.3352911, 9.300001, -8.899685, 2.3352911, 10.200001, -5.5996847, 3.5852911, 10.200001, -5.5996847, 3.5852911, 5.300001, -9.899685, 2.8352911, 9.9, -9.899685, 2.8352911, 10.200001, -9.699685, 3.0852911, 10.200001, -9.699685, 3.0852911, 9.9, -9.099685, 2.3352911, 10.800001, -5.5996847, 3.5852911, 14.700001, 11.900314, 0.33529112, 15.700001, 11.100315, 0.33529112, 15.700001, 11.100315, 0.33529112, 19.7, 12.100317, 0.33529112, 15.5, 19.700315, 0.33529112, 19.7, 7.0003147, 10.335291, 10.6, 7.0003147, 10.335291, 15.100002, 11.500315, 10.335291, 15.100002, 11.500315, 10.335291, 10.6, 7.100315, 0.33529112, 10.700001, 7.100315, 0.33529112, 15, 11.400314, 0.33529112, 15, 11.400314, 0.33529112, 10.700001, 6.2003155, 0.33529112, 15.100002, 6.300316, 0.33529112, 14, 6.100315, 0.33529112, 13.900002, -9.599685, 0.33529112, 15.200001, 6.100315, 0.33529112, 13.600002, 6.4003143, 0.33529112, 13.200001, 7.4003143, 0.33529112, 19.7, 7.4003143, 0.33529112, 15.700001, 6.600315, 0.33529112, 15.700001, -9.7996855, 0.33529112, 15.400002, -10.399685, 0.33529112, 15.400002, -10.2996855, 0.33529112, 19.7, -13.199685, 0.33529112, 19.7, -13.099686, 0.33529112, 15.400002, -13.699685, 0.33529112, 15.400002, -19.699686, 0.33529112, 19.7)
@@ -149,11 +150,14 @@ size = Vector3(1.1, 1.1, 0.05)
 [sub_resource type="BoxMesh" id="Mesh_Sign"]
 size = Vector3(2.2, 0.65, 0.08)
 
+[sub_resource type="BoxMesh" id="BoxMesh_qonbx"]
+size = Vector3(0.02, 0.025, 2)
+
 [node name="Level01" type="Node3D" unique_id=593688443]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7842264, 0, 2.3824444)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=143344350]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.025518417, 0, 0.046788216)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23515391, -0.043194294, -0.035610914)
 navigation_mesh = SubResource("NavigationMesh_chssp")
 
 [node name="Ground" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1171265372 groups=["vision_receiver"]]
@@ -198,7 +202,6 @@ mesh = SubResource("BoxMesh_cd15k")
 [node name="Door" parent="NavigationRegion3D" unique_id=30396763 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 7.1547174, 0.03209267, 0)
 door_material = 3
-map_marker_color = null
 
 [node name="Door2" parent="NavigationRegion3D" unique_id=2084061617 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 6.690947, 0.030012416, 14.737785)
@@ -296,18 +299,25 @@ shape = SubResource("ConcavePolygonShape3D_3yqkj")
 [node name="VisionTestPoint" type="Marker3D" parent="NavigationRegion3D" unique_id=1722036584]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, -13.361, 0, 3.371)
 
-[node name="NPC" parent="." unique_id=318198715 instance=ExtResource("1_msin7")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -18.631, 0, 1.336)
+[node name="NPC" parent="." unique_id=318198715 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15.2813635, 0, 6.648855)
 vision_color = 4
 npc_name = 1
 highlight_color = 4
+patrol_enabled = true
+patrol_route = NodePath("../PatrolRoutes/Guard01Route")
+patrol_mode = 1
+patrol_wait_time = 0.0
 
-[node name="NPC2" parent="." unique_id=453139073 instance=ExtResource("1_msin7")]
-transform = Transform3D(-0.6717479, 0, 0.7407799, 0, 1, 0, -0.7407799, 0, -0.6717479, 0.97, 0, 3.159)
+[node name="NPC2" parent="." unique_id=453139073 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.444764, 0, -2.9356215)
 npc_name = 1
+patrol_enabled = true
+patrol_route = NodePath("../PatrolRoutes/Guard02Route")
+patrol_speed = 1.5
 
 [node name="NPC4" parent="." unique_id=765280887 instance=ExtResource("1_msin7")]
-transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, -0.7567644, 0.027802706, 11.294444)
+transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 14.148705)
 npc_name = 1
 
 [node name="ShowcaseDecor" type="Node3D" parent="." unique_id=288768301 groups=["vision_receiver"]]
@@ -536,3 +546,175 @@ light_color = Color(1, 0.65, 0.35, 1)
 light_energy = 1.8
 shadow_enabled = true
 omni_range = 7.0
+
+[node name="PatrolRoutes" type="Node3D" parent="." unique_id=90552404]
+
+[node name="Guard01Route" type="Node3D" parent="PatrolRoutes" unique_id=991659858]
+visible = false
+script = ExtResource("3_i4uh8")
+
+[node name="Point_001" type="Marker3D" parent="PatrolRoutes/Guard01Route" unique_id=1691781372]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6491404, 3.1102114, 6.4327793)
+
+[node name="Point_002" type="Marker3D" parent="PatrolRoutes/Guard01Route" unique_id=462196460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.243885, -0.13762657, 7.001565)
+
+[node name="Point_003" type="Marker3D" parent="PatrolRoutes/Guard01Route" unique_id=872644520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.124149, -0.13708949, 15.671698)
+
+[node name="Point_004" type="Marker3D" parent="PatrolRoutes/Guard01Route" unique_id=1199895282]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9434347, -0.09590915, 15.838728)
+
+[node name="Guard02Route" type="Node3D" parent="PatrolRoutes" unique_id=2094927828]
+visible = false
+script = ExtResource("3_i4uh8")
+
+[node name="Point_002" type="Marker3D" parent="PatrolRoutes/Guard02Route" unique_id=1698327396]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6134987, -0.039584216, -3.9968748)
+
+[node name="Point_003" type="Marker3D" parent="PatrolRoutes/Guard02Route" unique_id=109641679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.703932, -0.009075776, -4.133835)
+
+[node name="Point_004" type="Marker3D" parent="PatrolRoutes/Guard02Route" unique_id=1300863160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.828154, -0.009313755, 2.93117)
+
+[node name="Point_005" type="Marker3D" parent="PatrolRoutes/Guard02Route" unique_id=317899215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4506073, -0.039584637, 2.9234424)
+
+[node name="Ruler" type="Node3D" parent="." unique_id=1297039575]
+visible = false
+
+[node name="1_5" type="MeshInstance3D" parent="Ruler" unique_id=1466194433]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 1.5)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_6" type="MeshInstance3D" parent="Ruler" unique_id=1118623393]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 1.2)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_7" type="MeshInstance3D" parent="Ruler" unique_id=497229264]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 0.9)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_8" type="MeshInstance3D" parent="Ruler" unique_id=1680918628]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 0.6)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_9" type="MeshInstance3D" parent="Ruler" unique_id=665968945]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 0.3)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_10" type="MeshInstance3D" parent="Ruler" unique_id=836974935]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, 0)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_11" type="MeshInstance3D" parent="Ruler" unique_id=973206708]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -0.3)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_12" type="MeshInstance3D" parent="Ruler" unique_id=1685200045]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -0.6)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_13" type="MeshInstance3D" parent="Ruler" unique_id=1072087946]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -0.9)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_14" type="MeshInstance3D" parent="Ruler" unique_id=720515895]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -1.2)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_15" type="MeshInstance3D" parent="Ruler" unique_id=1380023479]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -1.5)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_16" type="MeshInstance3D" parent="Ruler" unique_id=1461849803]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -1.81251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_17" type="MeshInstance3D" parent="Ruler" unique_id=552260790]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -2.11251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_18" type="MeshInstance3D" parent="Ruler" unique_id=1022091812]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -2.41251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_19" type="MeshInstance3D" parent="Ruler" unique_id=1215318324]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -2.71251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_20" type="MeshInstance3D" parent="Ruler" unique_id=991101810]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -3.01251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_21" type="MeshInstance3D" parent="Ruler" unique_id=444009268]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -3.31251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_22" type="MeshInstance3D" parent="Ruler" unique_id=2063804038]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -3.61251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_23" type="MeshInstance3D" parent="Ruler" unique_id=744190010]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -3.91251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_24" type="MeshInstance3D" parent="Ruler" unique_id=2042426975]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -4.21251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_25" type="MeshInstance3D" parent="Ruler" unique_id=2146241920]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -4.5125103)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="1_26" type="MeshInstance3D" parent="Ruler" unique_id=1216715272]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1, 0, -4.81251)
+material_override = SubResource("Mat_Yellow")
+mesh = SubResource("BoxMesh_qonbx")
+skeleton = NodePath("../../..")
+
+[node name="WaypointDraft" type="Node3D" parent="." unique_id=320666971]
+visible = false

@@ -66,6 +66,7 @@ const log_icon: Texture2D = preload("res://data/icons/log.png")
 
 func _ready():
 	_apply_theme(ThemeManager.get_current_theme())
+
 	if not ThemeManager.theme_changed.is_connected(_on_theme_changed):
 		ThemeManager.theme_changed.connect(_on_theme_changed)
 
@@ -74,46 +75,65 @@ func _ready():
 
 	if player != null:
 		if player.has_signal("movement_state_changed"):
-			player.movement_state_changed.connect(_on_player_movement_state_changed)
+			if not player.movement_state_changed.is_connected(_on_player_movement_state_changed):
+				player.movement_state_changed.connect(_on_player_movement_state_changed)
 
 		if player.has_signal("health_changed"):
-			player.health_changed.connect(_on_player_health_changed)
+			if not player.health_changed.is_connected(_on_player_health_changed):
+				player.health_changed.connect(_on_player_health_changed)
 
+		_on_player_health_changed(player.current_health, player.max_health)
 		_on_player_movement_state_changed(player.movement_state)
-		_on_player_health_changed(80, 100)#player.current_health, player.max_health)
+
 	if not resize_handle.gui_input.is_connected(_on_resize_handle_gui_input):
 		resize_handle.gui_input.connect(_on_resize_handle_gui_input)
+
 	if not map_viewport_container.gui_input.is_connected(_on_map_viewport_gui_input):
 		map_viewport_container.gui_input.connect(_on_map_viewport_gui_input)
+
 	if not LocalizationManager.language_changed.is_connected(_on_language_changed):
 		LocalizationManager.language_changed.connect(_on_language_changed)
-	#connecting buttons to functions
-	crouch_slot.pressed.connect(_on_crouch_slot_pressed)
-	knockout_slot.pressed.connect(_on_knockout_pressed)
-	kill_slot.pressed.connect(_on_lethal_takedown_pressed)
-	pistol_slot.pressed.connect(_on_pistol_pressed)
-	rifle_slot.pressed.connect(_on_rifle_pressed)
-	heal_slot.pressed.connect(_on_heal_pressed)
-	log_slot.pressed.connect(_open_log)
+
+	if not crouch_slot.pressed.is_connected(_on_crouch_slot_pressed):
+		crouch_slot.pressed.connect(_on_crouch_slot_pressed)
+
+	if not knockout_slot.pressed.is_connected(_on_knockout_pressed):
+		knockout_slot.pressed.connect(_on_knockout_pressed)
+
+	if not kill_slot.pressed.is_connected(_on_lethal_takedown_pressed):
+		kill_slot.pressed.connect(_on_lethal_takedown_pressed)
+
+	if not pistol_slot.pressed.is_connected(_on_pistol_pressed):
+		pistol_slot.pressed.connect(_on_pistol_pressed)
+
+	if not rifle_slot.pressed.is_connected(_on_rifle_pressed):
+		rifle_slot.pressed.connect(_on_rifle_pressed)
+
+	if not heal_slot.pressed.is_connected(_on_heal_pressed):
+		heal_slot.pressed.connect(_on_heal_pressed)
+
+	if not log_slot.pressed.is_connected(_open_log):
+		log_slot.pressed.connect(_open_log)
+
 	if not map_image.gui_input.is_connected(_on_map_image_gui_input):
 		map_image.gui_input.connect(_on_map_image_gui_input)
 
-	#all buttons settings
 	portrait.texture = agent_portrait
 	map_image.texture = map_image_icon
+
 	crouch_slot.setup_action(stand_icon, get_action_key_name("crouch"))
 	knockout_slot.setup_action(knockout_icon, get_action_key_name("knockout"))
 	kill_slot.setup_action(kill_icon, get_action_key_name("lethal_takedown"))
 	pistol_slot.setup_action(pistol_icon, get_action_key_name("pistol"), "10")
 	rifle_slot.setup_action(rifle_icon, get_action_key_name("rifle"), "3")
 	heal_slot.setup_action(heal_icon, get_action_key_name("heal"), "2")
-	
 	log_slot.setup_action(log_icon, get_action_key_name("open_log"), "51")
-	# Placeholder text
+
 	agent_name.text = "Agent"
-	#map_shortcut.text = get_action_key_name("open_map")
+
 	refresh_shortcuts()
 	map_panel.hide()
+
 	if GameManager.map_panel_size != Vector2.ZERO:
 		_set_map_size(GameManager.map_panel_size)
 	else:
@@ -312,7 +332,7 @@ func _raycast_main_camera_corner(screen_position: Vector2) -> Dictionary:
 #Other functions
 func _on_language_changed() -> void:
 	_setup_localized_texts()
-	
+
 func get_action_key_name(action_name: String) -> String:
 	var events = InputMap.action_get_events(action_name)
 

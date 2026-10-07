@@ -32,6 +32,10 @@ InteractionSystem="*res://scripts/interaction/InteractionSystem.gd"
 OutlineSystem="*res://scripts/UI/outline_system.gd"
 VisionManager="*res://scripts/AI/vision_manager.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/waypoint_painter/plugin.cfg")
+
 [input]
 
 show_interactables={

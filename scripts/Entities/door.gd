@@ -63,6 +63,14 @@ func wait_for_navigation_finish() -> bool:
 func get_hover_text():
 	return "Door_Caption"
 
+func get_hover_anchor_position() -> Vector3:
+	var shape = collision.shape
+
+	if shape is BoxShape3D:
+		return collision.global_position + Vector3.UP * (shape.size.y * 0.5 + 0.75)
+
+	return global_position + Vector3.UP * 2.0
+
 func get_detour_distance() -> float:
 	if collision.shape is BoxShape3D:
 		return collision.shape.size.z
