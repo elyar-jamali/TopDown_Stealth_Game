@@ -9,7 +9,6 @@ var move_speed := 0.0
 var stuck_time_limit := 0.10 
 var stuck_move_threshold := 0.01 
 #پارامترهای مربوط به گیر کردن و تغییر مسیر برای عبور از گیر 
-var detour_distance := 2.0 
 var detour_reach_distance := 0.12 
  
 @export_group("Gameplay Settings")
@@ -35,13 +34,19 @@ var pending_interaction = null
 var last_click_time := 0.0 
 var double_click_threshold := 0.25 
 var final_target := Vector3.ZERO 
-var detour_target := Vector3.ZERO 
 var detour_points: Array[Vector3] = [] 
 var detour_index := 0 
 var is_using_detour := false 
 var stuck_time := 0.0 
 var previous_position := Vector3.ZERO 
- 
+
+var is_using_short_escape := false
+var short_escape_points: Array[Vector3] = []
+var short_escape_index := 0
+var short_escape_velocity := Vector3.ZERO
+var short_escape_stuck_time := 0.0
+var short_escape_attempts := 0
+
 enum MovementState { 
 	IDLE, 
 	WALK, 
@@ -109,12 +114,13 @@ func _ready():
 	floor_block_on_wall = false 
 	 
 	agent.avoidance_enabled = true 
-	agent.radius = 0.6 
+	agent.radius = _get_collision_radius() + 0.05
 	agent.height = 1.8 
 	agent.neighbor_distance = 4.0 
 	agent.max_neighbors = 8 
 	agent.time_horizon_agents = 1.0 
- 
+	agent.avoidance_priority = 1.0
+
 	if not agent.velocity_computed.is_connected(_on_safe_velocity_computed): 
 		agent.velocity_computed.connect(_on_safe_velocity_computed) 
  
@@ -140,7 +146,10 @@ func _physics_process(delta):
 	if _try_pending_interaction(): 
 		previous_position = global_position 
 		return 
- 
+	if is_using_short_escape:
+		_update_short_escape(delta)
+		previous_position = global_position
+		return
 	if is_using_detour: 
 		if detour_points.size() > 0: 
  
@@ -163,15 +172,6 @@ func _physics_process(delta):
  
 					agent.target_position = detour_points[detour_index] 
  
- 
-		elif _horizontal_distance( 
-			global_position, 
-			detour_target 
-		) <= detour_reach_distance: 
- 
-			is_using_detour = false 
-			stuck_time = 0.0 
-			agent.target_position = final_target 
 	elif ( 
 		not is_using_detour 
 		and _horizontal_distance(global_position, final_target) 
@@ -238,12 +238,16 @@ func _apply_gravity(delta: float):
 		velocity.y = 0.0 
  
  
-func _on_safe_velocity_computed(new_safe_velocity: Vector3): 
-	 
-	velocity.x = new_safe_velocity.x 
-	velocity.z = new_safe_velocity.z 
- 
-	move_and_slide() 
+func _on_safe_velocity_computed(new_safe_velocity: Vector3):
+	var applied_velocity: Vector3 = new_safe_velocity
+
+	if is_using_short_escape:
+		applied_velocity = short_escape_velocity
+
+	velocity.x = applied_velocity.x
+	velocity.z = applied_velocity.z
+
+	move_and_slide()
 	_update_movement_state()
 	_update_animation_speed()
  
@@ -252,11 +256,8 @@ func _update_stuck_state(delta: float):
 	var moved_distance := _horizontal_distance(global_position, previous_position) 
 	var active_target := final_target 
  
-	if is_using_detour: 
-		if detour_points.size() > 0: 
-			active_target = detour_points[detour_index] 
-		else: 
-			active_target = detour_target 
+	if is_using_detour and not detour_points.is_empty():
+		active_target = detour_points[detour_index]
  
 	var wants_to_move := _horizontal_distance( 
 		global_position, 
@@ -274,111 +275,71 @@ func _update_stuck_state(delta: float):
 		if not is_using_detour: 
 			_create_detour() 
  
-func _create_detour(): 
-	var navigation_map := agent.get_navigation_map() 
- 
-	if not navigation_map.is_valid(): 
-		return 
- 
-	var next_position := agent.get_next_path_position() 
- 
-	var path_direction := next_position - global_position 
-	path_direction.y = 0.0 
- 
-	if path_direction.length_squared() <= 0.0001: 
-		return 
- 
-	path_direction = path_direction.normalized() 
- 
-	# دو جهت عمود بر مسیر؛ 
-	# فقط برای fallback عمومی استفاده می‌شوند. 
-	var perpendicular_a := Vector3( 
-		-path_direction.z, 
-		0.0, 
-		path_direction.x 
-	) 
- 
-	var perpendicular_b := -perpendicular_a 
- 
-	var detour_direction := perpendicular_a 
-	var door_detour := false 
-	var gameplay_object: Node = null 
-	var actual_detour_distance := detour_distance 
- 
-	if get_slide_collision_count() > 0: 
-		var collision := get_slide_collision( 
-			get_slide_collision_count() - 1 
-		) 
- 
-		var collider = collision.get_collider() 
- 
-		if collider is Node: 
-			gameplay_object = _find_gameplay_object(collider) 
- 
-		# ----------------------------- 
-		# دیتور اختصاصی برای برگ متحرک در 
-		# ----------------------------- 
-		if gameplay_object != null and gameplay_object.has_method("get_detour_points"): 
-			var points: Array[Vector3] = gameplay_object.get_detour_points( 
-				global_position, 
-				_get_collision_radius() 
-			) 
- 
-			if points.size() >= 2: 
-				for i in range(points.size()): 
-					points[i] = NavigationServer3D.map_get_closest_point( 
-						navigation_map, 
-						points[i] 
-					) 
-				detour_points = points 
-				detour_index = 0 
-				is_using_detour = true 
-				agent.target_position = detour_points[0] 
-				return 
-		# ----------------------------- 
-		# دیتور عمومی سایر موانع 
-		# ----------------------------- 
-		if not door_detour: 
-			var collision_normal := collision.get_normal() 
-			collision_normal.y = 0.0 
- 
-			if collision_normal.length_squared() > 0.0001: 
-				collision_normal = ( 
-					collision_normal.normalized() 
-				) 
- 
-				if ( 
-					perpendicular_b.dot( 
-						collision_normal 
-					) 
-					> 
-					perpendicular_a.dot( 
-						collision_normal 
-					) 
-				): 
-					detour_direction = perpendicular_b 
- 
-	var candidate := ( 
-		global_position 
-		+ detour_direction * actual_detour_distance 
-	) 
- 
-	candidate = NavigationServer3D.map_get_closest_point( 
-		navigation_map, 
-		candidate 
-	) 
- 
-	if _horizontal_distance( 
-		candidate, 
-		global_position 
-	) < 0.2: 
-		return 
- 
-	detour_target = candidate 
-	is_using_detour = true 
-	agent.target_position = detour_target 
- 
-	 
+func _create_detour():
+	#Detour requested
+	var navigation_map := agent.get_navigation_map()
+
+	if not navigation_map.is_valid():
+		return
+
+	var next_position := agent.get_next_path_position()
+	var path_direction := next_position - global_position
+	path_direction.y = 0.0
+
+	if path_direction.length_squared() <= 0.0001:
+		return
+
+	path_direction = path_direction.normalized()
+
+	var blocking_line := _get_blocking_collision_line()
+
+	var planned_path: Array[Vector3] = DetourPlanner.find_path(
+		self,
+		collision_shape,
+		agent,
+		final_target,
+		path_direction,
+		blocking_line
+	)
+
+	if planned_path.is_empty():
+		if short_escape_attempts >= 2:
+			#SHORT ESCAPE: RETRY LIMIT REACHED
+			_stop_movement()
+			return
+
+		var escape_path: Array[Vector3] = DetourPlanner.find_short_escape(
+			self,
+			collision_shape,
+			agent,
+			path_direction
+		)
+
+		if escape_path.is_empty():
+			#SHORT ESCAPE: SEARCH FAILED
+			_stop_movement()
+			return
+
+		short_escape_attempts += 1
+		short_escape_points = escape_path
+		short_escape_index = 0
+		short_escape_stuck_time = 0.0
+		short_escape_velocity = Vector3.ZERO
+		is_using_short_escape = true
+		agent.velocity = Vector3.ZERO
+
+		#SHORT ESCAPE: STARTED
+		return
+
+	#DETOUR FOUND, planned_path
+	detour_points = planned_path
+	detour_index = 0
+	is_using_detour = true
+	agent.target_position = detour_points[0]
+
+func _get_blocking_collision_line() -> PackedVector3Array:
+	return DetourPlanner.get_blocking_collision_line(self, collision_shape)
+
 func _try_pending_interaction() -> bool: 
 	if pending_interaction == null: 
 		return false 
@@ -415,22 +376,30 @@ func _try_pending_interaction() -> bool:
 	return true 
  
  
-func _set_movement_target(target: Vector3): 
-	var navigation_map := agent.get_navigation_map() 
- 
-	if navigation_map.is_valid(): 
-		target = NavigationServer3D.map_get_closest_point( 
-			navigation_map, 
-			target 
-		) 
- 
- 
-	final_target = target 
-	is_using_detour = false 
-	detour_points.clear() 
-	detour_index = 0 
-	stuck_time = 0.0 
-	agent.target_position = final_target 
+func _set_movement_target(target: Vector3):
+	var navigation_map := agent.get_navigation_map()
+
+	if navigation_map.is_valid():
+		target = NavigationServer3D.map_get_closest_point(
+			navigation_map,
+			target
+		)
+
+		target = DetourPlanner.find_safe_target(
+			self,
+			collision_shape,
+			agent,
+			target
+		)
+
+	final_target = target
+	is_using_detour = false
+	detour_points.clear()
+	detour_index = 0
+	_clear_short_escape()
+	short_escape_attempts = 0
+	stuck_time = 0.0
+	agent.target_position = final_target
  
  
 func _stop_movement(): 
@@ -439,8 +408,14 @@ func _stop_movement():
  
 	final_target = global_position 
 	is_using_detour = false 
+	detour_points.clear()
+	detour_index = 0
+
 	stuck_time = 0.0 
  
+	_clear_short_escape()
+	short_escape_attempts = 0
+
 	velocity.x = 0.0 
 	velocity.z = 0.0 
  
@@ -645,4 +620,67 @@ func _update_animation_speed() -> void:
 		data.action,
 		actual_speed
 	)
-	
+
+func _update_short_escape(delta: float) -> void:
+	var moved_distance := _horizontal_distance(
+		global_position,
+		previous_position
+	)
+
+	if moved_distance < 0.005:
+		short_escape_stuck_time += delta
+	else:
+		short_escape_stuck_time = 0.0
+
+	if short_escape_stuck_time >= 0.25:
+		#SHORT ESCAPE: MOVEMENT BLOCKED
+		_finish_short_escape()
+		return
+
+	while short_escape_index < short_escape_points.size():
+		var target: Vector3 = short_escape_points[short_escape_index]
+
+		if _horizontal_distance(global_position, target) > 0.04:
+			break
+
+		short_escape_index += 1
+
+	if short_escape_index >= short_escape_points.size():
+		#SHORT ESCAPE: COMPLETED
+		_finish_short_escape()
+		return
+
+	var direction: Vector3 = (
+		short_escape_points[short_escape_index] - global_position
+	)
+
+	direction.y = 0.0
+
+	var remaining_distance: float = direction.length()
+	direction = direction.normalized()
+
+	var target_angle := atan2(direction.x, direction.z)
+	rotation.y = lerp_angle(rotation.y, target_angle, 5.0 * delta)
+
+	var allowed_speed: float = minf(
+		move_speed,
+		remaining_distance / maxf(delta, 0.0001)
+	)
+
+	short_escape_velocity = direction * allowed_speed
+	agent.velocity = short_escape_velocity
+
+
+func _finish_short_escape() -> void:
+	_clear_short_escape()
+	stuck_time = 0.0
+	agent.velocity = Vector3.ZERO
+	agent.target_position = final_target
+
+
+func _clear_short_escape() -> void:
+	is_using_short_escape = false
+	short_escape_points.clear()
+	short_escape_index = 0
+	short_escape_velocity = Vector3.ZERO
+	short_escape_stuck_time = 0.0

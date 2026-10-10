@@ -258,7 +258,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4999999, 1.75)
 shape = SubResource("ConcavePolygonShape3D_chssp")
 
 [node name="crate" type="StaticBody3D" parent="NavigationRegion3D" unique_id=370770178]
-transform = Transform3D(0.99680173, 0, 0.07991469, 0, 1, 0, -0.07991469, 0, 0.99680173, -15.3134985, 0.37961546, -0.77610826)
+transform = Transform3D(0.99680173, 0, 0.07991469, 0, 1, 0, -0.07991469, 0, 0.99680173, -7.6242514, 0.37961546, -0.77610826)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/crate" unique_id=1447092940]
 transform = Transform3D(0.99999994, 0, -7.450581e-09, 2.3258233e-12, 0.99999994, 9.308526e-14, 0, 0, 0.99999994, 9.536743e-07, 0, 0)
@@ -271,7 +271,7 @@ transform = Transform3D(0.99999994, 0, -7.450581e-09, 2.3258233e-12, 0.99999994,
 shape = SubResource("ConcavePolygonShape3D_3yqkj")
 
 [node name="crate2" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1916429277]
-transform = Transform3D(0.99680173, 0, 0.07991469, 0, 1, 0, -0.07991469, 0, 0.99680173, -13.862726, 0.38612282, 1.0293651)
+transform = Transform3D(0.99680173, 0, 0.07991469, 0, 1, 0, -0.07991469, 0, 0.99680173, -6.5286274, 0.38612282, 0.051437378)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="NavigationRegion3D/crate2" unique_id=635231154]
 transform = Transform3D(0.99999994, 0, -7.450581e-09, 2.3258233e-12, 0.99999994, 9.308526e-14, 0, 0, 0.99999994, 9.536743e-07, 0, 0)
@@ -324,6 +324,7 @@ npc_name = 1
 
 [node name="Sidewalk1" type="MeshInstance3D" parent="ShowcaseDecor" unique_id=918619376]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.865, 0.03, 0)
+visible = false
 material_override = SubResource("Mat_Concrete")
 mesh = SubResource("Mesh_Sidewalk_Short")
 
@@ -716,5 +717,8 @@ material_override = SubResource("Mat_Yellow")
 mesh = SubResource("BoxMesh_qonbx")
 skeleton = NodePath("../../..")
 
-[node name="WaypointDraft" type="Node3D" parent="." unique_id=320666971]
+[node name="WaypointDraft" type="Node3D" parent="." unique_id=1261097579]
 visible = false
+
+[node name="Point_001" type="Marker3D" parent="WaypointDraft" unique_id=815711696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.978696, -0.12298, -0.26603317)

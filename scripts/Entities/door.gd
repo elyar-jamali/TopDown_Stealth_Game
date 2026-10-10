@@ -24,7 +24,6 @@ enum DoorMaterial {
 @export var object_id: String = ""
 # سرعت باز و بسته شدن
 @export var open_speed := 0.5
-@export var door_detour_offset := 0.6
 @export_group("Map Settings")
 @export var map_marker_color: GameColors.Preset = GameColors.Preset.YELLOW
 
@@ -71,63 +70,13 @@ func get_hover_anchor_position() -> Vector3:
 
 	return global_position + Vector3.UP * 2.0
 
-func get_detour_distance() -> float:
-	if collision.shape is BoxShape3D:
-		return collision.shape.size.z
-
-	return 1.1
-
-func get_detour_points(from_position: Vector3, player_radius: float) -> Array[Vector3]:
-	var hinge: Vector3 = get_hinge_position()
-	# جهت واقعی برگ از لولا به نوک
-	var leaf_direction: Vector3 = -door.global_basis.z
-	leaf_direction.y = 0.0
-	if leaf_direction.length_squared() < 0.0001:
-		return []
-	leaf_direction = leaf_direction.normalized()
-	# جهت عمود بر برگ روی صفحه XZ
-	var side_direction: Vector3 = (
-		Vector3.UP.cross(leaf_direction)
-	).normalized()
-	var player_offset: Vector3 = from_position - hinge
-	player_offset.y = 0.0
-	# مشخص می‌کنیم بازیکن الان کدام طرف برگ قرار دارد
-	var side_amount: float = player_offset.dot(side_direction)
-	var side_sign := 1.0
-	if side_amount < 0.0:
-		side_sign = -1.0
-	# فاصله امن از لولا در امتداد برگ:
-	# طول برگ + شعاع بازیکن + 10 سانت
-	var along_distance: float = (get_detour_distance() + player_radius + 0.1)
-	# فاصله امن از خود خط برگ
-	var side_clearance: float = (player_radius + 0.1)
-
-	# نقطه اول در همان سمت فعلی بازیکن
-	var point_a: Vector3 = (
-		hinge
-		+ leaf_direction * along_distance
-		+ side_direction * side_sign * side_clearance
-	)
-
-	# نقطه دوم دقیقاً آن طرف برگ
-	var point_b: Vector3 = (
-		hinge
-		+ leaf_direction * along_distance
-		- side_direction * side_sign * side_clearance
-	)
-
-	point_a.y = from_position.y
-	point_b.y = from_position.y
-
-	return [point_a, point_b]
-
-func get_door_plane_point(p: Vector3) -> Vector3:
-	var door_origin := global_position
-	var normal := global_transform.basis.z
-	normal.y = 0
-	normal = normal.normalized()
-	var distance := ((p - door_origin).dot(normal))
-	return p - normal * distance
+# func get_door_plane_point(p: Vector3) -> Vector3:
+# 	var door_origin := global_position
+# 	var normal := global_transform.basis.z
+# 	normal.y = 0
+# 	normal = normal.normalized()
+# 	var distance := ((p - door_origin).dot(normal))
+# 	return p - normal * distance
 
 func get_cursor():
 	if door_state == DoorState.LOCKED:
@@ -150,12 +99,6 @@ func get_interaction_position():
 		return p
 	return global_position
 
-func get_hinge_position() -> Vector3:
-	return door.global_position
-
-
-func is_moving_leaf_collider(collider: Object) -> bool:
-	return collider == door
 
 func _ready():
 	map_marker_fill.color = GameColors.get_color(map_marker_color)
