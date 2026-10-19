@@ -22,8 +22,8 @@ const ACTION_GROUPS := [
 				"label": "controls.knockout"
 			},
 			{
-				"action": "lethal_takedown",
-				"label": "controls.lethal_takedown"
+				"action": "garrote",
+				"label": "controls.garrote"
 			},
 			{
 				"action": "pistol",

@@ -24,6 +24,8 @@ func set_hover_target(target: Node):
 	current_hover = target
 	if current_hover and current_hover.has_method("get_cursor"):
 		CursorManager.set_state(current_hover.get_cursor())
+	else:
+		CursorManager.set_state(CursorManager.CursorState.DEFAULT)
 	if current_hover and current_hover.has_method("set_outline"):
 		current_hover.set_outline(true)
 	if current_hover and current_hover.has_method("get_hover_text"):
@@ -35,5 +37,10 @@ func clear_hover():
 	if current_hover and current_hover.has_method("set_outline"):
 		current_hover.set_outline(false)
 	current_hover = null
-	#CursorManager.set_state(CursorManager.CursorState.DEFAULT)
+	CursorManager.set_state(CursorManager.CursorState.DEFAULT)
 	set_hover_text("")
+
+func reset_for_new_scene() -> void:
+	current_hover = null
+	current_hover_text = ""
+	ui = null

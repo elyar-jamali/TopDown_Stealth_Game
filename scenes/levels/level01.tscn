@@ -302,8 +302,8 @@ transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0,
 [node name="NPC" parent="." unique_id=318198715 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15.2813635, 0, 6.648855)
 vision_color = 4
-npc_name = 1
 highlight_color = 4
+npc_name = 1
 patrol_enabled = true
 patrol_route = NodePath("../PatrolRoutes/Guard01Route")
 patrol_mode = 1
@@ -311,10 +311,11 @@ patrol_wait_time = 0.0
 
 [node name="NPC2" parent="." unique_id=453139073 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.444764, 0, -2.9356215)
-npc_name = 1
+npc_name = 2
 patrol_enabled = true
 patrol_route = NodePath("../PatrolRoutes/Guard02Route")
 patrol_speed = 1.5
+patrol_wait_time = 1.0
 
 [node name="NPC4" parent="." unique_id=765280887 instance=ExtResource("1_msin7")]
 transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 14.148705)

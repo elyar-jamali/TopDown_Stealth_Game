@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://vdfyr6e8e6t7" path="res://scripts/Characters/player.gd" id="1_g2els"]
 [ext_resource type="PackedScene" uid="uid://p4b8xeycgsy7" path="res://scenes/characters/player_visual.tscn" id="2_qhqgy"]
+[ext_resource type="Script" uid="uid://drnvr40834l5g" path="res://scripts/Characters/CharacterAnimationController.gd" id="3_76oj4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
 radius = 0.3
@@ -30,3 +31,6 @@ polygon = PackedVector2Array(-9, 8, 0, -11, 9, 8, 0, 4)
 [node name="Fill" type="Polygon2D" parent="MapMarker" unique_id=1238000754]
 color = Color(0, 0.6627277, 1.540184e-06, 1)
 polygon = PackedVector2Array(-7, 6, 0, -9, 7, 6, 0, 3)
+
+[node name="CharacterAnimationController" type="Node3D" parent="." unique_id=2054599981]
+script = ExtResource("3_76oj4")

@@ -10,10 +10,33 @@ enum PatrolMode {
 	PING_PONG,
 	ONCE
 }
+enum NPCState {
+	ALIVE,
+	UNCONSCIOUS,
+	DEAD
+}
+
+enum NPCBehavior {
+	NORMAL,
+	ALERT
+}
+
+
 @onready var collision := $CollisionShape3D
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $"Visual/NPC Female/AnimationPlayer"
 @onready var vision_component = $VisionComponent
+@onready var status_bar_3d: Sprite3D = $StatusBar3D
+@onready var status_viewport: SubViewport = $StatusBar3D/StatusViewport
+@onready var status_progress: ProgressBar = $StatusBar3D/StatusViewport/ProgressBar
+@onready var alert_behavior: AlertBehavior = $AlertBehavior
+@onready var standing_collision_rotation: Vector3 = collision.rotation_degrees
+@onready var standing_collision_position: Vector3 = collision.position
+@onready var animation_controller: CharacterAnimationController = $CharacterAnimationController
+@onready var ragdoll_driver: PhysicalBoneSimulator3D = get_node_or_null(
+	"Visual/NPC Female/CMU compliant skeleton/Skeleton3D/PhysicalBoneSimulator3D"
+) as PhysicalBoneSimulator3D
+
 @export_group("Vision Settings")
 @export_range(0.5, 60.0, 0.5) var vision_distance: float = 12.0
 @export_range(10.0, 170.0, 1.0) var vision_horizontal_angle: float = 60.0
@@ -21,6 +44,7 @@ enum PatrolMode {
 @export_range(0.1, 3.0, 0.05) var vision_eye_height: float = 1.6
 @export var vision_color: GameColors.Preset = GameColors.Preset.GREEN
 @export var vision_opacity: GameColors.Opacity = GameColors.Opacity.NORMAL
+
 @export_group("Vision Scan")
 @export var vision_scan_enabled: bool = true
 # این مقدار نیمه‌ی زاویه اسکن است.
@@ -28,26 +52,39 @@ enum PatrolMode {
 @export_range(0.0, 90.0, 1.0) var vision_scan_half_angle: float = 30.0
 @export_range(0.0, 90.0, 1.0) var vision_scan_speed: float = 15.0
 @export_range(0.0, 5.0, 0.1) var vision_scan_pause_time: float = 0.5
-@export_group("Animation Settings")
-@export var animation_set: CharacterAnimationData.Set = CharacterAnimationData.Set.FEMALE
+
+@export_group("Map & Animation Settings")
+@export var map_marker_color: GameColors.Preset = GameColors.Preset.RED
+@onready var map_marker_fill: Polygon2D = $MapMarker/Fill
+
+@export_group("Knockout & Alert Settings")
+@export_range(1.0, 300.0, 1.0)
+var knockout_duration: float = 30.0
+@export_range(1.0, 120.0, 1.0)
+var alert_duration: float = 12.0
+@export_range(1.0, 20.0, 0.5)
+var alert_search_radius: float = 6.0
+@export_range(1.0, 3.0, 0.1)
+var alert_speed_multiplier: float = 1.5
+@export_range(1.0, 4.0, 0.1)
+var alert_scan_speed_multiplier: float = 2.0
+@export var knockout_bar_color: GameColors.Preset = GameColors.Preset.YELLOW
+@export var alert_bar_color: GameColors.Preset = GameColors.Preset.ORANGE
+
 @export_group("Gameplay Properties")
+## آیا بازیکن می‌تواند این Character را انتخاب و کنترل کند؟
+@export var selectable: bool = false
 ## آیا Interaction معمولی با این آبجکت مجاز است؟
 @export var interactable: bool = true
 ## آیا این آبجکت اجازه Outline شدن دارد؟
 @export var highlightable: bool = true
-## آیا بازیکن می‌تواند این Character را انتخاب و کنترل کند؟
-@export var selectable: bool = false
-## آیا Actionها و Skillها می‌توانند این آبجکت را Target کنند؟
-@export var targetable: bool = true
+@export var highlight_color: GameColors.Preset = GameColors.Preset.GREEN
+
 #نوع npc
 @export var npc_name := NPCType.Civilian_Male
-@export var highlight_color: GameColors.Preset = GameColors.Preset.GREEN
-@export var map_marker_color: GameColors.Preset = GameColors.Preset.RED
-@onready var map_marker_fill: Polygon2D = $MapMarker/Fill
-@export var can_talk := true
-@export var hostile := false
 @export var Icon_default = load("res://data/Pic/civil1.jpg")
 @export var interaction_range := 0.0
+
 @export_group("Patrol Settings")
 @export var patrol_enabled: bool = false
 @export var patrol_route: PatrolRoute
@@ -56,10 +93,16 @@ enum PatrolMode {
 @export_range(0.1, 10.0, 0.1) var patrol_speed: float = 2.0
 @export_range(0.0, 10.0, 0.1) var patrol_wait_time: float = 0.5
 @export_range(1.0, 20.0, 0.5) var patrol_turn_speed: float = 8.0
+
 @export_group("Target Rules")
+## آیا Actionها و Skillها می‌توانند این آبجکت را Target کنند؟
+@export var targetable: bool = true
 @export var can_kill: bool = true
 @export var can_knockout: bool = true
+@export var can_talk := true
+@export var hostile := false
 @export var gravity: float = 20.0
+
 var patrol_point_index := 0
 var patrol_direction := 1
 var patrol_waiting := false
@@ -80,8 +123,30 @@ var short_escape_velocity := Vector3.ZERO
 var short_escape_stuck_time := 0.0
 var short_escape_attempts := 0
 var detour_retry_delay := 0.0
+var npc_state: NPCState = NPCState.ALIVE
+var knockout_time_remaining: float = 0.0
+var is_waking_up: bool = false
+var npc_behavior: NPCBehavior = NPCBehavior.NORMAL
+var status_fill_style: StyleBoxFlat
+
+@export_range(0.10, 1.5, 0.05) var wake_blend_duration: float = 1.5
+@export_range(0.0, 1.0, 0.05) var knockout_impact_delay: float = 0.35
+@export_range(0.5, 6.0, 0.25) var head_impact_strength: float = 3.0
+
+var _ragdoll_mode: bool = false
+var _wake_blending: bool = false
+var _wake_blend_elapsed: float = 0.0
+var _wake_source_poses: Array[Transform3D] = []
+var _wake_target_poses: Array[Transform3D] = []
+var _wake_root_start: Vector3 = Vector3.ZERO
+var _wake_root_target: Vector3 = Vector3.ZERO
+var _wake_yaw_start: float = 0.0
+var _wake_yaw_target: float = 0.0
+var _wake_animation: StringName = &""
+var _wake_action: CharacterAnimationController.Action = CharacterAnimationController.Action.WAKEUP_FRONT
 
 func _ready():
+	set_process(false)
 	_apply_vision_settings()
 	map_marker_fill.color = GameColors.get_color(map_marker_color)
 	if interaction_range <= 0:
@@ -102,23 +167,65 @@ func _ready():
 	agent.target_desired_distance = 0.1
 	if not agent.velocity_computed.is_connected(_on_safe_velocity_computed):
 		agent.velocity_computed.connect(_on_safe_velocity_computed)
+	
 	previous_position = global_position
 	if patrol_enabled and patrol_route != null:
 		call_deferred("start_patrol")
+	
+	status_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	status_bar_3d.texture = status_viewport.get_texture()
+	status_bar_3d.hide()
+	status_progress.min_value = 0.0
+	status_progress.max_value = knockout_duration
+	status_progress.value = knockout_duration
+	var original_fill := status_progress.get_theme_stylebox("fill")
+	if original_fill is StyleBoxFlat:
+		status_fill_style = original_fill.duplicate() as StyleBoxFlat
+		status_progress.add_theme_stylebox_override(
+			"fill",
+			status_fill_style
+		)
+	else:
+		push_warning("StatusBar fill must be StyleBoxFlat")
+
+	alert_behavior.alert_finished.connect(_on_alert_finished)
+	animation_player.animation_finished.connect(_on_npc_animation_finished)
+	
+	if ragdoll_driver != null:
+		for bone in ragdoll_driver.get_children():
+			if bone is PhysicalBone3D:
+				add_collision_exception_with(bone)
+				bone.add_collision_exception_with(self)
+
 
 func _physics_process(delta: float) -> void:
+	if _ragdoll_mode:
+		if not is_waking_up:
+			_update_knockout_timer(delta)
+		return
+
+	_update_knockout_timer(delta)
+	alert_behavior.update_alert(delta)
+	if npc_behavior == NPCBehavior.ALERT:
+		status_progress.value = alert_behavior.time_remaining
+
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	else:
 		velocity.y = -0.1
+	if not is_alive():# or not patrol_running:
+		agent.velocity = Vector3.ZERO
+		#_play_action(CharacterAnimationController.Action.IDLE)
+		previous_position = global_position
+		return
 	if not patrol_running:
 		agent.velocity = Vector3.ZERO
-		_play_action(CharacterAnimationData.Action.IDLE)
+		_play_action(CharacterAnimationController.Action.IDLE)
 		previous_position = global_position
 		return
 	if patrol_waiting:
 		agent.velocity = Vector3.ZERO
-		_play_action(CharacterAnimationData.Action.IDLE)
+		_play_action(CharacterAnimationController.Action.IDLE)
 		patrol_wait_remaining -= delta
 		if patrol_wait_remaining <= 0.0:
 			patrol_waiting = false
@@ -140,7 +247,7 @@ func _physics_process(delta: float) -> void:
 	if not is_using_detour and agent.is_navigation_finished():
 		if patrol_wait_time > 0.0:
 			agent.velocity = Vector3.ZERO
-			_play_action(CharacterAnimationData.Action.IDLE)
+			_play_action(CharacterAnimationController.Action.IDLE)
 			patrol_waiting = true
 			patrol_wait_remaining = patrol_wait_time
 		else:
@@ -178,6 +285,8 @@ func get_interaction_position():
 	return collision.global_position
 
 func interact():
+	if not is_alive():
+		return
 	if hostile:
 		_handle_hostile()
 	if can_talk:
@@ -211,9 +320,10 @@ func set_outline(enable: bool) -> void:
 	)
 
 func toggle_vision() -> void:
-	var vision := get_node_or_null("VisionComponent")
-	if vision != null:
-		vision.toggle_vision()
+	if not is_alive():
+		return
+	if vision_component != null:
+		vision_component.toggle_vision()
 
 func _apply_vision_settings() -> void:
 	if vision_component == null:
@@ -231,16 +341,10 @@ func _apply_vision_settings() -> void:
 	else:
 		vision_component.scan_angle = 0.0
 
-func _play_action(action: CharacterAnimationData.Action, movement_speed: float = 0.0) -> void:
-	var animation_name := CharacterAnimationData.get_animation(animation_set, action)
-	var playback_speed := 1.0
-	if movement_speed > 0.0:
-		playback_speed = CharacterAnimationData.get_playback_speed(
-			animation_set,
-			action,
-			movement_speed
-		)
-	_play_animation(animation_name, playback_speed)
+func _play_action(action: CharacterAnimationController.Action, movement_speed: float = 0.0) -> void:
+	if animation_controller == null:
+		return
+	animation_controller.play_action(action, -1.0, movement_speed)
 
 func _get_collision_radius() -> float:
 	if collision.shape is CapsuleShape3D:
@@ -377,10 +481,72 @@ func _finish_detour() -> void:
 	stuck_time = 0.0
 	_set_patrol_target()
 
+func is_alive() -> bool:
+	return npc_state == NPCState.ALIVE
+
+
+func knockout() -> void:
+	if not is_alive() or not can_knockout:
+		return
+
+	knockout_time_remaining = knockout_duration
+
+	_set_npc_state(NPCState.UNCONSCIOUS)
+
+	status_progress.max_value = knockout_duration
+	status_progress.value = knockout_duration
+	_set_status_bar_color(knockout_bar_color)
+	status_bar_3d.show()
+
+
+func kill() -> void:
+	if npc_state == NPCState.DEAD or not can_kill:
+		return
+
+	knockout_time_remaining = 0.0
+	status_bar_3d.hide()
+
+	is_waking_up = false
+	_set_npc_state(NPCState.DEAD)
+
+
+func _set_npc_state(new_state: NPCState) -> void:
+	if npc_state == new_state:
+		return
+
+	npc_state = new_state
+
+	if not is_alive():
+		if alert_behavior.active:
+			npc_behavior = NPCBehavior.NORMAL
+			alert_behavior.stop_alert()
+		stop_patrol()
+
+		agent.avoidance_enabled = false
+
+		if vision_component != null:
+			if VisionManager.active_vision == vision_component:
+				VisionManager.clear_vision()
+
+			vision_component.set_process(false)
+			vision_component.set_physics_process(false)
+
+	else:
+		# NPC دوباره زنده شده است.
+		agent.avoidance_enabled = true
+
+		if vision_component != null:
+			vision_component.set_process(true)
+			vision_component.set_physics_process(true)
+
 ##Patrol functions
 
 func start_patrol() -> void:
+	if not is_alive():
+		return
 	await get_tree().physics_frame
+	if not is_alive():
+		return
 	if patrol_route == null:
 		push_warning("PatrolRoute not assigned on NPC: %s" % name)
 		return
@@ -443,11 +609,64 @@ func _advance_patrol_point() -> void:
 	detour_retry_delay = 0.0
 	_set_patrol_target()
 
+func resume_patrol_from_nearest_point() -> void:
+	if not is_alive():
+		return
+
+	if patrol_route == null:
+		return
+
+	var point_count: int = patrol_route.get_point_count()
+
+	if point_count < 2:
+		return
+
+	# پیدا کردن نزدیک‌ترین نقطه Patrol
+	var nearest_index: int = 0
+	var nearest_distance: float = INF
+
+	for i in range(point_count):
+		var point_position: Vector3 = patrol_route.get_point_position(i)
+
+		var distance: float = Vector2(
+			global_position.x,
+			global_position.z
+		).distance_squared_to(
+			Vector2(point_position.x, point_position.z)
+		)
+
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest_index = i
+
+	# انتخاب نزدیک‌ترین نقطه
+	patrol_point_index = nearest_index
+
+	# آماده‌سازی مجدد Patrol
+	patrol_waiting = false
+	patrol_wait_remaining = 0.0
+	patrol_running = true
+
+	stuck_time = 0.0
+
+	_clear_detour()
+	_clear_short_escape()
+
+	short_escape_attempts = 0
+	detour_retry_delay = 0.0
+
+	previous_position = global_position
+
+	# حرکت به نزدیک‌ترین نقطه
+	_set_patrol_target()
+
 func _on_safe_velocity_computed(safe_velocity: Vector3) -> void:
+	if _ragdoll_mode:
+		return
 	var applied_velocity: Vector3 = safe_velocity
 	if is_using_short_escape:
 		applied_velocity = short_escape_velocity
-	if not patrol_running or patrol_waiting:
+	if not is_alive() or not patrol_running or patrol_waiting:
 		applied_velocity = Vector3.ZERO
 	velocity.x = applied_velocity.x
 	velocity.z = applied_velocity.z
@@ -457,17 +676,319 @@ func _on_safe_velocity_computed(safe_velocity: Vector3) -> void:
 		var actual_speed := Vector2(real_velocity.x, real_velocity.z).length()
 		if actual_speed > 0.05:
 			_play_action(
-				CharacterAnimationData.Action.WALK,
+				CharacterAnimationController.Action.WALK,
 				actual_speed
 			)
+
 
 func _play_animation(animation_name: StringName, playback_speed: float = 1.0) -> void:
 	if animation_name == &"":
 		return
-	if not animation_player.has_animation(animation_name):
-		push_warning("Animation not found: %s" % animation_name)
+
+	if animation_controller == null:
+		push_warning("Animation controller not found.")
 		return
-	animation_player.speed_scale = playback_speed
-	if animation_player.current_animation == animation_name:
+
+	animation_controller.play_named(
+		animation_name,
+		-1.0,
+		playback_speed
+	)
+
+
+
+func _update_knockout_timer(delta: float) -> void:
+	if npc_state != NPCState.UNCONSCIOUS:
 		return
-	animation_player.play(animation_name)
+
+	# هنگام اجرای Wakeup دیگر تایمر بیهوشی را بررسی نکن.
+	if is_waking_up:
+		return
+
+	knockout_time_remaining = maxf(
+		knockout_time_remaining - delta,
+		0.0
+	)
+
+	status_progress.value = knockout_time_remaining
+
+	if knockout_time_remaining <= 0.0:
+		_wake_up()
+		# بیدارشدن NPC را در مرحله بعد اضافه می‌کنیم.
+
+func _wake_up() -> void:
+	if npc_state != NPCState.UNCONSCIOUS or is_waking_up:
+		return
+
+	if ragdoll_driver == null:
+		return
+
+	# Wait for the freeze stage to finish: do not read a moving skeleton.
+	if ragdoll_driver.get("ragdoll_active") == true:
+		return
+	if ragdoll_driver.get("pose_frozen") != true:
+		return
+
+	var skeleton := ragdoll_driver.get_skeleton()
+	if skeleton == null:
+		return
+
+	_wake_action = CharacterAnimationController.Action.WAKEUP_FRONT
+
+	if _is_fallen_on_back(skeleton):
+		_wake_action = CharacterAnimationController.Action.WAKEUP_BACK
+
+	_wake_animation = animation_controller.get_animation(_wake_action)
+
+	if _wake_animation == &"" or not animation_player.has_animation(_wake_animation):
+		push_error("Wakeup animation not found: " + str(_wake_animation))
+		return
+
+	is_waking_up = true
+	knockout_time_remaining = 0.0
+	status_bar_3d.hide()
+
+	_wake_source_poses.clear()
+	_wake_target_poses.clear()
+	for i in range(skeleton.get_bone_count()):
+		_wake_source_poses.append(skeleton.get_bone_pose(i))
+
+	var hip_index := skeleton.find_bone("Hips")
+	var hip_before := Vector3.ZERO
+	if hip_index >= 0:
+		hip_before = skeleton.to_global(skeleton.get_bone_global_pose(hip_index).origin)
+
+	_wake_yaw_start = rotation.y
+	_wake_yaw_target = _wake_yaw_start
+
+	# Sample the first animation frame while keeping it paused.
+	animation_player.play(_wake_animation, 0.0)
+	animation_player.seek(0.0, true)
+	animation_player.pause()
+	for i in range(skeleton.get_bone_count()):
+		_wake_target_poses.append(skeleton.get_bone_pose(i))
+
+	_wake_root_start = global_position
+	_wake_root_target = global_position
+	if hip_index >= 0:
+		var animated_hip_world := skeleton.to_global(skeleton.get_bone_global_pose(hip_index).origin)
+		var animated_hip_offset := animated_hip_world - global_position
+		var yaw_delta := wrapf(_wake_yaw_target - _wake_yaw_start, -PI, PI)
+		var rotated_offset := Basis(Vector3.UP, yaw_delta) * animated_hip_offset
+		_wake_root_target.x = hip_before.x - rotated_offset.x
+		_wake_root_target.z = hip_before.z - rotated_offset.z
+
+	for i in range(_wake_source_poses.size()):
+		skeleton.set_bone_pose(i, _wake_source_poses[i])
+
+	_wake_blending = true
+	_wake_blend_elapsed = 0.0
+	set_process(true)
+
+func _start_alert(
+	reason: AlertBehavior.AlertReason,
+	position: Vector3,
+	target: Node3D = null
+) -> void:
+	if not is_alive():
+		return
+
+	npc_behavior = NPCBehavior.ALERT
+
+	stop_patrol()
+
+	alert_behavior.start_alert(
+		reason,
+		alert_duration,
+		position,
+		target
+	)
+
+	_set_status_bar_color(alert_bar_color)
+
+	status_progress.min_value = 0.0
+	status_progress.max_value = alert_behavior.duration
+	status_progress.value = alert_behavior.time_remaining
+
+	status_bar_3d.show()
+
+
+func _on_alert_finished() -> void:
+	if npc_behavior != NPCBehavior.ALERT:
+		return
+
+	npc_behavior = NPCBehavior.NORMAL
+	status_bar_3d.hide()
+
+	if is_alive() and patrol_enabled:
+		resume_patrol_from_nearest_point()
+
+func _set_status_bar_color(color_preset: GameColors.Preset) -> void:
+	if status_fill_style == null:
+		return
+
+	status_fill_style.bg_color = GameColors.get_color(color_preset)
+
+
+func _on_npc_animation_finished(animation_name: StringName) -> void:
+	var garroted_animation := animation_controller.get_animation(
+		CharacterAnimationController.Action.GARROTED
+	)
+	if animation_name == garroted_animation and npc_state == NPCState.DEAD:
+		start_garrote_ragdoll()
+		return
+
+	var wakeup_front := animation_controller.get_animation(
+		CharacterAnimationController.Action.WAKEUP_FRONT
+	)
+	var wakeup_back := animation_controller.get_animation(
+		CharacterAnimationController.Action.WAKEUP_BACK
+	)
+	if animation_name != wakeup_front and animation_name != wakeup_back:
+		return
+	if not is_waking_up or npc_state != NPCState.UNCONSCIOUS:
+		return
+
+	is_waking_up = false
+	set_collision_standing()
+	_set_npc_state(NPCState.ALIVE)
+	animation_controller.play_action(CharacterAnimationController.Action.IDLE, 0.3)
+
+	_ragdoll_mode = false
+	ragdoll_driver.set("pose_frozen", false)
+	collision.set_deferred("disabled", false)
+
+	_start_alert(AlertBehavior.AlertReason.WAKE_UP, global_position)
+
+func align_for_garrote(attacker: Node3D) -> void:
+	if not is_alive():
+		return
+
+	var direction := global_position - attacker.global_position
+	direction.y = 0.0
+
+	if direction.length_squared() < 0.0001:
+		return
+
+	# جهت گارد از بازیکن به سمت جلو باشد.
+	rotation.y = atan2(direction.x, direction.z)
+
+func play_garroted() -> void:
+	animation_controller.play_action(CharacterAnimationController.Action.GARROTED)
+
+func set_collision_lying() -> void:
+	var capsule := collision.shape as CapsuleShape3D
+
+	if capsule == null:
+		return
+
+	var half_height := capsule.height * 0.5
+	var offset := half_height - capsule.radius
+
+	# مقدار جابه‌جایی اضافی به سمت جلوی گارد
+	const FORWARD_OFFSET := 0.5
+
+	# خواباندن کپسول در راستای بدن گارد
+	collision.rotation_degrees = standing_collision_rotation + Vector3(-90, 0, 0)
+
+	# تنظیم ارتفاع و جابه‌جایی به سمت جلو
+	collision.position = standing_collision_position + Vector3(
+		0,
+		-offset,
+		offset + FORWARD_OFFSET
+	)
+
+func set_collision_standing() -> void:
+	collision.rotation_degrees = standing_collision_rotation
+	collision.position = standing_collision_position
+
+func knockout_from(attacker: Node3D) -> void:
+	if _ragdoll_mode or not is_alive() or not can_knockout:
+		return
+	if not is_instance_valid(attacker) or ragdoll_driver == null:
+		return
+
+	var hit_direction: Vector3 = global_position - attacker.global_position
+	hit_direction.y = 0.0
+	if hit_direction.length_squared() < 0.0001:
+		hit_direction = global_transform.basis.z
+
+	# Update knockout state without playing M_knockout.
+	knockout()
+	animation_player.stop(true)
+
+	_ragdoll_mode = true
+	stop_patrol()
+	agent.avoidance_enabled = false
+
+	await get_tree().create_timer(knockout_impact_delay).timeout
+	if not is_inside_tree() or npc_state != NPCState.UNCONSCIOUS or is_waking_up:
+		return
+	if ragdoll_driver == null:
+		return
+
+	animation_player.pause()
+	collision.set_deferred("disabled", true)
+	ragdoll_driver.call("start_ragdoll", hit_direction.normalized(), head_impact_strength)
+
+func _process(delta: float) -> void:
+	if not _wake_blending:
+		return
+	var skeleton := ragdoll_driver.get_skeleton()
+	if skeleton == null:
+		return
+	_wake_blend_elapsed += delta
+	var alpha := clampf(_wake_blend_elapsed / wake_blend_duration, 0.0, 1.0)
+	alpha = alpha * alpha * (3.0 - 2.0 * alpha)
+	global_position = _wake_root_start.lerp(_wake_root_target, alpha)
+	rotation.y = lerp_angle(_wake_yaw_start, _wake_yaw_target, alpha)
+	for i in range(mini(_wake_source_poses.size(), _wake_target_poses.size())):
+		skeleton.set_bone_pose(i, _wake_source_poses[i].interpolate_with(_wake_target_poses[i], alpha))
+
+	if _wake_blend_elapsed >= wake_blend_duration:
+		_wake_blending = false
+		set_process(false)
+		animation_controller.play_action(_wake_action, 0.0)
+		animation_player.seek(0.0, true)
+
+func start_garrote_ragdoll() -> void:
+	if not is_inside_tree() or ragdoll_driver == null:
+		return
+
+	if npc_state != NPCState.DEAD or _ragdoll_mode:
+		return
+
+	_ragdoll_mode = true
+	velocity = Vector3.ZERO
+	stop_patrol()
+	agent.avoidance_enabled = false
+
+	animation_player.pause()
+	collision.set_deferred("disabled", true)
+
+	ragdoll_driver.call("start_ragdoll")
+
+func _is_fallen_on_back(skeleton: Skeleton3D) -> bool:
+	var left_index := skeleton.find_bone("LeftArm")
+	var right_index := skeleton.find_bone("RightArm")
+	var hip_index := skeleton.find_bone("Hips")
+	var head_index := skeleton.find_bone("Neck1")
+
+	if head_index < 0:
+		head_index = skeleton.find_bone("Neck")
+
+	if left_index < 0 or right_index < 0 or hip_index < 0 or head_index < 0:
+		push_warning("Cannot determine fallen body orientation.")
+		return false
+
+	var left_pos := skeleton.to_global(skeleton.get_bone_global_pose(left_index).origin)
+	var right_pos := skeleton.to_global(skeleton.get_bone_global_pose(right_index).origin)
+	var hip_pos := skeleton.to_global(skeleton.get_bone_global_pose(hip_index).origin)
+	var head_pos := skeleton.to_global(skeleton.get_bone_global_pose(head_index).origin)
+
+	var shoulder_axis := right_pos - left_pos
+	var torso_axis := head_pos - hip_pos
+
+	var chest_normal := shoulder_axis.cross(torso_axis).normalized()
+
+	return chest_normal.dot(Vector3.UP) < 0.0

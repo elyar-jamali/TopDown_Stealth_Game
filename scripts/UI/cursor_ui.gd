@@ -5,6 +5,8 @@ var tex_interact = preload("res://data/cursor/cursor_hand.png")
 var tex_rotate = preload("res://data/cursor/cursor_rotate.png")
 var tex_crossair = preload("res://data/cursor/cursor_crossair.png")
 var tex_locked = preload("res://data/cursor/cursor_locked.png")
+var tex_knockout = preload("res://data/cursor/cursor_knockout.png")
+var tex_garrote = preload("res://data/cursor/cursor_garrote.png")
 var hotspot = Vector2(0, 0)
 @onready var hover_label: Label = $HoverLabel
 
@@ -77,4 +79,10 @@ func update_cursor(state):
 		CursorManager.CursorState.LOCKED:
 			icon.texture = tex_locked
 			_setup_icon("center")
-			
+		CursorManager.CursorState.KNOCKOUT:
+			icon.texture = tex_knockout
+			_setup_icon("topleft")
+
+		CursorManager.CursorState.GARROTE:
+			icon.texture = tex_garrote
+			_setup_icon("topleft")			

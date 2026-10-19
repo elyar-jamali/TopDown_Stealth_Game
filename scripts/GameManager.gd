@@ -6,7 +6,7 @@ const SETTINGS_PATH := "user://settings.cfg"
 const REMAPPABLE_ACTIONS := [
 	"crouch",
 	"knockout",
-	"lethal_takedown",
+	"garrote",
 	"pistol",
 	"rifle",
 	"heal",
@@ -244,15 +244,32 @@ func _deserialize_input_event(data: Dictionary) -> InputEvent:
 # ---------------------------------------------------------
 # GAME
 # ---------------------------------------------------------
-func start_level(path: String):
+func start_level(path: String) -> void:
 	current_level_path = path
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
+	InteractionSystem.cancel_pending()
+	InteractionSystem.clear_selected_action()
+	HoverSystem.reset_for_new_scene()
+	var error := get_tree().change_scene_to_file(
+		"res://scenes/main.tscn"
+	)
+	if error != OK:
+		push_error("Could not start level: " + str(error))
+		return
+	await get_tree().scene_changed
+	CursorManager.set_force_default(false)
+	CursorManager.clear_action_state()
+	CursorManager.set_state(CursorManager.CursorState.DEFAULT)
 
 
-func go_to_main_menu():
+func go_to_main_menu() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://scenes/menus/MainMenu.tscn")
-
+	InteractionSystem.cancel_pending()
+	InteractionSystem.clear_selected_action()
+	CursorManager.ui_cursor = null
+	HoverSystem.ui = null
+	get_tree().change_scene_to_file(
+		"res://scenes/menus/MainMenu.tscn"
+	)
 
 func quit_game():
 	get_tree().quit()

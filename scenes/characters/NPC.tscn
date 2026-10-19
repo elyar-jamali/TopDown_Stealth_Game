@@ -1,12 +1,38 @@
 [gd_scene format=3 uid="uid://77uphup8j840"]
 
 [ext_resource type="Script" uid="uid://meydslwq2rsr" path="res://scripts/NPC/NPC.gd" id="1_jpwb5"]
-[ext_resource type="PackedScene" uid="uid://byy0tiatdcsc3" path="res://scenes/characters/npc_female_visual.tscn" id="2_hnoa0"]
+[ext_resource type="PackedScene" uid="uid://c50nvkouskr0l" path="res://scenes/characters/npc_female_ragdoll_visual.tscn" id="2_i74hb"]
 [ext_resource type="Script" uid="uid://dt5uv11p2tdji" path="res://scripts/AI/vision_component.gd" id="3_g2a5c"]
+[ext_resource type="Script" uid="uid://bn5ecvu20vr2c" path="res://scripts/AI/AlertBehavior.gd" id="4_kqela"]
+[ext_resource type="Script" uid="uid://drnvr40834l5g" path="res://scripts/Characters/CharacterAnimationController.gd" id="5_i74hb"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tvc50"]
 radius = 0.3
 height = 1.6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kqela"]
+bg_color = Color(0.4390491, 0.43904912, 0.43904912, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.06666667, 0.06666667, 0.06666667, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2a5c"]
+bg_color = Color(11.849977, 11.849977, 0, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="NPC" type="CharacterBody3D" unique_id=380304844]
 script = ExtResource("1_jpwb5")
@@ -21,7 +47,7 @@ shape = SubResource("CapsuleShape3D_tvc50")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1144626871]
 
-[node name="NPC Female" parent="Visual" unique_id=161004922 instance=ExtResource("2_hnoa0")]
+[node name="NPC Female" parent="Visual" unique_id=2058620429 instance=ExtResource("2_i74hb")]
 
 [node name="VisionComponent" type="Node3D" parent="." unique_id=1356284297]
 script = ExtResource("3_g2a5c")
@@ -38,3 +64,28 @@ polygon = PackedVector2Array(-9, 8, 0, -11, 9, 8, 0, 4)
 [node name="Fill" type="Polygon2D" parent="MapMarker" unique_id=1801173517]
 color = Color(1, 0, 0, 1)
 polygon = PackedVector2Array(-7, 6, 0, -9, 7, 6, 0, 3)
+
+[node name="StatusBar3D" type="Sprite3D" parent="." unique_id=1032457060]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+billboard = 1
+texture_filter = 1
+
+[node name="StatusViewport" type="SubViewport" parent="StatusBar3D" unique_id=1013780401]
+transparent_bg = true
+size = Vector2i(128, 20)
+render_target_update_mode = 4
+
+[node name="ProgressBar" type="ProgressBar" parent="StatusBar3D/StatusViewport" unique_id=536519942]
+offset_right = 128.0
+offset_bottom = 20.0
+theme_override_styles/background = SubResource("StyleBoxFlat_kqela")
+theme_override_styles/fill = SubResource("StyleBoxFlat_g2a5c")
+value = 100.0
+show_percentage = false
+
+[node name="AlertBehavior" type="Node3D" parent="." unique_id=1848303965]
+script = ExtResource("4_kqela")
+
+[node name="CharacterAnimationController" type="Node3D" parent="." unique_id=812434602]
+script = ExtResource("5_i74hb")
+animation_set = 1

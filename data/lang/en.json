@@ -46,7 +46,7 @@
 
 		"crouch": "Crouch / Stand",
 		"knockout": "Knockout",
-		"lethal_takedown": "Lethal Takedown",
+		"garrote": "Lethal Takedown",
 		"pistol": "Pistol",
 		"rifle": "Scoped Rifle",
 		"heal": "Heal",
@@ -97,7 +97,7 @@
 			"stand": "Stand",
 			"crouch": "Crouch",
 			"knockout": "Knock out an enemy without killing",
-			"lethal_takedown": "Silent close-range takedown",
+			"garrote": "Silent close-range takedown",
 			"pistol": "Short-range pistol",
 			"rifle": "Long-range sniper rifle",
 			"heal": "Bandage",

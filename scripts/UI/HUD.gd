@@ -100,8 +100,8 @@ func _ready():
 	if not knockout_slot.pressed.is_connected(_on_knockout_pressed):
 		knockout_slot.pressed.connect(_on_knockout_pressed)
 
-	if not kill_slot.pressed.is_connected(_on_lethal_takedown_pressed):
-		kill_slot.pressed.connect(_on_lethal_takedown_pressed)
+	if not kill_slot.pressed.is_connected(_on_garrote_pressed):
+		kill_slot.pressed.connect(_on_garrote_pressed)
 
 	if not pistol_slot.pressed.is_connected(_on_pistol_pressed):
 		pistol_slot.pressed.connect(_on_pistol_pressed)
@@ -118,12 +118,17 @@ func _ready():
 	if not map_image.gui_input.is_connected(_on_map_image_gui_input):
 		map_image.gui_input.connect(_on_map_image_gui_input)
 
+	if not InteractionSystem.action_changed.is_connected(_on_action_changed):
+		InteractionSystem.action_changed.connect(_on_action_changed)
+
+	_on_action_changed(InteractionSystem.selected_action)
+
 	portrait.texture = agent_portrait
 	map_image.texture = map_image_icon
 
 	crouch_slot.setup_action(stand_icon, get_action_key_name("crouch"))
 	knockout_slot.setup_action(knockout_icon, get_action_key_name("knockout"))
-	kill_slot.setup_action(kill_icon, get_action_key_name("lethal_takedown"))
+	kill_slot.setup_action(kill_icon, get_action_key_name("garrote"))
 	pistol_slot.setup_action(pistol_icon, get_action_key_name("pistol"), "10")
 	rifle_slot.setup_action(rifle_icon, get_action_key_name("rifle"), "3")
 	heal_slot.setup_action(heal_icon, get_action_key_name("heal"), "2")
@@ -413,8 +418,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_open_log()
 	elif event.is_action_pressed("knockout"):
 		_on_knockout_pressed()
-	elif event.is_action_pressed("lethal_takedown"):
-		_on_lethal_takedown_pressed()
+	elif event.is_action_pressed("garrote"):
+		_on_garrote_pressed()
 	elif event.is_action_pressed("pistol"):
 		_on_pistol_pressed()
 	elif event.is_action_pressed("rifle"):
@@ -425,7 +430,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func refresh_shortcuts() -> void:
 	crouch_slot.set_shortcut(get_action_key_name("crouch"))
 	knockout_slot.set_shortcut(get_action_key_name("knockout"))
-	kill_slot.set_shortcut(get_action_key_name("lethal_takedown"))
+	kill_slot.set_shortcut(get_action_key_name("garrote"))
 	pistol_slot.set_shortcut(get_action_key_name("pistol"))
 	rifle_slot.set_shortcut(get_action_key_name("rifle"))
 	heal_slot.set_shortcut(get_action_key_name("heal"))
@@ -437,7 +442,7 @@ func _setup_localized_texts() -> void:
 	map_title.text = LocalizationManager.translate("controls.map")
 
 	knockout_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.knockout"))
-	kill_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.lethal_takedown"))
+	kill_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.garrote"))
 	pistol_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.pistol"))
 	rifle_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.rifle"))
 	heal_slot.set_tooltip(LocalizationManager.translate("hud.tooltips.heal"))
@@ -445,6 +450,15 @@ func _setup_localized_texts() -> void:
 
 	if player != null:
 		_on_player_movement_state_changed(player.movement_state)
+
+func _on_action_changed(action: InteractionSystem.Action) -> void:
+	knockout_slot.set_selected(
+		action == InteractionSystem.Action.KNOCKOUT
+	)
+
+	kill_slot.set_selected(
+		action == InteractionSystem.Action.GARROTE
+	)
 
 func _open_full_map() -> void:
 	map_panel.visible = not map_panel.visible
@@ -454,9 +468,14 @@ func _open_full_map() -> void:
 func _open_log() -> void:
 	print("_open_log")
 func _on_knockout_pressed() -> void:
-	print("_on_knockout_pressed")
-func _on_lethal_takedown_pressed() -> void:
-	print("_on_lethal_takedown_pressed")
+	InteractionSystem.select_action(
+		InteractionSystem.Action.KNOCKOUT
+	)
+
+func _on_garrote_pressed() -> void:
+	InteractionSystem.select_action(
+		InteractionSystem.Action.GARROTE
+	)
 func _on_pistol_pressed() -> void:
 	print("_on_pistol_pressed")
 func _on_rifle_pressed() -> void:

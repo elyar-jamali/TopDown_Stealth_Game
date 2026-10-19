@@ -50,7 +50,7 @@ func toggle_pause() -> void:
 
 func pause_game() -> void:
 	HoverSystem.clear_hover()
-	CursorManager.set_state(CursorManager.CursorState.DEFAULT)
+	CursorManager.set_force_default(true)
 	get_tree().paused = true
 	visible = true
 	settings_panel.hide()
@@ -62,6 +62,7 @@ func resume_game() -> void:
 	pause_content.show()
 	visible = false
 	get_tree().paused = false
+	CursorManager.set_force_default(false)
 
 func _setup_texts() -> void:
 	title.text = LocalizationManager.translate("pause_menu.title_text")

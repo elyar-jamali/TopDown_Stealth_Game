@@ -26,7 +26,7 @@ This is a personal project developed in my spare time to explore game architectu
 - Crouch / stand switching with matching animations and movement behavior
 - Walk / run movement with automatic animation switching
 - Ground-speed synchronized locomotion animations to reduce foot sliding
-- Shared male / female animation data and reference movement speeds
+- Shared animation controller with male / female animation sets, playback-speed control, and smooth blending
 - Reusable interaction system
 - Reusable door scenes with open, closed, and locked states
 - Navigation-aware doors with detour handling
@@ -34,12 +34,24 @@ This is a personal project developed in my spare time to explore game architectu
 - World-anchored hover labels for NPCs and doors
 - Custom cursor system
 
+### Stealth Takedowns and Ragdoll Physics
+
+- Non-lethal knockout punches with directional, physics-based NPC falls
+- Lethal garrote takedowns with synchronized attacker and victim animations
+- Transition from the victim's kneeling garrote animation into a physics-driven fall
+- NPC ragdolls implemented with `PhysicalBoneSimulator3D` and `PhysicalBone3D`
+- Configured knee and elbow joint limits to reduce unnatural bending
+- Physical collisions with the environment during ragdoll falls
+- Automatic settling and pose freezing after a fall
+- Unconscious NPC recovery with separate face-up and face-down wake-up animations
+- Smooth transitions from the frozen ragdoll pose into wake-up animations and back to idle
+
 ### Guard and NPC Systems
 
 - Guard vision system with obstacle occlusion
 - Visual guard field-of-view overlay
 - Standing / crouching visibility classification
-- Basic NPC structure, interaction, and ground physics
+- Shared NPC scene and script for patrol, interaction, consciousness, death, and ragdoll behavior
 - Navigation-based NPC patrol system
 - Loop, Ping-Pong, and Once patrol modes
 - Configurable patrol start point, movement speed, wait time, and turning speed
@@ -47,6 +59,15 @@ This is a personal project developed in my spare time to explore game architectu
 - Automatic idle / walk animation handling during patrol
 - Shared patrol routes that can be assigned independently to NPCs
 - Custom editor Waypoint Painter for creating patrol routes
+
+### Character Animation System
+
+- Reusable `CharacterAnimationController` shared by the player and NPCs
+- Centralized action-to-animation mapping for male and female characters
+- Automatic discovery of each character's `AnimationPlayer` within instanced visual scenes
+- Configurable animation blending, action playback speeds, and reference movement speeds
+- Blended idle / walk / run transitions and crouched locomotion
+- Different wake-up animations chosen from the fallen NPC's orientation
 
 ### Patrol Route Workflow
 
@@ -156,14 +177,16 @@ The current player character was created with **MakeHuman** and rigged/animated 
 
 The animation tracks used by the game are stored inside the Godot character visual scenes. The original animation source files are not required at runtime.
 
-Male and female locomotion animations use shared animation metadata so NPCs and the player can automatically select the correct animation set and synchronize animation playback with actual ground movement speed.
+Player and NPC animation playback is managed through a reusable `CharacterAnimationController`. Each character selects its male or female animation set, while the controller handles action lookup, playback speed, and blended transitions.
+
+NPC ragdoll physics is handled separately by `RagdollDriver`, allowing transitions from animated takedowns to physical falls and from a frozen ragdoll pose back to wake-up animations. Character visuals and their physics rigs remain scene-specific.
 
 See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing notes.
 
 ## Planned Features
 
-- Player knockout and lethal takedown mechanics
-- NPC alive / knocked-out / dead states
+- Additional takedown reactions and interactions
+- Further NPC recovery and ragdoll polish
 - Save / Load system
 - Pickups and weapons
 - More advanced NPC AI and guard state machine
@@ -178,7 +201,9 @@ See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing n
 
 **Early development / prototype stage**
 
-The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows.
+The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows. Knockout and garrote takedowns, physics-based NPC falls, recovery animations, and the shared animation controller are currently implemented.
+
+Development updates and discussion: [Godot Forum](https://forum.godotengine.org/t/commandos-games-style-top-down-stealth-prototype-in-godot-4-navigation-guard-vision-interactions-and-camera-system-full-source-code-on-github/144726).
 
 ## License
 
