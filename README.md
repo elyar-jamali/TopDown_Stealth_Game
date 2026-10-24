@@ -60,6 +60,21 @@ This is a personal project developed in my spare time to explore game architectu
 - Shared patrol routes that can be assigned independently to NPCs
 - Custom editor Waypoint Painter for creating patrol routes
 
+### Character Appearance System
+
+- Four selectable appearances for both player and NPC characters:
+  - **Male Suit**
+  - **Male Worker**
+  - **Female Casual**
+  - **Female Elegant**
+- Runtime visual selection using reusable male and female character visual scenes
+- Shared skeleton and animation workflows across compatible appearance variants
+- Custom Godot editor plugin that previews the selected appearance in the 3D editor, including characters placed in levels
+- Appearance changes integrated with animation playback and NPC ragdoll behavior
+- Reorganized character assets with appearance-specific textures and a shared `common_textures` folder
+- Optimized texture formats and resolutions while retaining PNG where transparency or image quality requires it
+- Removed obsolete FBX source folders after verifying that character visuals still load following a fresh import-cache rebuild
+
 ### Character Animation System
 
 - Reusable `CharacterAnimationController` shared by the player and NPCs
@@ -68,6 +83,7 @@ This is a personal project developed in my spare time to explore game architectu
 - Configurable animation blending, action playback speeds, and reference movement speeds
 - Blended idle / walk / run transitions and crouched locomotion
 - Different wake-up animations chosen from the fallen NPC's orientation
+- Female punch action supported using a temporary animation adapted from the male version; further animation polish is planned
 
 ### Patrol Route Workflow
 
@@ -156,11 +172,11 @@ Patrol routes only store ordered waypoint positions. Patrol behavior such as Loo
 | Right Mouse Button | Cancel the current action |
 | Middle Mouse Button | Toggle a guard's vision field |
 | Space | Crouch / stand |
-| F1 | Knockout action slot |
-| F2 | Lethal takedown action slot |
-| F3 | Pistol action slot |
-| F4 | Scoped rifle action slot |
-| F5 | Heal action slot |
+| 1 | Knockout action slot |
+| 2 | Lethal takedown action slot |
+| 3 | Pistol action slot |
+| 4 | Scoped rifle action slot |
+| 5 | Heal action slot |
 | M | Map |
 | L | Dialogue / log |
 | Alt + Mouse Movement | Rotate and tilt the camera |
@@ -173,13 +189,17 @@ Patrol routes only store ordered waypoint positions. Patrol behavior such as Loo
 
 ## Character Workflow
 
-The current player character was created with **MakeHuman** and rigged/animated using **Adobe Mixamo**.
+The character assets were prepared using **MakeHuman** and **Adobe Mixamo** as part of the modeling, rigging, and animation workflow.
 
-The animation tracks used by the game are stored inside the Godot character visual scenes. The original animation source files are not required at runtime.
+The game uses reusable male and female visual scenes and separate appearance scenes containing meshes and skin bindings. The selected appearance is applied to player and NPC characters at runtime and can also be previewed through a custom editor plugin.
+
+Character animation data is stored as Godot resources and accessed through the visual scenes. The original FBX source files are no longer required for the current character appearance workflow.
 
 Player and NPC animation playback is managed through a reusable `CharacterAnimationController`. Each character selects its male or female animation set, while the controller handles action lookup, playback speed, and blended transitions.
 
 NPC ragdoll physics is handled separately by `RagdollDriver`, allowing transitions from animated takedowns to physical falls and from a frozen ragdoll pose back to wake-up animations. Character visuals and their physics rigs remain scene-specific.
+
+Character textures are stored in appearance-specific folders, with reusable textures kept in `common_textures`. Texture resolution and format are chosen according to the needs of the game, including retaining transparency where necessary.
 
 See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing notes.
 
@@ -192,16 +212,16 @@ See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing n
 - More advanced NPC AI and guard state machine
 - Additional NPC variants
 - Multiple levels
-- Additional character and NPC animations
+- Additional character and NPC animations, including further refinement of the female punch animation
 - Audio system
 - Inventory system (possible future feature)
-- Character customization
+- Character customization, including adjustable hair and clothing colors using reusable materials and textures
 
 ## Project Status
 
 **Early development / prototype stage**
 
-The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows. Knockout and garrote takedowns, physics-based NPC falls, recovery animations, and the shared animation controller are currently implemented.
+The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows. Knockout and garrote takedowns, physics-based NPC falls, recovery animations, the shared animation controller, and four selectable character appearances are currently implemented. Character assets have also been reorganized and validated after removal of obsolete FBX dependencies.
 
 Development updates and discussion: [Godot Forum](https://forum.godotengine.org/t/commandos-games-style-top-down-stealth-prototype-in-godot-4-navigation-guard-vision-interactions-and-camera-system-full-source-code-on-github/144726).
 
