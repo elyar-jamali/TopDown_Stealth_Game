@@ -1,4 +1,31 @@
 extends CharacterBody3D
+
+# ==============================
+# Character Visual
+# ==============================
+enum CharacterAppearance {
+	MALE_SUIT,
+	MALE_WORKER,
+	FEMALE_CASUAL,
+	FEMALE_ELEGANT
+}
+@export_group("Character Visual")
+@export var character_appearance: CharacterAppearance = CharacterAppearance.MALE_SUIT
+
+const CHARACTER_VISUALS: Array[PackedScene] = [
+	preload("res://scenes/characters/male_visual.tscn"),
+	preload("res://scenes/characters/female_visual.tscn")
+]
+const APPEARANCE_SCENES: Array[PackedScene] = [
+	preload("res://data/characters/appearances/male_suit/male_suit_appearance.tscn"),
+	preload("res://data/characters/appearances/male_worker/male_worker_appearance.tscn"),
+	preload("res://data/characters/appearances/female_casual/female_casual_appearance.tscn"),
+	preload("res://data/characters/appearances/female_elegant/female_elegant_appearance.tscn")
+]
+var animation_player: AnimationPlayer
+# ==============================
+# Movement Speeds
+# ==============================
 @export_group("Movement Speeds")
 @export var walk_speed: float = 2.5
 @export var run_speed: float = 5.5
@@ -72,6 +99,7 @@ const MOVEMENT_DATA = {
 }
 
 var is_punching: bool = false
+var is_ragdoll_active: bool = false
 
 ##################################################################
 func is_crouched() -> bool:
@@ -96,12 +124,14 @@ func toggle_crouch():
 		else:
 			change_movement_state(MovementState.CROUCH_IDLE)
 func _ready():
+	_apply_character_visual()
 	map_marker_fill.color = GameColors.get_color(map_marker_color)
 	floor_max_angle = deg_to_rad(45.0)
 	floor_snap_length = 0.5
 	max_slides = 6
 	floor_block_on_wall = false
 	agent.avoidance_enabled = true
+	_setup_ragdoll_collision_exceptions()
 	agent.radius = _get_collision_radius() + 0.05
 	agent.height = 1.8
 	agent.neighbor_distance = 4.0
@@ -121,11 +151,16 @@ func _ready():
 	current_health = max_health
 	health_changed.emit(current_health, max_health)
 	movement_state_changed.emit(movement_state)
+
 	# The shared controller owns animation playback and selection.
 	animation_controller.play_action(CharacterAnimationController.Action.IDLE, 0.0)
-	animation_controller.animation_player.animation_finished.connect(_on_player_animation_finished)
+	if animation_player != null:
+		animation_player.animation_finished.connect(_on_player_animation_finished)
+
 
 func _physics_process(delta):
+	if is_ragdoll_active:
+		return
 	_apply_gravity(delta)
 	if is_punching:
 		agent.velocity = Vector3.ZERO
@@ -213,6 +248,8 @@ func _apply_gravity(delta: float):
 	elif velocity.y < 0.0:
 		velocity.y = 0.0
 func _on_safe_velocity_computed(new_safe_velocity: Vector3):
+	if is_ragdoll_active:
+		return
 	if is_punching:
 		return
 	var applied_velocity: Vector3 = new_safe_velocity
@@ -324,6 +361,15 @@ func _stop_movement():
 	path_drawer.clear()
 
 func _unhandled_input(event):
+	######تست رگدال
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_F6 and not is_ragdoll_active:
+			activate_ragdoll(-global_transform.basis.z, 0.0)
+			get_viewport().set_input_as_handled()
+			return
+	######انتهای تست رگدال
+	if is_ragdoll_active:
+		return
 	if is_punching:
 		return
 	if event.is_action_pressed("knockout"):
@@ -604,3 +650,105 @@ func play_garrote(target: Node3D) -> void:
 	is_punching = true
 
 	animation_controller.play_action(CharacterAnimationController.Action.GARROTE, 0.0)
+
+func activate_ragdoll(
+		hit_direction: Vector3 = Vector3.ZERO,
+		impulse_strength: float = 0.0
+) -> void:
+	var driver := find_child("PhysicalBoneSimulator3D", true, false) as PhysicalBoneSimulator3D
+	if driver == null or not driver.has_method("start_ragdoll"):
+		push_warning("Player RagdollDriver not found.")
+		return
+
+	is_ragdoll_active = true
+	_stop_movement()
+	velocity = Vector3.ZERO
+	agent.avoidance_enabled = false
+	collision_shape.set_deferred("disabled", true)
+
+	if animation_controller.animation_player:
+		animation_controller.animation_player.stop()
+
+	driver.start_ragdoll(hit_direction, impulse_strength)
+
+func _setup_ragdoll_collision_exceptions() -> void:
+	var driver := find_child("PhysicalBoneSimulator3D", true, false) as PhysicalBoneSimulator3D
+	if driver == null:
+		return
+
+	for bone in driver.find_children("*", "PhysicalBone3D", true, false):
+		var physical_bone := bone as PhysicalBone3D
+		if physical_bone == null:
+			continue
+
+		add_collision_exception_with(physical_bone)
+		physical_bone.add_collision_exception_with(self)
+
+
+func _apply_character_visual() -> void:
+	var appearance_id := int(character_appearance)
+
+	if appearance_id < 0 or appearance_id >= APPEARANCE_SCENES.size():
+		push_error("Invalid Player Character Appearance.")
+		return
+
+	var is_female := appearance_id >= CharacterAppearance.FEMALE_CASUAL
+	var gender_index := 1 if is_female else 0
+
+	var old_visual := get_node_or_null("Visual") as Node3D
+
+	if old_visual == null:
+		push_error("Player Visual node not found.")
+		return
+
+	var new_visual := CHARACTER_VISUALS[gender_index].instantiate() as Node3D
+
+	if new_visual == null:
+		push_error("Could not instantiate Player Visual.")
+		return
+
+	var skeleton := new_visual.find_child(
+		"Skeleton3D", true, false
+	) as Skeleton3D
+
+	if skeleton == null:
+		push_error("Player Skeleton3D not found.")
+		new_visual.free()
+		return
+
+	var new_appearance := APPEARANCE_SCENES[appearance_id].instantiate()
+
+	if new_appearance == null:
+		push_error("Could not instantiate Player Appearance.")
+		new_visual.free()
+		return
+
+	var old_appearance := skeleton.get_node_or_null("Appearance")
+
+	if old_appearance != null:
+		skeleton.remove_child(old_appearance)
+		old_appearance.free()
+
+	new_appearance.name = "Appearance"
+	skeleton.add_child(new_appearance)
+
+	var saved_transform := old_visual.transform
+
+	remove_child(old_visual)
+	old_visual.queue_free()
+
+	new_visual.name = "Visual"
+	add_child(new_visual)
+	new_visual.transform = saved_transform
+
+	animation_controller.refresh_animation_player()
+	animation_player = animation_controller.animation_player
+
+	animation_controller.configure_gender(
+		CharacterAnimationController.Set.FEMALE
+		if is_female
+		else CharacterAnimationController.Set.MALE
+	)
+
+	if animation_player == null:
+		push_error("Player AnimationPlayer not found.")

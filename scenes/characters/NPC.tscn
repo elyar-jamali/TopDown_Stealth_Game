@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://77uphup8j840"]
 
 [ext_resource type="Script" uid="uid://meydslwq2rsr" path="res://scripts/NPC/NPC.gd" id="1_jpwb5"]
-[ext_resource type="PackedScene" uid="uid://c50nvkouskr0l" path="res://scenes/characters/npc_female_ragdoll_visual.tscn" id="2_i74hb"]
 [ext_resource type="Script" uid="uid://dt5uv11p2tdji" path="res://scripts/AI/vision_component.gd" id="3_g2a5c"]
 [ext_resource type="Script" uid="uid://bn5ecvu20vr2c" path="res://scripts/AI/AlertBehavior.gd" id="4_kqela"]
 [ext_resource type="Script" uid="uid://drnvr40834l5g" path="res://scripts/Characters/CharacterAnimationController.gd" id="5_i74hb"]
+[ext_resource type="PackedScene" uid="uid://cyw48m1q1se0j" path="res://scenes/characters/male_visual.tscn" id="5_vm3ww"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tvc50"]
 radius = 0.3
@@ -45,10 +45,6 @@ neighbor_distance = 4.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("CapsuleShape3D_tvc50")
 
-[node name="Visual" type="Node3D" parent="." unique_id=1144626871]
-
-[node name="NPC Female" parent="Visual" unique_id=2058620429 instance=ExtResource("2_i74hb")]
-
 [node name="VisionComponent" type="Node3D" parent="." unique_id=1356284297]
 script = ExtResource("3_g2a5c")
 scan_angle = 0.0
@@ -88,4 +84,5 @@ script = ExtResource("4_kqela")
 
 [node name="CharacterAnimationController" type="Node3D" parent="." unique_id=812434602]
 script = ExtResource("5_i74hb")
-animation_set = 1
+
+[node name="Visual" parent="." unique_id=746273035 instance=ExtResource("5_vm3ww")]

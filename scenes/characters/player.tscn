@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dnw3bpycxx036"]
 
 [ext_resource type="Script" uid="uid://vdfyr6e8e6t7" path="res://scripts/Characters/player.gd" id="1_g2els"]
-[ext_resource type="PackedScene" uid="uid://p4b8xeycgsy7" path="res://scenes/characters/player_visual.tscn" id="2_qhqgy"]
 [ext_resource type="Script" uid="uid://drnvr40834l5g" path="res://scripts/Characters/CharacterAnimationController.gd" id="3_76oj4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
@@ -18,8 +17,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("CapsuleShape3D_0xm2m")
 
 [node name="Visual" type="Node3D" parent="." unique_id=1547873818]
-
-[node name="player_rigged" parent="Visual" unique_id=671514872 instance=ExtResource("2_qhqgy")]
 
 [node name="MapMarker" type="Node2D" parent="." unique_id=2060456816]
 visible = false

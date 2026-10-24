@@ -301,6 +301,7 @@ transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0,
 
 [node name="NPC" parent="." unique_id=318198715 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15.2813635, 0, 6.648855)
+character_appearance = 1
 vision_color = 4
 highlight_color = 4
 npc_name = 1
@@ -311,6 +312,8 @@ patrol_wait_time = 0.0
 
 [node name="NPC2" parent="." unique_id=453139073 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.444764, 0, -2.9356215)
+knockout_duration = 5.0
+alert_duration = 4.0
 npc_name = 2
 patrol_enabled = true
 patrol_route = NodePath("../PatrolRoutes/Guard02Route")
@@ -319,6 +322,21 @@ patrol_wait_time = 1.0
 
 [node name="NPC4" parent="." unique_id=765280887 instance=ExtResource("1_msin7")]
 transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 14.148705)
+character_appearance = 1
+npc_name = 1
+
+[node name="NPC5" parent="." unique_id=380304844 instance=ExtResource("1_msin7")]
+transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 11.148504)
+npc_name = 1
+
+[node name="NPC6" parent="." unique_id=1993734003 instance=ExtResource("1_msin7")]
+transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 15.702957)
+character_appearance = 2
+npc_name = 1
+
+[node name="NPC7" parent="." unique_id=346633240 instance=ExtResource("1_msin7")]
+transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 6.081768, 0.027802706, 12.702757)
+character_appearance = 3
 npc_name = 1
 
 [node name="ShowcaseDecor" type="Node3D" parent="." unique_id=288768301 groups=["vision_receiver"]]

@@ -34,7 +34,7 @@ VisionManager="*res://scripts/AI/vision_manager.gd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/waypoint_painter/plugin.cfg")
+enabled=PackedStringArray("res://addons/npc_visual_preview/plugin.cfg", "res://addons/waypoint_painter/plugin.cfg")
 
 [input]
 

@@ -1,42 +1,32 @@
 extends CharacterBody3D
-enum NPCType {
-	Civilian_Male,
-	Civilian_Female,
-	Guard,
-	Worker
-}
-enum PatrolMode {
-	LOOP,
-	PING_PONG,
-	ONCE
-}
-enum NPCState {
-	ALIVE,
-	UNCONSCIOUS,
-	DEAD
-}
 
-enum NPCBehavior {
-	NORMAL,
-	ALERT
+############################Character Visual############################
+enum CharacterAppearance {
+	MALE_SUIT,
+	MALE_WORKER,
+	FEMALE_CASUAL,
+	FEMALE_ELEGANT
 }
+@export_group("Character Visual")
+@export var character_appearance: CharacterAppearance = CharacterAppearance.MALE_SUIT
 
-
-@onready var collision := $CollisionShape3D
-@onready var agent: NavigationAgent3D = $NavigationAgent3D
-@onready var animation_player: AnimationPlayer = $"Visual/NPC Female/AnimationPlayer"
-@onready var vision_component = $VisionComponent
-@onready var status_bar_3d: Sprite3D = $StatusBar3D
-@onready var status_viewport: SubViewport = $StatusBar3D/StatusViewport
-@onready var status_progress: ProgressBar = $StatusBar3D/StatusViewport/ProgressBar
-@onready var alert_behavior: AlertBehavior = $AlertBehavior
-@onready var standing_collision_rotation: Vector3 = collision.rotation_degrees
-@onready var standing_collision_position: Vector3 = collision.position
 @onready var animation_controller: CharacterAnimationController = $CharacterAnimationController
-@onready var ragdoll_driver: PhysicalBoneSimulator3D = get_node_or_null(
-	"Visual/NPC Female/CMU compliant skeleton/Skeleton3D/PhysicalBoneSimulator3D"
+@onready var animation_player: AnimationPlayer = animation_controller.animation_player
+@onready var ragdoll_driver: PhysicalBoneSimulator3D = find_child(
+	"PhysicalBoneSimulator3D", true, false
 ) as PhysicalBoneSimulator3D
 
+const CHARACTER_VISUALS: Array[PackedScene] = [
+	preload("res://scenes/characters/male_visual.tscn"),
+	preload("res://scenes/characters/female_visual.tscn")
+]
+const APPEARANCE_SCENES: Array[PackedScene] = [
+	preload("res://data/characters/appearances/male_suit/male_suit_appearance.tscn"),
+	preload("res://data/characters/appearances/male_worker/male_worker_appearance.tscn"),
+	preload("res://data/characters/appearances/female_casual/female_casual_appearance.tscn"),
+	preload("res://data/characters/appearances/female_elegant/female_elegant_appearance.tscn")
+]
+############################Vision Settings############################
 @export_group("Vision Settings")
 @export_range(0.5, 60.0, 0.5) var vision_distance: float = 12.0
 @export_range(10.0, 170.0, 1.0) var vision_horizontal_angle: float = 60.0
@@ -44,8 +34,7 @@ enum NPCBehavior {
 @export_range(0.1, 3.0, 0.05) var vision_eye_height: float = 1.6
 @export var vision_color: GameColors.Preset = GameColors.Preset.GREEN
 @export var vision_opacity: GameColors.Opacity = GameColors.Opacity.NORMAL
-
-@export_group("Vision Scan")
+#@export_group("Vision Scan")
 @export var vision_scan_enabled: bool = true
 # این مقدار نیمه‌ی زاویه اسکن است.
 # مثلا 30 یعنی از -30 تا +30 = مجموع 60 درجه.
@@ -53,25 +42,40 @@ enum NPCBehavior {
 @export_range(0.0, 90.0, 1.0) var vision_scan_speed: float = 15.0
 @export_range(0.0, 5.0, 0.1) var vision_scan_pause_time: float = 0.5
 
-@export_group("Map & Animation Settings")
+@onready var vision_component = $VisionComponent
+############################Map & Animation Settings############################
+@export_group("Map Marker")
 @export var map_marker_color: GameColors.Preset = GameColors.Preset.RED
 @onready var map_marker_fill: Polygon2D = $MapMarker/Fill
-
-@export_group("Knockout & Alert Settings")
-@export_range(1.0, 300.0, 1.0)
-var knockout_duration: float = 30.0
-@export_range(1.0, 120.0, 1.0)
-var alert_duration: float = 12.0
-@export_range(1.0, 20.0, 0.5)
-var alert_search_radius: float = 6.0
-@export_range(1.0, 3.0, 0.1)
-var alert_speed_multiplier: float = 1.5
-@export_range(1.0, 4.0, 0.1)
-var alert_scan_speed_multiplier: float = 2.0
+############################Knockout & Status Bar############################
+@export_group("Knockout & Status Bar")
+@export_range(1.0, 300.0, 1.0) var knockout_duration: float = 30.0
 @export var knockout_bar_color: GameColors.Preset = GameColors.Preset.YELLOW
+
+@onready var status_bar_3d: Sprite3D = $StatusBar3D
+@onready var status_viewport: SubViewport = $StatusBar3D/StatusViewport
+@onready var status_progress: ProgressBar = $StatusBar3D/StatusViewport/ProgressBar
+
+var knockout_time_remaining: float = 0.0
+var status_fill_style: StyleBoxFlat
+var is_waking_up: bool = false
+############################Alert System############################
+@export_group("Alert System")
+@export_range(1.0, 120.0, 1.0) var alert_duration: float = 12.0
+@export_range(1.0, 20.0, 0.5) var alert_search_radius: float = 6.0
+@export_range(1.0, 3.0, 0.1) var alert_speed_multiplier: float = 1.5
+@export_range(1.0, 4.0, 0.1) var alert_scan_speed_multiplier: float = 2.0
 @export var alert_bar_color: GameColors.Preset = GameColors.Preset.ORANGE
 
-@export_group("Gameplay Properties")
+@onready var alert_behavior: AlertBehavior = $AlertBehavior
+############################NPC Identity & Interaction############################
+enum NPCType {
+	Male_Suit,
+	Female_Casual,
+	Guard,
+	Worker
+}
+@export_group("NPC Identity & Interaction")
 ## آیا بازیکن می‌تواند این Character را انتخاب و کنترل کند؟
 @export var selectable: bool = false
 ## آیا Interaction معمولی با این آبجکت مجاز است؟
@@ -79,13 +83,17 @@ var alert_scan_speed_multiplier: float = 2.0
 ## آیا این آبجکت اجازه Outline شدن دارد؟
 @export var highlightable: bool = true
 @export var highlight_color: GameColors.Preset = GameColors.Preset.GREEN
-
-#نوع npc
-@export var npc_name := NPCType.Civilian_Male
+@export var npc_name := NPCType.Male_Suit
 @export var Icon_default = load("res://data/Pic/civil1.jpg")
 @export var interaction_range := 0.0
 
-@export_group("Patrol Settings")
+############################Patrol & Navigation############################
+enum PatrolMode {
+	LOOP,
+	PING_PONG,
+	ONCE
+}
+@export_group("Patrol & Navigation")
 @export var patrol_enabled: bool = false
 @export var patrol_route: PatrolRoute
 @export var patrol_mode: PatrolMode = PatrolMode.LOOP
@@ -94,41 +102,37 @@ var alert_scan_speed_multiplier: float = 2.0
 @export_range(0.0, 10.0, 0.1) var patrol_wait_time: float = 0.5
 @export_range(1.0, 20.0, 0.5) var patrol_turn_speed: float = 8.0
 
-@export_group("Target Rules")
+@onready var agent: NavigationAgent3D = $NavigationAgent3D
+var patrol_point_index := 0
+var patrol_direction := 1
+var patrol_waiting := false
+var patrol_wait_remaining := 0.0
+var patrol_running := false
+var previous_position := Vector3.ZERO
+
+############################NPC State & Target Rules############################
+enum NPCState {
+	ALIVE,
+	UNCONSCIOUS,
+	DEAD
+}
+enum NPCBehavior {
+	NORMAL,
+	ALERT
+}
+@export_group("NPC State & Target Rules")
 ## آیا Actionها و Skillها می‌توانند این آبجکت را Target کنند؟
 @export var targetable: bool = true
 @export var can_kill: bool = true
 @export var can_knockout: bool = true
 @export var can_talk := true
 @export var hostile := false
-@export var gravity: float = 20.0
 
-var patrol_point_index := 0
-var patrol_direction := 1
-var patrol_waiting := false
-var patrol_wait_remaining := 0.0
-var patrol_running := false
-var stuck_time_limit := 0.10
-var stuck_move_threshold := 0.01
-var detour_reach_distance := 0.12
-var stuck_time := 0.0
-var previous_position := Vector3.ZERO
-var detour_points: Array[Vector3] = []
-var detour_index := 0
-var is_using_detour := false
-var is_using_short_escape := false
-var short_escape_points: Array[Vector3] = []
-var short_escape_index := 0
-var short_escape_velocity := Vector3.ZERO
-var short_escape_stuck_time := 0.0
-var short_escape_attempts := 0
-var detour_retry_delay := 0.0
 var npc_state: NPCState = NPCState.ALIVE
-var knockout_time_remaining: float = 0.0
-var is_waking_up: bool = false
 var npc_behavior: NPCBehavior = NPCBehavior.NORMAL
-var status_fill_style: StyleBoxFlat
 
+############################Ragdoll & Wakeup############################
+@export_group("Ragdoll & Wakeup")
 @export_range(0.10, 1.5, 0.05) var wake_blend_duration: float = 1.5
 @export_range(0.0, 1.0, 0.05) var knockout_impact_delay: float = 0.35
 @export_range(0.5, 6.0, 0.25) var head_impact_strength: float = 3.0
@@ -145,7 +149,34 @@ var _wake_yaw_target: float = 0.0
 var _wake_animation: StringName = &""
 var _wake_action: CharacterAnimationController.Action = CharacterAnimationController.Action.WAKEUP_FRONT
 
+############################Physics & Collision############################
+@export_group("Physics & Collision")
+@export var gravity: float = 10.0
+
+@onready var collision := $CollisionShape3D
+@onready var standing_collision_rotation: Vector3 = collision.rotation_degrees
+@onready var standing_collision_position: Vector3 = collision.position
+
+############################Navigation Recovery & Detour############################
+var stuck_time_limit := 0.10
+var stuck_move_threshold := 0.01
+var detour_reach_distance := 0.12
+var stuck_time := 0.0
+var detour_points: Array[Vector3] = []
+var detour_index := 0
+var is_using_detour := false
+var is_using_short_escape := false
+var short_escape_points: Array[Vector3] = []
+var short_escape_index := 0
+var short_escape_velocity := Vector3.ZERO
+var short_escape_stuck_time := 0.0
+var short_escape_attempts := 0
+var detour_retry_delay := 0.0
+
+############################Functions############################
+
 func _ready():
+	_apply_character_visual()
 	set_process(false)
 	_apply_vision_settings()
 	map_marker_fill.color = GameColors.get_color(map_marker_color)
@@ -913,7 +944,6 @@ func knockout_from(attacker: Node3D) -> void:
 	if hit_direction.length_squared() < 0.0001:
 		hit_direction = global_transform.basis.z
 
-	# Update knockout state without playing M_knockout.
 	knockout()
 	animation_player.stop(true)
 
@@ -992,3 +1022,78 @@ func _is_fallen_on_back(skeleton: Skeleton3D) -> bool:
 	var chest_normal := shoulder_axis.cross(torso_axis).normalized()
 
 	return chest_normal.dot(Vector3.UP) < 0.0
+
+
+func _apply_character_visual() -> void:
+	var appearance_id := int(character_appearance)
+
+	if appearance_id < 0 or appearance_id >= APPEARANCE_SCENES.size():
+		push_error("Invalid Character Appearance.")
+		return
+
+	var is_female := appearance_id >= CharacterAppearance.FEMALE_CASUAL
+	var gender_index := 1 if is_female else 0
+
+	var old_visual := get_node_or_null("Visual") as Node3D
+	if old_visual == null:
+		push_error("NPC Visual node not found.")
+		return
+
+	var new_visual := CHARACTER_VISUALS[gender_index].instantiate() as Node3D
+	if new_visual == null:
+		push_error("Could not instantiate Character Visual.")
+		return
+
+	var skeleton := new_visual.find_child(
+		"Skeleton3D", true, false
+	) as Skeleton3D
+
+	if skeleton == null:
+		push_error("Skeleton3D not found in Character Visual.")
+		new_visual.free()
+		return
+
+	var new_appearance := APPEARANCE_SCENES[appearance_id].instantiate()
+	if new_appearance == null:
+		push_error("Could not instantiate Character Appearance.")
+		new_visual.free()
+		return
+
+	var old_appearance := skeleton.get_node_or_null("Appearance")
+
+	if old_appearance != null:
+		skeleton.remove_child(old_appearance)
+		old_appearance.free()
+
+	new_appearance.name = "Appearance"
+	skeleton.add_child(new_appearance)
+
+	var saved_transform := old_visual.transform
+
+	remove_child(old_visual)
+	old_visual.queue_free()
+
+	new_visual.name = "Visual"
+	add_child(new_visual)
+	new_visual.transform = saved_transform
+
+	# The animation controller must find the new AnimationPlayer.
+	animation_controller.refresh_animation_player()
+	animation_player = animation_controller.animation_player
+
+	# Configure animations based on the selected appearance.
+	animation_controller.configure_gender(
+		CharacterAnimationController.Set.FEMALE
+		if is_female
+		else CharacterAnimationController.Set.MALE
+	)
+
+	ragdoll_driver = new_visual.find_child(
+		"PhysicalBoneSimulator3D", true, false
+	) as PhysicalBoneSimulator3D
+
+	if animation_player == null:
+		push_error("AnimationPlayer not found in selected Visual.")
+
+	if ragdoll_driver == null:
+		push_error("PhysicalBoneSimulator3D not found in selected Visual.")

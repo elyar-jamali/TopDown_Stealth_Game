@@ -1,4 +1,3 @@
-
 class_name CharacterAnimationController
 extends Node
 
@@ -21,7 +20,7 @@ enum Action {
 	PUNCH
 }
 
-@export var animation_set: Set = Set.MALE
+var animation_set: Set = Set.MALE
 @export_range(0.0, 1.0, 0.01) var default_blend_time: float = 0.2
 
 var animation_player: AnimationPlayer
@@ -99,17 +98,16 @@ const DATA := {
 		Action.WAKEUP_BACK: {
 			"animation": &"human_animations/F_wakeup_B",
 			"playback_speed": 0.5
+		},
+		Action.PUNCH: {
+			"animation": &"human_animations/F_punch"
 		}
 	}
 }
 
 
 func _ready() -> void:
-	animation_player = _find_animation_player(get_parent())
-
-	if animation_player == null:
-		push_error("CharacterAnimationController: AnimationPlayer not found.")
-
+	call_deferred("refresh_animation_player")
 
 func _find_animation_player(node: Node) -> AnimationPlayer:
 	if node is AnimationPlayer:
@@ -208,3 +206,22 @@ func has_action(action: Action) -> bool:
 
 	var animation_name := get_animation(action)
 	return animation_name != &"" and animation_player.has_animation(animation_name)
+
+func configure_gender(gender: Set) -> void:
+	animation_set = gender
+
+
+
+func refresh_animation_player() -> void:
+	var found_player := _find_animation_player(get_parent())
+
+	if found_player == null:
+		if Engine.is_editor_hint():
+			return
+
+		push_warning(
+			"CharacterAnimationController: AnimationPlayer not found on %s" % get_parent().name
+		)
+		return
+
+	animation_player = found_player
