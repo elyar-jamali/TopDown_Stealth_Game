@@ -59,6 +59,9 @@ const APPEARANCE_SCENES: Array[PackedScene] = [
 var knockout_time_remaining: float = 0.0
 var status_fill_style: StyleBoxFlat
 var is_waking_up: bool = false
+############################Bullet Impact############################
+@export_group("Bullet Impact")
+@export var bullet_impact_strength: float = 3.0
 ############################Alert System############################
 @export_group("Alert System")
 @export_range(1.0, 120.0, 1.0) var alert_duration: float = 12.0
@@ -540,6 +543,26 @@ func kill() -> void:
 	is_waking_up = false
 	_set_npc_state(NPCState.DEAD)
 
+func kill_from_bullet(hit_direction: Vector3) -> void:
+	if not can_kill or npc_state == NPCState.DEAD or _ragdoll_mode:
+		return
+
+	if ragdoll_driver == null:
+		push_warning("NPC RagdollDriver not found.")
+		return
+
+	kill()
+
+	_ragdoll_mode = true
+	velocity = Vector3.ZERO
+
+	animation_player.pause()
+	collision.set_deferred("disabled", true)
+
+	ragdoll_driver.start_ragdoll(
+		hit_direction.normalized(),
+		bullet_impact_strength
+	)
 
 func _set_npc_state(new_state: NPCState) -> void:
 	if npc_state == new_state:
@@ -1033,6 +1056,11 @@ func _apply_character_visual() -> void:
 
 	var is_female := appearance_id >= CharacterAppearance.FEMALE_CASUAL
 	var gender_index := 1 if is_female else 0
+
+	var capsule := collision.shape.duplicate() as CapsuleShape3D
+	capsule.height = 1.60 if is_female else 1.75
+	collision.shape = capsule
+	collision.position.y = capsule.height / 2.0
 
 	var old_visual := get_node_or_null("Visual") as Node3D
 	if old_visual == null:

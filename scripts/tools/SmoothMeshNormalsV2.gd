@@ -5,7 +5,7 @@ const POSITION_EPSILON := 0.0001
 const SMOOTH_ANGLE_DEGREES := 70.0
 
 func _run() -> void:
-	print("Smooth V3: Starting...")
+	print("Smooth: Starting...")
 
 	var selected := EditorInterface.get_selection().get_selected_nodes()
 

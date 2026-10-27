@@ -166,26 +166,31 @@ bind/5/pose = Transform3D(0.99314904, -0.116779216, 0.0041787224, -0.018764593, 
 [node name="Appearance" type="Node3D" unique_id=758978690]
 
 [node name="male_workerMesh" type="MeshInstance3D" parent="." unique_id=1520275808]
+layers = 131072
 mesh = ExtResource("1_o16ku")
 skin = SubResource("Skin_38l4j")
 skeleton = NodePath("../..")
 
 [node name="low-polyMesh" type="MeshInstance3D" parent="." unique_id=1043891668]
+layers = 131072
 mesh = ExtResource("2_o16ku")
 skin = SubResource("Skin_noic5")
 skeleton = NodePath("../..")
 
 [node name="eyebrow009Mesh" type="MeshInstance3D" parent="." unique_id=819201859]
+layers = 131072
 mesh = ExtResource("1_0uube")
 skin = SubResource("Skin_noic5")
 skeleton = NodePath("../..")
 
 [node name="male_worksuit01Mesh" type="MeshInstance3D" parent="." unique_id=1394762011]
+layers = 131072
 mesh = ExtResource("4_uftl2")
 skin = SubResource("Skin_vs21n")
 skeleton = NodePath("../..")
 
 [node name="shoes06Mesh" type="MeshInstance3D" parent="." unique_id=1675379756]
+layers = 131072
 mesh = ExtResource("5_0uube")
 skin = SubResource("Skin_hrupu")
 skeleton = NodePath("../..")

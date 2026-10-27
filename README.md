@@ -34,6 +34,19 @@ This is a personal project developed in my spare time to explore game architectu
 - World-anchored hover labels for NPCs and doors
 - Custom cursor system
 
+### Pistol Combat and Procedural Aiming
+
+- Mouse-directed pistol aiming with an aim trajectory preview and in-range / obstructed feedback
+- Visual indicators for pistol firing range and shot sound radius
+- Hover-based NPC target snapping with bullet collision checks from the weapon muzzle
+- Standing and crouched pistol aiming and shooting, with male and female animation variants managed by `CharacterAnimationController`
+- Limited ammunition, configurable starting ammo, and a live remaining-ammo HUD counter (no magazine reload mechanic)
+- Fire-rate limiting synchronized with the procedural recoil duration
+- Directional lethal NPC bullet impacts using the existing ragdoll system
+- Procedural forearm recoil using `SkeletonModifier3D`, without interrupting the base aiming animation
+- Procedural upper-body pitch adjustments for aiming toward elevated or nearby targets
+- **Work in progress:** Dust and blood impact particle scenes are prototyped but their gameplay spawning is currently disabled pending visual improvements
+
 ### Stealth Takedowns and Ragdoll Physics
 
 - Non-lethal knockout punches with directional, physics-based NPC falls
@@ -51,6 +64,7 @@ This is a personal project developed in my spare time to explore game architectu
 - Guard vision system with obstacle occlusion
 - Visual guard field-of-view overlay
 - Standing / crouching visibility classification
+- Character mesh rendering-layer fixes to prevent self-occlusion artifacts in guard vision overlays
 - Shared NPC scene and script for patrol, interaction, consciousness, death, and ragdoll behavior
 - Navigation-based NPC patrol system
 - Loop, Ping-Pong, and Once patrol modes
@@ -84,6 +98,7 @@ This is a personal project developed in my spare time to explore game architectu
 - Blended idle / walk / run transitions and crouched locomotion
 - Different wake-up animations chosen from the fallen NPC's orientation
 - Female punch action supported using a temporary animation adapted from the male version; further animation polish is planned
+- Standing and crouched pistol aiming animations selected through the shared animation controller
 
 ### Patrol Route Workflow
 
@@ -139,6 +154,7 @@ Patrol routes only store ordered waypoint positions. Patrol behavior such as Loo
 - Gameplay HUD with player portrait, health display, and horizontal health bar
 - Reusable HUD action-slot component
 - Action slots for crouch / stand, knockout, lethal takedown, pistol, scoped rifle, and healing
+- Live pistol ammunition count displayed in the pistol action slot
 - Right-side HUD foundation for map and dialogue / log access
 - Dynamic shortcut labels read directly from Godot `InputMap`
 - Custom HUD icon set for crouch / stand, knockout, lethal takedown, pistol, scoped rifle, healing, map, and log
@@ -168,13 +184,13 @@ Patrol routes only store ordered waypoint positions. Patrol behavior such as Loo
 
 | Input | Action |
 | --- | --- |
-| Left Mouse Button | Move the player or interact with objects |
-| Right Mouse Button | Cancel the current action |
+| Left Mouse Button | Move or interact; fire one pistol shot while aiming |
+| Right Mouse Button | Cancel the current action / leave pistol aiming |
 | Middle Mouse Button | Toggle a guard's vision field |
-| Space | Crouch / stand |
+| Space | Crouch / stand, including while aiming |
 | 1 | Knockout action slot |
 | 2 | Lethal takedown action slot |
-| 3 | Pistol action slot |
+| 3 | Pistol action slot / enter pistol aiming |
 | 4 | Scoped rifle action slot |
 | 5 | Heal action slot |
 | M | Map |
@@ -197,7 +213,9 @@ Character animation data is stored as Godot resources and accessed through the v
 
 Player and NPC animation playback is managed through a reusable `CharacterAnimationController`. Each character selects its male or female animation set, while the controller handles action lookup, playback speed, and blended transitions.
 
-NPC ragdoll physics is handled separately by `RagdollDriver`, allowing transitions from animated takedowns to physical falls and from a frozen ragdoll pose back to wake-up animations. Character visuals and their physics rigs remain scene-specific.
+NPC ragdoll physics is handled separately by `RagdollDriver`, allowing transitions from animated takedowns or pistol takedowns to physical falls and from a frozen ragdoll pose back to wake-up animations. Character visuals and their physics rigs remain scene-specific.
+
+Pistol recoil and upper-body aim pitch are applied procedurally through a custom `SkeletonModifier3D` script, layered over the standing or crouched aiming pose. The recoil duration also controls the minimum interval between pistol shots.
 
 Character textures are stored in appearance-specific folders, with reusable textures kept in `common_textures`. Texture resolution and format are chosen according to the needs of the game, including retaining transparency where necessary.
 
@@ -208,7 +226,9 @@ See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing n
 - Additional takedown reactions and interactions
 - Further NPC recovery and ragdoll polish
 - Save / Load system
-- Pickups and weapons
+- Pickups and additional weapons
+- Polish pistol impact VFX (dust puffs and blood effects; particle prototypes are currently disabled)
+- Gunshot audio and guard reactions to firearm noise
 - More advanced NPC AI and guard state machine
 - Additional NPC variants
 - Multiple levels
@@ -221,7 +241,7 @@ See [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for asset and licensing n
 
 **Early development / prototype stage**
 
-The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows. Knockout and garrote takedowns, physics-based NPC falls, recovery animations, the shared animation controller, and four selectable character appearances are currently implemented. Character assets have also been reorganized and validated after removal of obsolete FBX dependencies.
+The project is under active development. Systems are being built incrementally, tested independently, and refactored as the project grows. Knockout and garrote takedowns, physics-based NPC falls, recovery animations, the shared animation controller, and four selectable character appearances are currently implemented. Pistol combat is now playable, including standing and crouched aiming, limited ammunition, NPC bullet takedowns, procedural recoil, and upper-body aim adjustments. Bullet impact visual effects remain experimental and are disabled while their appearance is being reworked. Character assets have also been reorganized and validated after removal of obsolete FBX dependencies.
 
 Development updates and discussion: [Godot Forum](https://forum.godotengine.org/t/commandos-games-style-top-down-stealth-prototype-in-godot-4-navigation-guard-vision-interactions-and-camera-system-full-source-code-on-github/144726).
 

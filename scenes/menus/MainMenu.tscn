@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cv2eevaimposu"]
 
-[ext_resource type="Script" uid="uid://d26g10nsiiyy4" path="res://scripts/MainMenu.gd" id="1_yqorp"]
+[ext_resource type="Script" uid="uid://d26g10nsiiyy4" path="res://scripts/UI/MainMenu.gd" id="1_yqorp"]
 [ext_resource type="Theme" uid="uid://c0h5hxqvmb4di" path="res://data/themes/dark_stealth.tres" id="2_theme"]
 [ext_resource type="PackedScene" uid="uid://ccly8kjiatngc" path="res://scenes/menus/CustomDialog.tscn" id="3_ldf1p"]
 [ext_resource type="PackedScene" uid="uid://dc1belslvctjc" path="res://scenes/menus/SettingsPanel.tscn" id="3_tyyoy"]

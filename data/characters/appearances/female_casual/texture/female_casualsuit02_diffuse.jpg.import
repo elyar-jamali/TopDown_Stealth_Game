@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u13lld7kyj3b"
-path.s3tc="res://.godot/imported/ponytail01_diffuse.png-8b99a001dfa4f6d5665ba62570976ccb.s3tc.ctex"
+uid="uid://brh3nm6ww7adm"
+path.s3tc="res://.godot/imported/female_casualsuit02_diffuse.jpg-7b5cd7e187f44d9b8c7aa051d9df842e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://data/characters/appearances/female_casual/textures/ponytail01_diffuse.png"
-dest_files=["res://.godot/imported/ponytail01_diffuse.png-8b99a001dfa4f6d5665ba62570976ccb.s3tc.ctex"]
+source_file="res://data/characters/appearances/female_casual/texture/female_casualsuit02_diffuse.jpg"
+dest_files=["res://.godot/imported/female_casualsuit02_diffuse.jpg-7b5cd7e187f44d9b8c7aa051d9df842e.s3tc.ctex"]
 
 [params]
 

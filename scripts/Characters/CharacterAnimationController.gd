@@ -17,7 +17,9 @@ enum Action {
 	GARROTED,
 	WAKEUP_FRONT,
 	WAKEUP_BACK,
-	PUNCH
+	PUNCH,
+	PISTOL,
+	CROUCH_PISTOL
 }
 
 var animation_set: Set = Set.MALE
@@ -45,6 +47,9 @@ const DATA := {
 			"animation": &"human_animations/M_crouchwalk",
 			"reference_speed": 2.0
 		},
+		Action.TALK: {
+			"animation": &"human_animations/M_talk"
+		},
 		Action.GARROTE: {
 			"animation": &"human_animations/M_garrote"
 		},
@@ -62,6 +67,12 @@ const DATA := {
 		Action.PUNCH: {
 			"animation": &"human_animations/M_punch"
 		},
+		Action.PISTOL: {
+			"animation": &"human_animations/M_pistol"
+		},
+		Action.CROUCH_PISTOL: {
+			"animation": &"human_animations/M_crouchpistol"
+		}	
 	},
 	Set.FEMALE: {
 		Action.IDLE: {
@@ -101,7 +112,13 @@ const DATA := {
 		},
 		Action.PUNCH: {
 			"animation": &"human_animations/F_punch"
-		}
+		},
+		Action.PISTOL: {
+			"animation": &"human_animations/F_pistol"
+		},		
+		Action.CROUCH_PISTOL: {
+			"animation": &"human_animations/F_crouchpistol"
+		}		
 	}
 }
 

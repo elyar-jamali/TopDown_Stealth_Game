@@ -237,31 +237,37 @@ bind/5/pose = Transform3D(0.9832557, -0.10614578, 0.14812581, -0.16368505, -0.15
 [node name="Appearance" type="Node3D" unique_id=739888627]
 
 [node name="npc_female_elegantMesh" type="MeshInstance3D" parent="." unique_id=1655897044]
+layers = 131072
 mesh = ExtResource("1_0dc2n")
 skin = SubResource("Skin_3lbh4")
 skeleton = NodePath("../..")
 
 [node name="bob02Mesh" type="MeshInstance3D" parent="." unique_id=417238767]
+layers = 131072
 mesh = ExtResource("2_o2qu6")
 skin = SubResource("Skin_a7nq6")
 skeleton = NodePath("../..")
 
 [node name="high-polyMesh" type="MeshInstance3D" parent="." unique_id=1344667284]
+layers = 131072
 mesh = ExtResource("3_avmui")
 skin = SubResource("Skin_g4427")
 skeleton = NodePath("../..")
 
 [node name="eyebrow001Mesh" type="MeshInstance3D" parent="." unique_id=1091180269]
+layers = 131072
 mesh = ExtResource("4_8opa3")
 skin = SubResource("Skin_g4427")
 skeleton = NodePath("../..")
 
 [node name="female_elegantsuit01Mesh" type="MeshInstance3D" parent="." unique_id=1530085982]
+layers = 131072
 mesh = ExtResource("5_0h65n")
 skin = SubResource("Skin_65k46")
 skeleton = NodePath("../..")
 
 [node name="shoes03Mesh" type="MeshInstance3D" parent="." unique_id=1138457055]
+layers = 131072
 mesh = ExtResource("6_imell")
 skin = SubResource("Skin_igoql")
 skeleton = NodePath("../..")

@@ -9,6 +9,9 @@ height = 1.75
 
 [node name="Player" type="CharacterBody3D" unique_id=729128642]
 script = ExtResource("1_g2els")
+character_appearance = 3
+pistol_range = 10.0
+pistol_sound_range = 15.0
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=903677157]
 

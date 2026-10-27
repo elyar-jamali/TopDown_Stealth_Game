@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://b3qnv8otit1k4"]
+
+[ext_resource type="Script" uid="uid://bv2f00bf22v15" path="res://scripts/effects/BulletImpact.gd" id="1_j1ayq"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_uachy"]
+direction = Vector3(0, 1, 0)
+spread = 40.0
+initial_velocity_min = 1.5
+initial_velocity_max = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lr5aq"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.96151835, 4.4520943e-06, 9.62615e-07, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_s5oiv"]
+material = SubResource("StandardMaterial3D_lr5aq")
+radius = 0.018
+height = 0.036
+radial_segments = 6
+rings = 3
+
+[node name="BulletBloodImpact" type="GPUParticles3D" unique_id=838445480]
+emitting = false
+lifetime = 0.35000000000000003
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_uachy")
+draw_pass_1 = SubResource("SphereMesh_s5oiv")
+script = ExtResource("1_j1ayq")

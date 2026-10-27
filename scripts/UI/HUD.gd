@@ -85,6 +85,13 @@ func _ready():
 		_on_player_health_changed(player.current_health, player.max_health)
 		_on_player_movement_state_changed(player.movement_state)
 
+		if player.has_signal("pistol_ammo_changed"):
+			player.pistol_ammo_changed.connect(_on_pistol_ammo_changed)
+
+		if player.has_signal("pistol_aim_changed"):
+			if not player.pistol_aim_changed.is_connected(_on_player_pistol_aim_changed):
+				player.pistol_aim_changed.connect(_on_player_pistol_aim_changed)
+
 	if not resize_handle.gui_input.is_connected(_on_resize_handle_gui_input):
 		resize_handle.gui_input.connect(_on_resize_handle_gui_input)
 
@@ -129,7 +136,10 @@ func _ready():
 	crouch_slot.setup_action(stand_icon, get_action_key_name("crouch"))
 	knockout_slot.setup_action(knockout_icon, get_action_key_name("knockout"))
 	kill_slot.setup_action(kill_icon, get_action_key_name("garrote"))
-	pistol_slot.setup_action(pistol_icon, get_action_key_name("pistol"), "10")
+	pistol_slot.setup_action(pistol_icon, get_action_key_name("pistol"))
+	if player != null:
+		_on_pistol_ammo_changed(player.pistol_total_ammo)
+
 	rifle_slot.setup_action(rifle_icon, get_action_key_name("rifle"), "3")
 	heal_slot.setup_action(heal_icon, get_action_key_name("heal"), "2")
 	log_slot.setup_action(log_icon, get_action_key_name("open_log"), "51")
@@ -460,24 +470,40 @@ func _on_action_changed(action: InteractionSystem.Action) -> void:
 		action == InteractionSystem.Action.GARROTE
 	)
 
+func _on_pistol_ammo_changed(total_ammo: int) -> void:
+	pistol_slot.set_count(str(total_ammo))
+
+func _on_player_pistol_aim_changed(is_aiming: bool) -> void:
+	pistol_slot.set_selected(is_aiming)
+
 func _open_full_map() -> void:
 	map_panel.visible = not map_panel.visible
 	if map_panel.visible:
 		_rebuild_map_markers()
 
+
 func _open_log() -> void:
 	print("_open_log")
+
+
 func _on_knockout_pressed() -> void:
 	InteractionSystem.select_action(
 		InteractionSystem.Action.KNOCKOUT
 	)
 
+
 func _on_garrote_pressed() -> void:
 	InteractionSystem.select_action(
 		InteractionSystem.Action.GARROTE
 	)
+
+
 func _on_pistol_pressed() -> void:
-	print("_on_pistol_pressed")
+	if player == null:
+		return
+	player.toggle_pistol_aim()
+
+
 func _on_rifle_pressed() -> void:
 	print("_on_rifle_pressed")
 func _on_heal_pressed() -> void:

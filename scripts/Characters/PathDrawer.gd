@@ -101,6 +101,7 @@ func get_surface_y(node_owner: Node3D, point: Vector3) -> float:
 		point + Vector3(0, 1.0, 0),
 		point + Vector3(0, -5.0, 0)
 	)
+	query.collision_mask = 1 << 6
 
 	if node_owner is CollisionObject3D:
 		query.exclude = [node_owner.get_rid()]
