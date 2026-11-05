@@ -88,7 +88,7 @@ enum NPCType {
 @export var highlight_color: GameColors.Preset = GameColors.Preset.GREEN
 @export var npc_name := NPCType.Male_Suit
 @export var Icon_default = load("res://data/Pic/civil1.jpg")
-@export var interaction_range := 0.0
+@export_range(1.2, 3.0, 0.1) var interaction_range: float = 1.2
 
 ############################Patrol & Navigation############################
 enum PatrolMode {
@@ -183,12 +183,7 @@ func _ready():
 	set_process(false)
 	_apply_vision_settings()
 	map_marker_fill.color = GameColors.get_color(map_marker_color)
-	if interaction_range <= 0:
-		var shape = collision.shape
-		if shape is CapsuleShape3D or shape is SphereShape3D:
-			interaction_range = shape.radius * 6
-		else:
-			interaction_range = 1.5
+
 	# تنظیمات NavigationAgent برای حرکت و Avoidance
 	agent.avoidance_enabled = true
 	agent.radius = _get_collision_radius() + 0.05
@@ -543,7 +538,8 @@ func kill() -> void:
 	is_waking_up = false
 	_set_npc_state(NPCState.DEAD)
 
-func kill_from_bullet(hit_direction: Vector3) -> void:
+func kill_from_bullet(hit_direction: Vector3, impact_multiplier: float = 1.0) -> void:
+
 	if not can_kill or npc_state == NPCState.DEAD or _ragdoll_mode:
 		return
 
@@ -561,7 +557,7 @@ func kill_from_bullet(hit_direction: Vector3) -> void:
 
 	ragdoll_driver.start_ragdoll(
 		hit_direction.normalized(),
-		bullet_impact_strength
+		bullet_impact_strength * impact_multiplier
 	)
 
 func _set_npc_state(new_state: NPCState) -> void:

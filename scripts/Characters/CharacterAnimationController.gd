@@ -19,7 +19,8 @@ enum Action {
 	WAKEUP_BACK,
 	PUNCH,
 	PISTOL,
-	CROUCH_PISTOL
+	CROUCH_PISTOL,
+	CROUCH_RIFLE
 }
 
 var animation_set: Set = Set.MALE
@@ -72,6 +73,9 @@ const DATA := {
 		},
 		Action.CROUCH_PISTOL: {
 			"animation": &"human_animations/M_crouchpistol"
+		},
+		Action.CROUCH_RIFLE: {
+			"animation": &"human_animations/M_crouchrifle"
 		}	
 	},
 	Set.FEMALE: {
@@ -118,6 +122,9 @@ const DATA := {
 		},		
 		Action.CROUCH_PISTOL: {
 			"animation": &"human_animations/F_crouchpistol"
+		},
+		Action.CROUCH_RIFLE: {
+			"animation": &"human_animations/F_crouchrifle"
 		}		
 	}
 }

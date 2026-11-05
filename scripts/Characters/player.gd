@@ -104,8 +104,8 @@ var is_ragdoll_active: bool = false
 # Pistol aiming
 # ==============================
 @export_group("Pistol Settings")
-@export var pistol_range := 20.0
-@export var pistol_sound_range := 35.0
+@export var pistol_range := 10.0
+@export var pistol_sound_range := 15.0
 @export_range(0, 999) var pistol_initial_ammo: int = 20
 
 var pistol_total_ammo: int = 0
@@ -120,9 +120,25 @@ var is_pistol_aiming: bool = false
 var pistol_pivot: Node3D
 
 var pistol_muzzle: Marker3D
-var pistol_preview: PistolAimPreview
+var weapon_preview: WeaponPreview
 
 var pistol_recoil: PistolRecoil
+# ==============================
+# Sniper aiming
+# ==============================
+@export_group("Sniper")
+@export var sniper_range: float = 80.0
+@export var sniper_sound_range: float = 15.0
+@export var sniper_impact_multiplier: float = 2.5
+
+var last_sniper_shot_time: float = -1000.0
+var is_sniper_aiming: bool = false
+var sniper_recoil: SniperRecoil
+var sniper_pivot: Node3D
+var sniper_muzzle: Marker3D
+var sniper_aim_target := Vector3.ZERO
+signal sniper_aim_changed(is_aiming: bool)
+signal sniper_fired(hit_position: Vector3, collider: Object)
 
 const BULLET_DUST_IMPACT = preload("res://scenes/effects/BulletDustImpact.tscn")
 const BULLET_BLOOD_IMPACT = preload("res://scenes/effects/BulletBloodImpact.tscn")
@@ -133,6 +149,9 @@ func is_crouched() -> bool:
 		or movement_state == MovementState.CROUCH_WALK
 	)
 func toggle_crouch():
+	if is_sniper_aiming:
+		# Sniper stance must stay crouched until aim mode is cancelled.
+		return
 	if is_pistol_aiming:
 		if is_crouched():
 			change_movement_state(MovementState.IDLE)
@@ -155,6 +174,7 @@ func toggle_crouch():
 		else:
 			change_movement_state(MovementState.CROUCH_IDLE)
 func _ready():
+	add_to_group("player")
 	_apply_character_visual()
 	if not InteractionSystem.action_changed.is_connected(_on_pistol_interaction_action_changed):
 		InteractionSystem.action_changed.connect(_on_pistol_interaction_action_changed)
@@ -190,15 +210,15 @@ func _ready():
 	if animation_player != null:
 		animation_player.animation_finished.connect(_on_player_animation_finished)
 	
-	pistol_preview = PistolAimPreview.new()
-	add_child(pistol_preview)
+	weapon_preview = WeaponPreview.new()
+	add_child(weapon_preview)
 	pistol_total_ammo = pistol_initial_ammo
 	pistol_ammo_changed.emit(pistol_total_ammo)
 
 func _physics_process(delta):
 	if is_ragdoll_active:
 		return
-	if is_pistol_aiming:
+	if is_pistol_aiming or is_sniper_aiming:
 		_apply_gravity(delta)
 
 		agent.velocity = Vector3.ZERO
@@ -212,18 +232,28 @@ func _physics_process(delta):
 			if HoverSystem.current_hover is CharacterBody3D:
 				hovered_target = HoverSystem.current_hover
 
-		var target := pistol_preview.update_preview(
+		var active_muzzle: Marker3D = pistol_muzzle if is_pistol_aiming else sniper_muzzle
+		var active_range: float = pistol_range if is_pistol_aiming else sniper_range
+		var active_sound_range: float = pistol_sound_range if is_pistol_aiming else sniper_sound_range
+		if not is_instance_valid(active_muzzle):
+			weapon_preview.clear()
+			return
+
+		var target := weapon_preview.update_preview(
 			get_viewport().get_camera_3d(),
 			get_viewport().get_mouse_position(),
 			self,
-			pistol_muzzle,
-			pistol_range,
-			pistol_sound_range,
+			active_muzzle,
+			active_range,
+			active_sound_range,
 			hovered_target
 		)
-		pistol_aim_target = target
-		###### Aim Pitch 
-		if is_instance_valid(pistol_recoil) and is_instance_valid(pistol_muzzle):
+		if is_pistol_aiming:
+			pistol_aim_target = target
+		else:
+			sniper_aim_target = target
+		###### Aim Pitch
+		if is_pistol_aiming and is_instance_valid(pistol_recoil) and is_instance_valid(pistol_muzzle):
 			if target != Vector3.ZERO:
 				var vertical_difference: float = target.y - pistol_muzzle.global_position.y
 				var horizontal_difference: Vector2 = Vector2(
@@ -343,7 +373,7 @@ func _apply_gravity(delta: float):
 func _on_safe_velocity_computed(new_safe_velocity: Vector3):
 	if is_ragdoll_active:
 		return
-	if is_pistol_aiming:
+	if is_pistol_aiming or is_sniper_aiming:
 		return
 	if is_punching:
 		return
@@ -424,11 +454,12 @@ func _create_detour():
 func _get_blocking_collision_line() -> PackedVector3Array:
 	return DetourPlanner.get_blocking_collision_line(self, collision_shape)
 
-func _set_movement_target(target: Vector3, preserve_recovery: bool = false) -> void:
+func _set_movement_target(target: Vector3, preserve_recovery: bool = false, is_npc_target: bool = false) -> void:
 	var navigation_map := agent.get_navigation_map()
 	if navigation_map.is_valid():
 		target = NavigationServer3D.map_get_closest_point(navigation_map, target)
-		target = DetourPlanner.find_safe_target(self, collision_shape, agent, target)
+		if not is_npc_target:
+			target = DetourPlanner.find_safe_target(self, collision_shape, agent, target)
 	final_target = target
 	if preserve_recovery:
 		if not is_using_detour and not is_using_short_escape:
@@ -460,6 +491,18 @@ func _unhandled_input(event):
 		return
 	if is_punching:
 		return
+	if is_sniper_aiming:
+		if event.is_action_pressed("cancel_action"):
+			set_sniper_aim(false)
+			get_viewport().set_input_as_handled()
+			return
+		if event.is_action_pressed("move_interact"):
+			_fire_sniper()
+			get_viewport().set_input_as_handled()
+			return
+		if event.is_action_pressed("crouch"):
+			get_viewport().set_input_as_handled()
+			return
 	if is_pistol_aiming:
 		if event.is_action_pressed("cancel_action"):
 			set_pistol_aim(false)
@@ -611,7 +654,7 @@ func change_movement_state(new_state: MovementState):
 	movement_state = new_state
 	var data = MOVEMENT_DATA[movement_state]
 	move_speed = _get_movement_speed(movement_state)
-	if not is_pistol_aiming:
+	if not is_pistol_aiming and not is_sniper_aiming:
 		animation_controller.play_action(data["action"])
 	_set_player_height(data.height)
 	agent.height = data.height
@@ -623,7 +666,7 @@ func heal(amount: int):
 	current_health = min(current_health + amount, max_health)
 	health_changed.emit(current_health, max_health)
 func _update_animation_speed() -> void:
-	if is_pistol_aiming:
+	if is_pistol_aiming or is_sniper_aiming:
 		return
 	var action: CharacterAnimationController.Action = MOVEMENT_DATA[movement_state]["action"]
 	if movement_state == MovementState.IDLE or movement_state == MovementState.CROUCH_IDLE:
@@ -802,6 +845,8 @@ func toggle_pistol_aim() -> void:
 
 
 func set_pistol_aim(enabled: bool) -> void:
+	if enabled and is_sniper_aiming:
+		set_sniper_aim(false)
 	if is_pistol_aiming == enabled:
 		return
 
@@ -826,7 +871,7 @@ func set_pistol_aim(enabled: bool) -> void:
 			pistol_recoil.set_aim_pitch(0.0)
 
 		CursorManager.clear_action_state()
-		pistol_preview.clear()
+		weapon_preview.clear()
 
 		if pistol_pivot != null:
 			pistol_pivot.visible = false
@@ -840,6 +885,43 @@ func set_pistol_aim(enabled: bool) -> void:
 func _on_pistol_interaction_action_changed(action: InteractionSystem.Action) -> void:
 	if is_pistol_aiming and action != InteractionSystem.Action.NORMAL:
 		set_pistol_aim(false)
+	if is_sniper_aiming and action != InteractionSystem.Action.NORMAL:
+		set_sniper_aim(false)
+
+func toggle_sniper_aim() -> void:
+	if is_ragdoll_active or is_punching:
+		return
+	set_sniper_aim(not is_sniper_aiming)
+
+func set_sniper_aim(enabled: bool) -> void:
+	if is_sniper_aiming == enabled:
+		return
+	if enabled:
+		if is_pistol_aiming:
+			set_pistol_aim(false)
+		if not is_instance_valid(sniper_pivot) or not is_instance_valid(sniper_muzzle):
+			push_warning("SniperAttachment / SniperMuzzle not found.")
+			return
+		if not animation_controller.has_action(CharacterAnimationController.Action.CROUCH_RIFLE):
+			push_warning("CROUCH_RIFLE action/animation not found in CharacterAnimationController.")
+			return
+		_stop_movement()
+		InteractionSystem.clear_selected_action()
+		if not is_crouched():
+			change_movement_state(MovementState.CROUCH_IDLE)
+		is_sniper_aiming = true
+		sniper_pivot.visible = true
+		CursorManager.set_action_state(CursorManager.CursorState.AIM)
+		animation_controller.play_action(CharacterAnimationController.Action.CROUCH_RIFLE)
+	else:
+		is_sniper_aiming = false
+		if is_instance_valid(sniper_pivot):
+			sniper_pivot.visible = false
+		weapon_preview.clear()
+		CursorManager.clear_action_state()
+		var movement_action: CharacterAnimationController.Action = MOVEMENT_DATA[movement_state]["action"]
+		animation_controller.play_action(movement_action)
+	sniper_aim_changed.emit(is_sniper_aiming)
 
 func _apply_character_visual() -> void:
 	var appearance_id := int(character_appearance)
@@ -904,7 +986,8 @@ func _apply_character_visual() -> void:
 	new_visual.transform = saved_transform
 
 	pistol_recoil = new_visual.find_child("PistolRecoil", true, false) as PistolRecoil
-	
+	sniper_recoil = new_visual.find_child("SniperRecoil", true, false) as SniperRecoil
+
 	animation_controller.refresh_animation_player()
 	animation_player = animation_controller.animation_player
 
@@ -927,6 +1010,21 @@ func _apply_character_visual() -> void:
 
 	if pistol_pivot != null:
 		pistol_pivot.visible = false
+
+	var sniper_attachment := new_visual.find_child("SniperAttachment", true, false) as BoneAttachment3D
+
+	if sniper_attachment != null:
+		sniper_attachment.visible = true
+
+		sniper_pivot = sniper_attachment.find_child("WeaponPivot", true, false) as Node3D
+	else:
+		sniper_pivot = null
+
+	sniper_muzzle = new_visual.find_child("SniperMuzzle", true, false) as Marker3D
+
+	if sniper_pivot != null:
+		sniper_pivot.visible = false
+
 func _fire_pistol() -> void:
 	if not is_pistol_aiming or pistol_muzzle == null:
 		return
@@ -962,49 +1060,44 @@ func _fire_pistol() -> void:
 	if is_instance_valid(pistol_recoil):
 		pistol_recoil.fire()
 
-	var query := PhysicsRayQueryParameters3D.create(
-		origin,
-		origin + direction * pistol_range,
-		0xFFFFFFFF & ~(1 << 7)
-	)
+	var result := _fire_weapon_bullet(origin, direction, pistol_range, 1.0)
+	pistol_fired.emit(result["position"], result["collider"])
 
-	query.exclude = [get_rid()]
-
-	print("Target: ", pistol_aim_target)
-	print("Muzzle: ", origin)
-	print("Direction: ", direction)
-	print("Collision mask: ", query.collision_mask)
-
-	var result := get_world_3d().direct_space_state.intersect_ray(query)
-
-	if result.is_empty():
-		print("Pistol: No hit")
-		pistol_fired.emit(origin + direction * pistol_range, null)
+func _fire_sniper() -> void:
+	if not _can_fire_sniper() or not is_instance_valid(sniper_muzzle):
 		return
-	print("Hit position: ", result.position)
-	print("Hit collider: ", result.collider)
-	print("Hit layer: ", result.collider.collision_layer)
+	if sniper_aim_target == Vector3.ZERO:
+		return
+	var origin := sniper_muzzle.global_position
+	var direction := sniper_aim_target - origin
+	if direction.length_squared() < 0.0001:
+		return
+	direction = direction.normalized()
 
-	var hit_position: Vector3 = result.position
-	var collider: Object = result.collider
-	
-	# TODO: Rework bullet impact VFX (dust and blood).
-	# Prototype bullet impact particle effects (currently disabled pending visual improvements).
-	####bullet impact####
-	# var hit_normal: Vector3 = result.normal
-	# var is_npc_hit: bool = (
-	# 	collider is CharacterBody3D
-	# 	and collider.has_method("kill_from_bullet")
-	# )
-	# _spawn_bullet_impact(hit_position, hit_normal, is_npc_hit)
+	last_sniper_shot_time = Time.get_ticks_msec() / 1000.0
+	sniper_recoil.fire()
 
+	var result := _fire_weapon_bullet(origin, direction, sniper_range, sniper_impact_multiplier)
+	sniper_fired.emit(result["position"], result["collider"])
+
+func _fire_weapon_bullet(origin: Vector3, direction: Vector3,
+		bullet_range: float, impact_multiplier: float) -> Dictionary:
+	var end_point := origin + direction * bullet_range
+	var query := PhysicsRayQueryParameters3D.create(
+		origin, end_point, 0xFFFFFFFF & ~(1 << 7)
+	)
+	query.exclude = [get_rid()]
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return {"position": end_point, "collider": null}
+
+	var hit_position: Vector3 = hit.position
+	var collider: Object = hit.collider
+	# Existing bullet VFX deliberately remain disabled.
 	if collider is CharacterBody3D and collider.has_method("kill_from_bullet"):
-		collider.kill_from_bullet(direction)
+		collider.call("kill_from_bullet", direction, impact_multiplier)
+	return {"position": hit_position, "collider": collider}
 
-	print("Pistol hit: ", collider)
-
-	pistol_fired.emit(hit_position, collider)
-	
 func _play_pistol_aim_animation() -> void:
 	var pistol_action: CharacterAnimationController.Action = (
 		CharacterAnimationController.Action.CROUCH_PISTOL
@@ -1030,3 +1123,23 @@ func _spawn_bullet_impact(hit_position: Vector3,
 	)
 
 	impact_effect.play_impact()
+
+func _can_fire_sniper() -> bool:
+	if not is_sniper_aiming:
+		return false
+
+	if not is_crouched():
+		return false
+
+	if is_ragdoll_active or is_punching:
+		return false
+
+	if sniper_recoil == null:
+		return false
+
+	var now := Time.get_ticks_msec() / 1000.0
+
+	if now - last_sniper_shot_time < sniper_recoil.total_duration:
+		return false
+
+	return true

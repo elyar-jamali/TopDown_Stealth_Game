@@ -1,7 +1,7 @@
 extends Node3D
-class_name PistolAimPreview
+class_name WeaponPreview
 
-# Pistol target ray remains unchanged; range contours are now GPU-rendered spheres.
+# Shared weapon target ray and GPU-rendered range/sound spheres.
 const GROUND_MASK: int = 1 << 6  # Physics layer 7
 const RAGDOLL_MASK: int = 1 << 7 # Physics layer 8
 const SPHERE_SHADER_CODE := """

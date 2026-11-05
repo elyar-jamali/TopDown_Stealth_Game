@@ -22,7 +22,9 @@ enum DoorMaterial {
 @export var door_material := DoorMaterial.WOOD_MODERN
 @export var door_state := DoorState.CLOSED
 @export var object_id: String = ""
-# سرعت باز و بسته شدن
+# Minimum distance to interact
+@export_range(0.0, 1.0, 0.1) var interaction_range: float = 0.3
+# Door speed
 @export var open_speed := 0.5
 @export_group("Map Settings")
 @export var map_marker_color: GameColors.Preset = GameColors.Preset.YELLOW
@@ -42,12 +44,9 @@ var last_state = -1
 
 @onready var map_marker_fill: Polygon2D = $MapMarker/Fill
 
-# حداقل قاصله برای فعال شدن
-var interaction_range: float:
-	get:
-		if collision.shape is BoxShape3D:
-			return collision.shape.size.z * 2
-		return 2
+@onready var interaction_front: Marker3D = $InteractionFront
+@onready var interaction_back: Marker3D = $InteractionBack
+@onready var door_threshold: Marker3D = $DoorThreshold
 
 # زاویه بسته و باز
 var closed_rotation := Vector3(0, 0, 0)
@@ -55,10 +54,6 @@ var open_rotation := Vector3(0, PI/2, 0)
 
 var Icon_default = preload("res://data/Pic/info.png")
 
-# تا زمانی که نویگیشن درحال مسیریابی است مقدار true برمیگرداند
-func wait_for_navigation_finish() -> bool:
-	return true
-	
 func get_hover_text():
 	return "Door_Caption"
 
@@ -69,14 +64,6 @@ func get_hover_anchor_position() -> Vector3:
 		return collision.global_position + Vector3.UP * (shape.size.y * 0.5 + 0.75)
 
 	return global_position + Vector3.UP * 2.0
-
-# func get_door_plane_point(p: Vector3) -> Vector3:
-# 	var door_origin := global_position
-# 	var normal := global_transform.basis.z
-# 	normal.y = 0
-# 	normal = normal.normalized()
-# 	var distance := ((p - door_origin).dot(normal))
-# 	return p - normal * distance
 
 func get_cursor():
 	if door_state == DoorState.LOCKED:
@@ -90,14 +77,30 @@ func set_outline(enable: bool) -> void:
 		return
 	OutlineSystem.set_target(self, enable, color)
 
-func get_interaction_position():
-	var shape = collision.shape
-	if shape is BoxShape3D:
-		var p = global_position
-		p.x -= collision.shape.size.z * 0.80
-		p.z -= collision.shape.size.z * 0.5
-		return p
-	return global_position
+func get_interaction_position() -> Vector3:
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	return get_interaction_position_for_actor(player)
+
+
+func get_interaction_position_for_actor(actor: Node3D) -> Vector3:
+	if actor == null:
+		return global_position
+
+	var threshold_position := door_threshold.global_position
+	var door_normal := door_threshold.global_transform.basis.z.normalized()
+
+	var actor_side := (
+		actor.global_position - threshold_position
+	).dot(door_normal)
+
+	var front_side := (
+		interaction_front.global_position - threshold_position
+	).dot(door_normal)
+
+	if actor_side * front_side >= 0.0:
+		return interaction_front.global_position
+
+	return interaction_back.global_position
 
 
 func _ready():

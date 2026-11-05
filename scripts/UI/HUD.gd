@@ -395,7 +395,6 @@ func _apply_theme(theme_resource: Theme):
 
 func _on_map_image_gui_input(event: InputEvent) -> void:
 	if event.is_action_pressed("move_interact"):
-		print("MAP CLICKED BY Mouse")
 		_open_full_map()
 
 func _on_resize_handle_gui_input(event: InputEvent) -> void:
@@ -505,6 +504,12 @@ func _on_pistol_pressed() -> void:
 
 
 func _on_rifle_pressed() -> void:
-	print("_on_rifle_pressed")
+	if not is_instance_valid(player):
+		return
+
+	if player.has_method("toggle_sniper_aim"):
+		player.toggle_sniper_aim()
+
+
 func _on_heal_pressed() -> void:
 	print("O_on_heal_pressed")

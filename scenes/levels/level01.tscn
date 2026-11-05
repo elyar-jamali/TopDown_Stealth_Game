@@ -202,11 +202,13 @@ mesh = SubResource("BoxMesh_cd15k")
 [node name="Door" parent="NavigationRegion3D" unique_id=30396763 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 7.1547174, 0.03209267, 0)
 door_material = 3
+interaction_range = 0.0
 
 [node name="Door2" parent="NavigationRegion3D" unique_id=2084061617 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 6.690947, 0.030012416, 14.737785)
 outline_color = 0
 door_state = 2
+interaction_range = 0.0
 map_marker_color = 4
 
 [node name="Room" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1837052751]
@@ -302,27 +304,18 @@ transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0,
 [node name="NPC" parent="." unique_id=318198715 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -15.2813635, 0, 6.648855)
 character_appearance = 1
-highlight_color = 4
-npc_name = 1
 patrol_enabled = true
-patrol_route = NodePath("../PatrolRoutes/Guard01Route")
-patrol_mode = 1
-patrol_wait_time = 0.0
+patrol_route = NodePath("../PatrolRoutes/Guard02Route")
 
 [node name="NPC2" parent="." unique_id=453139073 node_paths=PackedStringArray("patrol_route") instance=ExtResource("1_msin7")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 6.444764, 0, -2.9356215)
-knockout_duration = 5.0
-alert_duration = 4.0
-npc_name = 2
 patrol_enabled = true
-patrol_route = NodePath("../PatrolRoutes/Guard02Route")
-patrol_speed = 1.5
-patrol_wait_time = 1.0
+patrol_route = NodePath("../PatrolRoutes/Guard01Route")
 
 [node name="NPC4" parent="." unique_id=765280887 instance=ExtResource("1_msin7")]
 transform = Transform3D(-0.071688056, 0, -0.99742717, 0, 1, 0, 0.99742717, 0, -0.071688056, 3.4762154, 0.027802706, 5.0721807)
 character_appearance = 2
-npc_name = 1
+interactable = false
 
 [node name="ShowcaseDecor" type="Node3D" parent="." unique_id=288768301 groups=["vision_receiver"]]
 

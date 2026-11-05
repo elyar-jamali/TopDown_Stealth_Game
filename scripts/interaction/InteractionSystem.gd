@@ -80,8 +80,12 @@ func begin_pending(actor: CharacterBody3D, target: Node) -> void:
 	pending_interaction = target
 	pending_action = action_to_perform
 
+	var is_npc_target: bool = target is CharacterBody3D
+
 	actor._set_movement_target(
-		target.get_interaction_position()
+		target.get_interaction_position(),
+		false,
+		is_npc_target
 	)
 
 	if target is CharacterBody3D:
@@ -146,16 +150,8 @@ func update_pending(delta: float) -> bool:
 		if follow_result == TargetFollowerScript.UpdateResult.MOVED:
 			actor._set_movement_target(
 				target_follower.last_position,
-				true
+				true, true
 			)
-
-	# برای تعامل معمولی، رفتار قبلی Navigation حفظ می‌شود.
-	# برای حمله نزدیک، منتظر رسیدن به مرکز NPC نمی‌مانیم.
-	if pending_action == Action.NORMAL:
-		if pending_interaction.has_method("wait_for_navigation_finish"):
-			if pending_interaction.wait_for_navigation_finish():
-				if not actor.agent.is_navigation_finished():
-					return false
 
 	var interaction_position: Vector3 = (
 		pending_interaction.get_interaction_position()
