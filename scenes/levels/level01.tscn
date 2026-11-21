@@ -40,6 +40,9 @@ roughness = 0.82
 [sub_resource type="BoxMesh" id="BoxMesh_cd15k"]
 size = Vector3(5, 10, 5)
 
+[sub_resource type="BoxMesh" id="BoxMesh_xp2r0"]
+size = Vector3(2, 3, 2)
+
 [sub_resource type="BoxMesh" id="BoxMesh_msin7"]
 size = Vector3(0.15, 3, 2)
 
@@ -154,7 +157,6 @@ size = Vector3(2.2, 0.65, 0.08)
 size = Vector3(0.02, 0.025, 2)
 
 [node name="Level01" type="Node3D" unique_id=593688443]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7842264, 0, 2.3824444)
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=143344350]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23515391, -0.043194294, -0.035610914)
@@ -199,16 +201,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 material_override = SubResource("Mat_Wall")
 mesh = SubResource("BoxMesh_cd15k")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="NavigationRegion3D/building" unique_id=923358655 groups=["vision_receiver"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.413456, 11.493795, 0)
+material_override = SubResource("Mat_Wall")
+mesh = SubResource("BoxMesh_xp2r0")
+
 [node name="Door" parent="NavigationRegion3D" unique_id=30396763 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 7.1547174, 0.03209267, 0)
 door_material = 3
-interaction_range = 0.0
 
 [node name="Door2" parent="NavigationRegion3D" unique_id=2084061617 instance=ExtResource("3_g0jr5")]
 transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 6.690947, 0.030012416, 14.737785)
 outline_color = 0
 door_state = 2
-interaction_range = 0.0
+map_marker_color = 4
+
+[node name="Door3" parent="NavigationRegion3D" unique_id=2012501122 instance=ExtResource("3_g0jr5")]
+transform = Transform3D(0.9999899, -0.0044854814, 0, 0.0044854814, 0.9999899, 0, 0, 0, 1, 9.546043, 10, 13.392991)
+outline_color = 0
 map_marker_color = 4
 
 [node name="Room" type="StaticBody3D" parent="NavigationRegion3D" unique_id=1837052751]

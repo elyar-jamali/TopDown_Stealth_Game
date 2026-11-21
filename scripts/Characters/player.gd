@@ -54,6 +54,7 @@ signal health_changed(current_health, max_health)
 var last_click_time := 0.0
 var double_click_threshold := 0.25
 var final_target := Vector3.ZERO
+var _navigation_door_waiting: Node3D = null
 var detour_points: Array[Vector3] = []
 var detour_index := 0
 var is_using_detour := false
@@ -184,6 +185,10 @@ func _ready():
 	max_slides = 6
 	floor_block_on_wall = false
 	agent.avoidance_enabled = true
+	# Keep regular NavMesh (layer 1), include closed-door links (layer 2).
+	agent.navigation_layers |= 2
+	if not agent.link_reached.is_connected(_on_navigation_link_reached):
+		agent.link_reached.connect(_on_navigation_link_reached)
 	_setup_ragdoll_collision_exceptions()
 	agent.radius = _get_collision_radius() + 0.05
 	agent.height = 1.8
@@ -294,6 +299,16 @@ func _physics_process(delta):
 	if InteractionSystem.update_pending(delta):
 		previous_position = global_position
 		return
+	if is_instance_valid(_navigation_door_waiting):
+		if not _navigation_door_waiting.is_ready_for_navigation():
+			agent.velocity = Vector3.ZERO
+			velocity.x = 0.0
+			velocity.z = 0.0
+			previous_position = global_position
+			return
+		_navigation_door_waiting = null
+		stuck_time = 0.0
+		agent.target_position = final_target
 	if is_using_short_escape:
 		_update_short_escape(delta)
 		previous_position = global_position
@@ -338,6 +353,13 @@ func _physics_process(delta):
 		previous_position = global_position
 		return
 	var next_position := agent.get_next_path_position()
+	# link_reached can fire inside get_next_path_position().
+	if is_instance_valid(_navigation_door_waiting):
+		agent.velocity = Vector3.ZERO
+		velocity.x = 0.0
+		velocity.z = 0.0
+		previous_position = global_position
+		return
 	var direction := next_position - global_position
 	direction.y = 0.0
 	if direction.length_squared() > 0.0001:
@@ -350,6 +372,18 @@ func _physics_process(delta):
 	_update_stuck_state(delta)
 	path_drawer.update_path_display(self, agent)
 	previous_position = global_position
+func _on_navigation_link_reached(details: Dictionary) -> void:
+	var link_node := details.get("owner") as NavigationLink3D
+	if link_node == null:
+		return
+	var door_node := link_node.get_parent()
+	if not door_node.has_method("needs_navigation_open"):
+		return
+	if door_node.needs_navigation_open():
+		_navigation_door_waiting = door_node
+		door_node.open_door()
+
+
 func _get_movement_speed(state: MovementState) -> float:
 	match state:
 		MovementState.WALK:
@@ -455,6 +489,8 @@ func _get_blocking_collision_line() -> PackedVector3Array:
 	return DetourPlanner.get_blocking_collision_line(self, collision_shape)
 
 func _set_movement_target(target: Vector3, preserve_recovery: bool = false, is_npc_target: bool = false) -> void:
+	if not preserve_recovery:
+		_navigation_door_waiting = null
 	var navigation_map := agent.get_navigation_map()
 	if navigation_map.is_valid():
 		target = NavigationServer3D.map_get_closest_point(navigation_map, target)
@@ -473,6 +509,7 @@ func _set_movement_target(target: Vector3, preserve_recovery: bool = false, is_n
 	stuck_time = 0.0
 	agent.target_position = final_target
 func _stop_movement():
+	_navigation_door_waiting = null
 	agent.velocity = Vector3.ZERO
 	agent.target_position = global_position
 	final_target = global_position

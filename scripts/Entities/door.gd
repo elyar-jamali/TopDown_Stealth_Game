@@ -130,6 +130,14 @@ func interact():
 		open_door()
 
 
+func needs_navigation_open() -> bool:
+	return door_state == DoorState.CLOSED
+
+
+func is_ready_for_navigation() -> bool:
+	return door_state == DoorState.OPEN and door.rotation.distance_to(open_rotation) < 0.05
+
+
 func open_door():
 	# چرخش نرم به حالت باز
 	door_state = DoorState.OPEN
@@ -162,7 +170,11 @@ func rotate_to(target_rotation: Vector3):
 	)
 
 func _update_navigation_link():
-	navigation_link.enabled = door_state == DoorState.OPEN
+	# Layer 1: all agents, for physically open doors.
+	# Layer 2: player only, for closed but openable doors.
+	# A locked door provides no navigation connection.
+	navigation_link.enabled = door_state != DoorState.LOCKED
+	navigation_link.navigation_layers = 1 if door_state == DoorState.OPEN else 2
 
 
 func apply_material():
